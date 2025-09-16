@@ -3,14 +3,14 @@ RECETARIO ONLINE
 Requisitos funcionales:
 
 
-1. Página web para ordenador de tamaño pantalla medio, estilo portátil.
+1. Página web que se vea correctamente para ordenador de tamaño pantalla medio, estilo portátil.
 2. La página web deberá tener una página inicial (landing page) que de la bienvenida al usuario y explique la utilidad de la página web (indicando los servicios que los distintos apartados de la página web tiene).
 
 3. Un usuario invitado (se entiende por invitado que no tiene una cuenta creada) deberá tener una opción en la página web para poder crearse una cuenta.
 4. Un usuario invitado deberá tener una opción en la página web para poder iniciar sesión con su cuenta creada.
-5. Un usuario que ya haya iniciado sesión tendrá la opción de cerrar sesión y cambiar contraseña de su cuenta.
+5. Un usuario que ya haya iniciado sesión tendrá la opción de cerrar sesión y editar su cuenta.
 
-6. Un apartado de la página web deberá poder guardar recetas de comida.
+6. Un apartado de la página web deberá mostrar un menú de creación de una receta.
 7. Al guardar una receta se debe poder introducir manualmente como es la receta, es decir, indicar los pasos a seguir, ingredientes, alérgenos, nombre, foto, tipo de comida (entendido como país de origen) turno de comida (si es de comida, desayuno, cena...), dificultad de la receta medida en una escala del 1 a 5 y duración.
 8. Un usuario registrado (es decir, con una cuenta y habiendo iniciado sesión) deberá poder guardar la receta dentro del perfil.
 9. Un usuario registrado podrá acceder a sus recetas guardadas y publicarlas.
@@ -32,6 +32,16 @@ Requisitos funcionales:
 22.	La página web debe cifrar las contraseñas de los usuarios.
 23.	Se debe permitir cambiar el idioma del texto de la página web.
 24.	Se quiere que la información sea persistente y tenga la posibilidad de escalar.
-25.	La página web debe garantizar que cada usuario sea único (es decir, que cada cuenta sea de solo un usuario (puede ser )).
+25.	La página web debe garantizar que cada usuario sea único (es decir, que cada cuenta sea de solo un usuario ).
 
 Criterios de validacion:
+
+1. El texto de la página de inicio se pueda leer correctamente, así como todos los recursos (imágenes y links...) que existan.
+2. Cuando se acceda a la página web, se debe poder ver el texto de bienvenida.
+3. Siendo un usuario invitado pueda acceder a una pestaña que muestre un mensaje de crear cuenta.
+4. Siendo un usuario invitado pueda acceder a una pestaña que muestre un mensaje de iniciar sesión.
+5. Siendo un usuario con sesión iniciada pueda acceder a una pestaña que muestre un mensaje de cerrar sesión o editar cuenta.
+6. Tras haber guardado una receta, se podrá consultar la receta creada en el apartado de las recetas guardadas.
+7. Cuando se va a guardar receta, que exista un lugar para introducir cada característica.
+8. Siendo un usuario registrado, tras haber guardado una receta, se podrá consultar la receta creada en el apartado de las recetas guardadas.
+9. 
