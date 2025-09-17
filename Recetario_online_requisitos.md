@@ -18,21 +18,22 @@ Requisitos funcionales:
 11. Si una receta está guardada pero no publicada, ningún otro usuario podrá acceder a visualizar esa información.
 12. Se deben poder poner comentarios y valoraciones de las recetas publicadas por otros usuarios.
 13. Los usuarios deben tener una valoración como autor de recetas en función de las valoraciones de sus recetas publicadas.
-14. Se podrá editar cualquier receta perteneciente al autor mismo en cualquier momento.
+14. Las valoraciones de los usuarios pueden ser visualizadas por otros usuarios.
+15. Se podrá editar cualquier receta perteneciente al autor mismo.
 
-15. Un apartado mostrará las recetas públicadas de usuarios que hayan publicado recetas con información asociada a la receta.
-16. Se podrá filtrar las recetas en función de: nombre, ingredientes y autor de la receta.
+16. Un apartado mostrará las recetas publicadas de usuarios que hayan publicado recetas con información asociada a la receta.
+17. Se podrá filtrar las recetas en función de: nombre, ingredientes y autor de la receta.
 
-17. Un apartado deberá poder generar un menú semanal a partir de las recetas guardadas.
-18. Ese menú deberá respetar las características de las recetas guardadas (ej: turno de comida, tipo alimentación...).
-19. El menú deberá poder editarse y personalizarse eligiendo las recetas que el usuario quiera a mano de entre las guardadas que tiene.
-20. El menú se deberá poder guardar.
-21.	Se debe poder generar una lista de compra con los ingredientes necesarios respecto al menú semanal.
+18. Un apartado deberá poder generar un menú semanal a partir de las recetas guardadas.
+19. Ese menú deberá respetar las características de las recetas guardadas (ej: turno de comida, tipo alimentación...).
+20. El menú deberá poder editarse y personalizarse eligiendo las recetas que el usuario quiera a mano de entre las guardadas que tiene.
+21. El menú se deberá poder guardar.
+22.	Se debe poder generar una lista de compra con los ingredientes necesarios respecto al menú semanal.
 
-22.	La página web debe cifrar las contraseñas de los usuarios.
-23.	Se debe permitir cambiar el idioma del texto de la página web.
-24.	Se quiere que la información sea persistente y tenga la posibilidad de escalar.
-25.	La página web debe garantizar que cada usuario sea único (es decir, que cada cuenta sea de solo un usuario ).
+23.	La página web debe cifrar las contraseñas de los usuarios.
+24.	Se debe permitir cambiar el idioma del texto de la página web.
+25.	Se quiere que la información sea persistente y tenga la posibilidad de escalar.
+26.	La página web debe garantizar que cada usuario sea único (es decir, que cada cuenta sea de solo un usuario ).
 
 Criterios de validacion:
 
@@ -44,4 +45,12 @@ Criterios de validacion:
 6. Tras haber guardado una receta, se podrá consultar la receta creada en el apartado de las recetas guardadas.
 7. Cuando se va a guardar receta, que exista un lugar para introducir cada característica.
 8. Siendo un usuario registrado, tras haber guardado una receta, se podrá consultar la receta creada en el apartado de las recetas guardadas.
-9. 
+9. Siendo un usuario registrado, tras meterse en el apartado de las recetas guardadas, le debe salir una opción para publicar la receta.
+10. Una vez accedido a la receta guardada, debe haber una opción de compartirla mediante link. Siendo el usuario al que le ha llegado el link, deberá poder acceder a dicha receta para guardarla.
+11. Siendo otro usuario, comprobar que si se accede a un perfil de otro usuario que se sabe ya que tiene una receta determinada sin publicar, este no podrá visualizarlo.
+12. Siendo otro usuario, al acceder a una receta publicada, debe haber una opción de comentar y valorar la receta.
+13. Un usuario puede entrar a su perfil y comprobar que existe una valoración de dicho perfil.
+14. Un usuario puede entrar al perfil de otro usuario y comprobar que existe una valoración de dicho usuario.
+15. Siendo un usuario registrado con una receta creada, este puede acceder a un menú de modificación de la receta.
+16. Un usuario puede acceder al apartado de recetas publicadas y ver el listado de recetas.
+17. 
