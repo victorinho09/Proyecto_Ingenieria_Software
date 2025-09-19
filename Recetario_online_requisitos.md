@@ -3,7 +3,7 @@ RECETARIO ONLINE
 Requisitos funcionales:
 
 
-1. Página web que se vea correctamente para ordenador de tamaño pantalla medio, estilo portátil.
+1. Página web.
 2. La página web deberá tener una página inicial (landing page) que de la bienvenida al usuario y explique la utilidad de la página web (indicando los servicios que los distintos apartados de la página web tiene).
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 3. Un usuario invitado (se entiende por invitado que no tiene una cuenta creada) deberá tener una opción en la página web para poder crearse una cuenta.
