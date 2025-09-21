@@ -14,7 +14,6 @@ Requisitos funcionales:
 7. Al guardar una receta se debe poder introducir manualmente como es la receta, es decir, indicar los pasos a seguir, ingredientes, alérgenos, nombre, foto, tipo de comida (entendido como país de origen) turno de comida (si es de comida, desayuno, cena...), dificultad de la receta medida en una escala del 1 a 5 y duración.
 8. Un usuario registrado (es decir, con una cuenta y habiendo iniciado sesión) deberá poder guardar la receta dentro del perfil.
 9. Un usuario registrado podrá acceder a sus recetas guardadas y publicarlas.
-10. Se deben poder compartir recetas (tanto publicadas o no) por link con otras personas (via internet), y con ello, las otras personas guardar la receta.
 11. Si una receta está guardada pero no publicada, ningún otro usuario podrá acceder a visualizar esa información.
 12. Se deben poder poner comentarios y valoraciones de las recetas publicadas por otros usuarios.
 13. Los usuarios deben tener una valoración como autor de recetas en función de las valoraciones de sus recetas publicadas.
