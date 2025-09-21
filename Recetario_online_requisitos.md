@@ -64,3 +64,7 @@ Criterios de validacion:
 25. Un usuario podrá acceder a una opción de cambio de idioma del texto.
 26. Un usuario podrá crear o modificar algún dato de su perfil (recetas, menú, información de cuenta...), y una vez salga de la página web y vuelva a entrar e iniciar sesión, podrá observar su información tal como la dejó previamente. Para comprobar la escalabilidad, si la página web es utilizada por una gran número de usuarios (más de 50000).
 27. El usuario podrá comprobar que tiene en su perfil un elemento único que identifica su cuenta del resto.
+
+
+--Link para publicar
+--Generar varios menus semanales
