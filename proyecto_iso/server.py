@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import os
 
 RUTA_INDEX = "./static/index.html"
@@ -7,6 +8,9 @@ RUTA_RECETAS = "./static/recetas.html"
 RUTA_MENU_SEMANAL = "./static/menusemanal.html"
 
 app = FastAPI()
+
+# Montar archivos estáticos
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def get_page():

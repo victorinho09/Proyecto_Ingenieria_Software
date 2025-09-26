@@ -82,3 +82,8 @@ def test_tienen_contenido_diferente_root_and_menu():
     recetas_response = client.get("/menusemanal")
     recetas_content = recetas_response.text
     assert recetas_content != root_content
+
+def test_existe_boton_crear_cuenta():
+    response = client.get("/")
+    assert "Crear cuenta" in response.text
+    assert 'type="button"' in response.text
