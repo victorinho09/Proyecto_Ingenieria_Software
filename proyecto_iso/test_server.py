@@ -1,19 +1,27 @@
+"""
+Tests para el servidor de la aplicación web.
+"""
+
 import pytest
 from fastapi.testclient import TestClient
 from server import app
+from constants import *
 
 # Crear el cliente de testing
 client = TestClient(app)
 
 def test_leer_root():
+    """Test que verifica que la página principal carga correctamente."""
     response = client.get("/")
-    assert response.status_code == 200
+    assert response.status_code == HTTP_OK
 
 def test_leer_root_no_vacio():
+    """Test que verifica que la página principal no está vacía."""
     response = client.get("/")
-    assert response != ""
+    assert response.text != ""
 
 def test_leer_root_content_type():
+    """Test que verifica el content-type de la página principal."""
     response = client.get("/")
     assert response.headers["content-type"] == "text/html; charset=utf-8"
 
@@ -102,12 +110,37 @@ def test_se_muestra_formulario_en_dialogo_de_crear_cuenta():
     assert 'name="password"' in response.text
 
 def test_mandar_datos_crear_cuenta_existente():
-    response = client.post("/crear-cuenta", json={
-        "nombreUsuario": "testuser",
+    """Test que verifica la creación exitosa de una cuenta."""
+    cuenta_test = {
+        "nombreUsuario": "testuser123",
         "email": "testuser@example.com",
-        "password": "testpassword"
-    })
-    assert response.status_code == 200
-    assert response.json()["exito"] == True
-    assert "Cuenta creada con éxito" in response.json()["mensaje"]
+        "password": "testpassword123"
+    }
+    
+    response = client.post("/crear-cuenta", json=cuenta_test)
+    
+    assert response.status_code == HTTP_OK
+    
+    response_data = response.json()
+    assert response_data["exito"] == True
+    assert MENSAJE_CUENTA_CREADA in response_data["mensaje"]
+    assert response_data["usuario_creado"] == cuenta_test["nombreUsuario"]
+
+
+def test_crear_cuenta_cualquier_dato():
+    """Test que verifica que se puede crear cuenta con cualquier dato básico."""
+    cuenta_cualquiera = {
+        "nombreUsuario": "a",  # Cualquier nombre
+        "email": "email_sin_formato",  # Cualquier email
+        "password": "1"  # Cualquier contraseña
+    }
+    
+    response = client.post("/crear-cuenta", json=cuenta_cualquiera)
+    
+    # Debería funcionar sin validaciones
+    assert response.status_code == HTTP_OK
+    
+    response_data = response.json()
+    assert response_data["exito"] == True
+    assert response_data["usuario_creado"] == cuenta_cualquiera["nombreUsuario"]
     assert response.status_code == 200
