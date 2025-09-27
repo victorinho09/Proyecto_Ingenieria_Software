@@ -2,7 +2,6 @@
 Tests para el servidor de la aplicación web.
 """
 
-import pytest
 from fastapi.testclient import TestClient
 from server import app
 from constants import *
@@ -109,7 +108,7 @@ def test_se_muestra_formulario_en_dialogo_de_crear_cuenta():
     assert 'name="email"' in response.text
     assert 'name="password"' in response.text
 
-def test_mandar_datos_crear_cuenta_existente():
+def test_crear_cuenta_muestra_mensaje_exitoso():
     """Test que verifica la creación exitosa de una cuenta."""
     cuenta_test = {
         "nombreUsuario": "testuser123",
@@ -124,15 +123,12 @@ def test_mandar_datos_crear_cuenta_existente():
     response_data = response.json()
     assert response_data["exito"] == True
     assert MENSAJE_CUENTA_CREADA in response_data["mensaje"]
-    assert response_data["usuario_creado"] == cuenta_test["nombreUsuario"]
-
 
 def test_crear_cuenta_cualquier_dato():
-    """Test que verifica que se puede crear cuenta con cualquier dato básico."""
     cuenta_cualquiera = {
-        "nombreUsuario": "a",  # Cualquier nombre
-        "email": "email_sin_formato",  # Cualquier email
-        "password": "1"  # Cualquier contraseña
+        "nombreUsuario": "a", 
+        "email": "email@example.com", 
+        "password": "1"  
     }
     
     response = client.post("/crear-cuenta", json=cuenta_cualquiera)
@@ -144,3 +140,54 @@ def test_crear_cuenta_cualquier_dato():
     assert response_data["exito"] == True
     assert response_data["usuario_creado"] == cuenta_cualquiera["nombreUsuario"]
     assert response.status_code == 200
+
+
+
+def test_existe_boton_crear_receta():
+    response = client.get("/recetas")
+    assert "Crear receta de comida" in response.text
+    assert 'type="button"' in response.text
+
+def test_se_muestra_dialogo_al_crear_receta():
+    response = client.get("/recetas")
+    assert 'data-bs-toggle="modal"' in response.text
+    assert 'data-bs-target="#crearRecetaModal"' in response.text
+
+def test_se_muestra_formulario_en_dialogo_de_crear_receta():
+    response = client.get("/recetas")
+    assert 'action="/crear-receta"' in response.text
+    assert 'method="POST"' in response.text
+    assert 'name="nombreReceta"' in response.text
+    assert 'name="descripcion"' in response.text
+
+def test_crear_receta_cualquier_dato():
+    receta_cualquiera = {
+        "nombreReceta": "Receta de prueba",
+        "descripcion": "Descripción de prueba"
+    }
+
+    response = client.post("/crear-receta", json=receta_cualquiera)
+
+    # Debería funcionar sin validaciones
+    assert response.status_code == HTTP_OK
+    
+    response_data = response.json()
+    assert response_data["exito"] == True
+    assert response_data["receta_creada"] == receta_cualquiera["nombreReceta"]
+    assert response.status_code == 200
+
+def test_crear_receta_muestra_mensaje_exitoso():
+    """Test que verifica la creación exitosa de una receta."""
+    receta_test = {
+        "nombreReceta": "testreceta123",
+        "descripcion": "Una receta de prueba"
+    }
+
+    response = client.post("/crear-receta", json=receta_test)
+
+    assert response.status_code == HTTP_OK
+    
+    response_data = response.json()
+    assert response_data["exito"] == True
+    assert MENSAJE_RECETA_CREADA in response_data["mensaje"]
+

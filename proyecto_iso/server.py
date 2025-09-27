@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Importar módulos locales
 from constants import *
-from models import Cuenta
+from models import Cuenta, Receta
 from utils import verificar_archivo_existe
 
 # Crear instancia de FastAPI
@@ -33,7 +33,6 @@ def get_page():
     if verificar_archivo_existe(RUTA_INDEX):
         return FileResponse(RUTA_INDEX, media_type=CONTENT_TYPE_HTML)
     else:
-        log_operacion('error', 'Archivo index.html no encontrado', RUTA_INDEX)
         return HTMLResponse(
             content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
             status_code=HTTP_NOT_FOUND
@@ -50,7 +49,6 @@ def get_recetas():
     if verificar_archivo_existe(RUTA_RECETAS):
         return FileResponse(RUTA_RECETAS, media_type=CONTENT_TYPE_HTML)
     else:
-        log_operacion('error', 'Archivo recetas.html no encontrado', RUTA_RECETAS)
         return HTMLResponse(
             content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
             status_code=HTTP_NOT_FOUND
@@ -67,7 +65,6 @@ def get_menu_semanal():
     if verificar_archivo_existe(RUTA_MENU_SEMANAL):
         return FileResponse(RUTA_MENU_SEMANAL, media_type=CONTENT_TYPE_HTML)
     else:
-        log_operacion('error', 'Archivo menusemanal.html no encontrado', RUTA_MENU_SEMANAL)
         return HTMLResponse(
             content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
             status_code=HTTP_NOT_FOUND
@@ -90,6 +87,38 @@ async def crear_cuenta(cuenta: Cuenta):
             "mensaje": MENSAJE_CUENTA_CREADA,
             "exito": True,
             "usuario_creado": cuenta.nombreUsuario
+        }
+        
+        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        
+    except Exception as e:        
+        # Respuesta de error (diccionario simple)
+        error_respuesta = {
+            "mensaje": MENSAJE_ERROR_INTERNO,
+            "exito": False,
+            "codigo_error": "INTERNAL_ERROR"
+        }
+        
+        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
+
+@app.post("/crear-receta")
+async def crear_receta(receta: Receta):
+    """
+    Endpoint para crear una nueva receta.
+    
+    Args:
+        receta (Receta): Datos básicos de la receta a crear
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+                
+        # Respuesta de éxito (diccionario simple)
+        respuesta = {
+            "mensaje": MENSAJE_RECETA_CREADA,
+            "exito": True,
+            "receta_creada": receta.nombreReceta
         }
         
         return JSONResponse(content=respuesta, status_code=HTTP_OK)
