@@ -51,7 +51,7 @@ def test_tienen_contenido_diferente_root_y_recetas():
     assert recetas_content != root_content
     
 def test_apartado_menu_existente():
-    response = client.get("/menusemanal")
+    response = client.get("/menu-semanal")
     assert response.status_code == 200
 
 def test_apartado_menu_no_vacio():
@@ -66,7 +66,7 @@ def test_navegacion_root_a_recetas():
     # Paso 2: Verificar que contiene el enlace a "Menú Semanal"
     root_content = root_response.text
     assert "Menú Semanal" in root_content
-    assert 'href="http://127.0.0.1:8000/menusemanal"' in root_content
+    assert 'href="http://127.0.0.1:8000/menu-semanal"' in root_content
     
     # Paso 3: Simular el clic navegando a /menusemanal
     recetas_response = client.get("/recetas")
@@ -102,8 +102,12 @@ def test_se_muestra_formulario_en_dialogo_de_crear_cuenta():
     assert 'name="password"' in response.text
 
 def test_mandar_datos_crear_cuenta_existente():
-    response = client.post("/crear-cuenta", data={
+    response = client.post("/crear-cuenta", json={
         "nombreUsuario": "testuser",
         "email": "testuser@example.com",
         "password": "testpassword"
     })
+    assert response.status_code == 200
+    assert response.json()["exito"] == True
+    assert "Cuenta creada con éxito" in response.json()["mensaje"]
+    assert response.status_code == 200
