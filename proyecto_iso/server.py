@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 # Importar módulos locales
 from constants import *
 from models import Cuenta
-from utils import verificar_archivo_existe, log_operacion
+from utils import verificar_archivo_existe
 
 # Crear instancia de FastAPI
 app = FastAPI(
