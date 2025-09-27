@@ -84,12 +84,7 @@ async def crear_cuenta(cuenta: Cuenta):
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
-        # Log de intento de creación
-        log_operacion('info', f'Intento de creación de cuenta para usuario: {cuenta.nombreUsuario}')
-        
-        # Simular el éxito (aquí iría la lógica de guardado en BD)
-        log_operacion('success', f'Cuenta creada para el usuario: {cuenta.nombreUsuario}')
-        
+                
         # Respuesta de éxito (diccionario simple)
         respuesta = {
             "mensaje": MENSAJE_CUENTA_CREADA,
@@ -99,10 +94,7 @@ async def crear_cuenta(cuenta: Cuenta):
         
         return JSONResponse(content=respuesta, status_code=HTTP_OK)
         
-    except Exception as e:
-        # Error inesperado
-        log_operacion('error', 'Error inesperado en creación de cuenta', str(e))
-        
+    except Exception as e:        
         # Respuesta de error (diccionario simple)
         error_respuesta = {
             "mensaje": MENSAJE_ERROR_INTERNO,

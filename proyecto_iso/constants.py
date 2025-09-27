@@ -1,8 +1,3 @@
-"""
-Archivo de constantes para la aplicación web.
-Contiene todas las rutas, configuraciones y valores constantes utilizados en el proyecto.
-"""
-
 # ==================== RUTAS DE ARCHIVOS ====================
 
 # Rutas de las páginas HTML
