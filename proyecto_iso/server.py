@@ -26,7 +26,7 @@ def get_recetas():
     else:
         return HTMLResponse(content="<h1>Error: Archivo no encontrado</h1>", status_code=404)
 
-@app.get("/menusemanal")
+@app.get("/menu-semanal")
 def get_menu_semanal():
     if os.path.exists(RUTA_MENU_SEMANAL):
         return FileResponse(RUTA_MENU_SEMANAL, media_type="text/html")
