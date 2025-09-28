@@ -40,7 +40,7 @@ def test_navegacion_root_a_recetas():
     # Paso 2: Verificar que contiene el enlace a "Recetas"
     root_content = root_response.text
     assert "Recetas" in root_content
-    assert 'href="http://127.0.0.1:8000/recetas"' in root_content
+    assert 'href="/recetas"' in root_content
     
     # Paso 3: Simular el clic navegando a /recetas
     recetas_response = client.get("/recetas")
@@ -73,7 +73,7 @@ def test_navegacion_root_a_recetas():
     # Paso 2: Verificar que contiene el enlace a "Menú Semanal"
     root_content = root_response.text
     assert "Menú Semanal" in root_content
-    assert 'href="http://127.0.0.1:8000/menu-semanal"' in root_content
+    assert 'href="/menu-semanal"' in root_content
     
     # Paso 3: Simular el clic navegando a /menusemanal
     recetas_response = client.get("/recetas")
@@ -92,7 +92,7 @@ def test_tienen_contenido_diferente_root_y_menu():
 
 def test_existe_boton_crear_cuenta():
     response = client.get("/")
-    assert "Crear cuenta" in response.text
+    assert "Crear Cuenta" in response.text
     assert 'type="button"' in response.text
 
 def test_se_muestra_dialogo_al_crear_cuenta():
