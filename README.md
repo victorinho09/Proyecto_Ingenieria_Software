@@ -7,6 +7,3 @@ Los integrantes del grupo son:
 - Alfredo Martínez Escoval
 - Pablo Argaiz Ramirez
 - Francisco Javier Martínez Fernández
-
-
-La página web puede consultar en el dominio: https://ingsoftrepo.netlify.app/
