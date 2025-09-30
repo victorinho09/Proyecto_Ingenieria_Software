@@ -8,6 +8,14 @@ const CONFIGURACION_FORMULARIOS = {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     },
   },
+  iniciarSesionForm: {
+     endpoint: "/iniciar-sesion",
+    modal: "iniciarSesionModal",
+    campos: ["email", "password"],
+    validaciones: {
+    email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    },
+  },
   crearRecetaForm: {
     endpoint: "/crear-receta",
     modal: "crearRecetaModal",

@@ -101,6 +101,34 @@ async def crear_cuenta(cuenta: Cuenta):
         
         return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
 
+@app.post("/iniciar-sesion")
+async def iniciar_sesion(cuenta: Cuenta):
+    """
+    Endpoint para iniciar sesión (simulado).
+
+    Args:
+        cuenta (Cuenta): Datos de la cuenta para iniciar sesión
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        respuesta = {
+            "mensaje": MENSAJE_CUENTA_INICIADA,
+            "exito": True,
+            "usuario": cuenta.nombreUsuario or cuenta.email,
+        }
+        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+    
+    except Exception as e:
+        error_respuesta = {
+            "mensaje": MENSAJE_ERROR_INTERNO,
+            "exito": False,
+            "codigo_error": "INTERNAL_ERROR",
+        }
+        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
+
+
 @app.post("/crear-receta")
 async def crear_receta(receta: Receta):
     """

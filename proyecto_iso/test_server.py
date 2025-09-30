@@ -108,6 +108,19 @@ def test_se_muestra_formulario_en_dialogo_de_crear_cuenta():
     assert 'name="email"' in response.text
     assert 'name="password"' in response.text
 
+def test_se_muestra_formulario_en_dialogo_de_iniciar_cuenta():
+    response = client.get("/")
+    assert 'action="/iniciar-sesion"' in response.text
+    assert 'method="POST"' in response.text
+    assert 'name="nombreUsuario"' in response.text
+    assert 'name="email"' in response.text
+    assert 'name="password"' in response.text
+
+def test_se_muestra_dialogo_al_iniciar_cuenta():
+    response = client.get("/")
+    assert 'data-bs-toggle="modal"' in response.text
+    assert 'data-bs-target="#iniciarSesionModal"' in response.text
+
 def test_crear_cuenta_muestra_mensaje_exitoso():
     """Test que verifica la creación exitosa de una cuenta."""
     cuenta_test = {
@@ -191,3 +204,20 @@ def test_crear_receta_muestra_mensaje_exitoso():
     assert response_data["exito"] == True
     assert MENSAJE_RECETA_CREADA in response_data["mensaje"]
 
+def test_existe_boton_iniciar_sesion():
+    response = client.get("/")
+    assert "Iniciar Sesión" in response.text
+    assert 'type="button"' in response.text
+
+def test_iniciar_sesion_muestra_mensaje_exitoso():
+    cuenta_test = {
+        "nombreUsuario": "testuser123",
+        "email": "testuser@example.com",
+        "password": "testpassword123"
+    }
+    
+    response = client.post("/iniciar-sesion", json=cuenta_test)
+    assert response.status_code == HTTP_OK
+    data = response.json()
+    assert data["exito"] == True
+    assert MENSAJE_CUENTA_INICIADA in data["mensaje"]
