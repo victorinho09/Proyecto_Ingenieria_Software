@@ -55,7 +55,7 @@
               <a class="nav-link" href="/menu-semanal">Menú Semanal</a>
             </li>
           </ul>
-           <button
+          <button
             type="button"
             class="btn btn-outline-light ms-2"
             data-bs-toggle="modal"
@@ -283,10 +283,18 @@
             <h5 class="modal-title" id="iniciarSesionModalLabel">
               Iniciar Sesión
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
           <div class="modal-body">
-            <div id="mensajeSesionContainer" class="alert" style="display: none"></div>
+            <div
+              id="mensajeContainer"
+              class="alert"
+              style="display: none"
+            ></div>
 
             <form id="iniciarSesionForm" action="/iniciar-sesion" method="POST">
               <div class="mb-3">
@@ -300,7 +308,9 @@
                 />
               </div>
               <div class="mb-3">
-                <label for="passwordSesion" class="form-label">Contraseña</label>
+                <label for="passwordSesion" class="form-label"
+                  >Contraseña</label
+                >
                 <input
                   type="password"
                   class="form-control"
@@ -312,17 +322,24 @@
             </form>
           </div>
           <div class="modal-footer" id="modalFooterSesion">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
               Cancelar
             </button>
-            <button type="submit" form="iniciarSesionForm" class="btn btn-primary">
+            <button
+              type="submit"
+              form="iniciarSesionForm"
+              class="btn btn-primary"
+            >
               Iniciar Sesión
             </button>
           </div>
         </div>
       </div>
     </div>
-
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4 mt-5">

@@ -5,6 +5,10 @@ class Cuenta(BaseModel):
     email: str
     password: str
 
+class LoginData(BaseModel):
+    email: str
+    password: str
+
 class Receta(BaseModel):
     nombreReceta: str
     descripcion: str

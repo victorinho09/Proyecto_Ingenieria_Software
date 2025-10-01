@@ -9,11 +9,11 @@ const CONFIGURACION_FORMULARIOS = {
     },
   },
   iniciarSesionForm: {
-     endpoint: "/iniciar-sesion",
+    endpoint: "/iniciar-sesion",
     modal: "iniciarSesionModal",
     campos: ["email", "password"],
     validaciones: {
-    email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     },
   },
   crearRecetaForm: {
@@ -58,7 +58,10 @@ async function manejarEnvioFormulario(e, formId) {
 
   const form = e.target;
   const config = CONFIGURACION_FORMULARIOS[formId];
-  const mensajeContainer = document.getElementById("mensajeContainer");
+  const modal = document.getElementById(config.modal);
+  const mensajeContainer = modal
+    ? modal.querySelector("#mensajeContainer, .alert")
+    : null;
 
   // Obtener los valores del formulario dinámicamente
   const formData = {};
@@ -96,8 +99,9 @@ async function manejarEnvioFormulario(e, formId) {
       // Ocultar el formulario
       form.style.display = "none";
 
-      // Ocultar los botones del footer
-      const modalFooter = document.getElementById("modalFooter");
+      // Ocultar los botones del footer del modal específico
+      const modal = document.getElementById(config.modal);
+      const modalFooter = modal ? modal.querySelector(".modal-footer") : null;
       if (modalFooter) {
         modalFooter.style.display = "none";
       }
@@ -116,7 +120,8 @@ async function manejarEnvioFormulario(e, formId) {
       // Restaurar elementos después de que el modal se haya cerrado
       setTimeout(() => {
         form.style.display = "block";
-        const modalFooter = document.getElementById("modalFooter");
+        const modal = document.getElementById(config.modal);
+        const modalFooter = modal ? modal.querySelector(".modal-footer") : null;
         if (modalFooter) {
           modalFooter.style.display = "block";
         }
@@ -184,7 +189,10 @@ function mostrarMensaje(container, type, message) {
  * @param {string} modalId - ID del modal que se está abriendo
  */
 function limpiarMensajes(modalId) {
-  const mensajeContainer = document.getElementById("mensajeContainer");
+  const modal = document.getElementById(modalId);
+  const mensajeContainer = modal
+    ? modal.querySelector("#mensajeContainer, .alert")
+    : null;
   if (mensajeContainer) {
     mensajeContainer.style.display = "none";
   }

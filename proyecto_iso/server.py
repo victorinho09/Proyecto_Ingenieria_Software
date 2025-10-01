@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Importar módulos locales
 from constants import *
-from models import Cuenta, Receta
+from models import Cuenta, LoginData, Receta
 from utils import verificar_archivo_existe
 
 # Crear instancia de FastAPI
@@ -102,12 +102,12 @@ async def crear_cuenta(cuenta: Cuenta):
         return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
 
 @app.post("/iniciar-sesion")
-async def iniciar_sesion(cuenta: Cuenta):
+async def iniciar_sesion(login_data: LoginData):
     """
     Endpoint para iniciar sesión (simulado).
 
     Args:
-        cuenta (Cuenta): Datos de la cuenta para iniciar sesión
+        login_data (LoginData): Datos de login (email y password)
 
     Returns:
         JSONResponse: Respuesta con el resultado de la operación
@@ -116,7 +116,7 @@ async def iniciar_sesion(cuenta: Cuenta):
         respuesta = {
             "mensaje": MENSAJE_CUENTA_INICIADA,
             "exito": True,
-            "usuario": cuenta.nombreUsuario or cuenta.email,
+            "usuario": login_data.email,
         }
         return JSONResponse(content=respuesta, status_code=HTTP_OK)
     
