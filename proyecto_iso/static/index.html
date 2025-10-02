@@ -63,6 +63,16 @@
           >
             <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
           </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-light ms-2"
+            data-bs-toggle="modal"
+            data-bs-target="#cerrarSesionModal"
+          >
+            <i class="bi bi-box-arrow-in-left"></i> Cerrar Sesión
+          </button>
+
           <button
             type="button"
             class="btn btn-outline-light"
@@ -340,6 +350,58 @@
         </div>
       </div>
     </div>
+
+   <!-- Modal de Cerrar Sesión -->
+    <div
+      class="modal fade"
+      id="cerrarSesionModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cerrarSesionModalLabel">
+              ¿Quieres cerrar sesión?
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Contenedor para mensajes -->
+            <div
+              id="mensajeContainer"
+              class="alert"
+              style="display: none"
+            ></div>
+            <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
+            </form>
+          </div>
+          <div class="modal-footer" id="modalFooter">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              form="cerrarSesionForm"
+              class="btn btn-primary"
+            >
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- Footer -->
     <footer class="bg-dark text-light py-4 mt-5">
