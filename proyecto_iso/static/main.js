@@ -9,6 +9,7 @@ const CONFIGURACION_FORMULARIOS = {
     },
   },
   iniciarSesionForm: {
+    
     endpoint: "/iniciar-sesion",
     modal: "iniciarSesionModal",
     campos: ["email", "password"],
@@ -16,13 +17,23 @@ const CONFIGURACION_FORMULARIOS = {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     },
   },
+
+  cerrarSesionForm: {
+  endpoint: "/cerrar-sesion",
+  modal: "cerrarSesionModal",
+  campos: [],
+  validaciones: {},
+},
+
   crearRecetaForm: {
     endpoint: "/crear-receta",
     modal: "crearRecetaModal",
     campos: ["nombreReceta", "descripcion"],
     validaciones: {},
   },
+  
 };
+  
 
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar event listeners cuando el DOM esté cargado
@@ -198,13 +209,8 @@ function limpiarMensajes(modalId) {
   }
 }
 
-/**
- * Cierra el modal especificado
- * @param {string} modalId - ID del modal a cerrar
- */
-function cerrarModal(modalId) {
-  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-  if (modal) {
-    modal.hide();
-  }
-}
+
+
+
+
+

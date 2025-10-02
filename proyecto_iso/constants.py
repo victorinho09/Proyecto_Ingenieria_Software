@@ -21,6 +21,7 @@ MENSAJE_CUENTA_CREADA = "Cuenta creada con éxito"
 MENSAJE_RECETA_CREADA = "Receta creada con éxito"
 MENSAJE_OPERACION_EXITOSA = "Operación realizada correctamente"
 MENSAJE_CUENTA_INICIADA = "Inicio de sesión exitoso"
+MENSAJE_CUENTA_CERRADA = "Cuenta cerrada con éxito"
 
 # Mensajes de error
 MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO = "Error: Archivo no encontrado"

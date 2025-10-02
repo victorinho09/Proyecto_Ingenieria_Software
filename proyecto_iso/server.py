@@ -128,6 +128,34 @@ async def iniciar_sesion(login_data: LoginData):
         }
         return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
 
+@app.post("/cerrar-sesion")
+async def cerrar_sesion():
+    """
+    Endpoint para cerrar sesion.
+    
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+                
+        # Respuesta de éxito (diccionario simple)
+        respuesta = {
+            "mensaje": MENSAJE_CUENTA_CERRADA,
+            "exito": True,
+        }
+        
+        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        
+    except Exception as e:        
+        # Respuesta de error (diccionario simple)
+        error_respuesta = {
+            "mensaje": MENSAJE_ERROR_INTERNO,
+            "exito": False,
+            "codigo_error": "INTERNAL_ERROR"
+        }
+        
+        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
+
 
 @app.post("/crear-receta")
 async def crear_receta(receta: Receta):
