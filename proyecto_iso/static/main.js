@@ -70,7 +70,9 @@ async function manejarEnvioFormulario(e, formId) {
   const form = e.target;
   const config = CONFIGURACION_FORMULARIOS[formId];
   const modal = document.getElementById(config.modal);
-  const mensajeContainer = modal ? modal.querySelector("#mensajeContainer, .alert") : null;
+  const mensajeContainer = modal
+    ? modal.querySelector("#mensajeContainer, .alert")
+    : null;
 
   // Obtener los valores del formulario dinámicamente
   const formData = {};
@@ -102,6 +104,7 @@ async function manejarEnvioFormulario(e, formId) {
       body: JSON.stringify(formData),
     });
 
+    
     const result = await response.json();
 
     if (response.ok && result.exito) {
@@ -206,9 +209,6 @@ function limpiarMensajes(modalId) {
     mensajeContainer.style.display = "none";
   }
 }
-
-
-
 
 
 
