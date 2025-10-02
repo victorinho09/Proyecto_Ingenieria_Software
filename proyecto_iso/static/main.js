@@ -9,7 +9,6 @@ const CONFIGURACION_FORMULARIOS = {
     },
   },
   iniciarSesionForm: {
-    
     endpoint: "/iniciar-sesion",
     modal: "iniciarSesionModal",
     campos: ["email", "password"],
@@ -19,11 +18,11 @@ const CONFIGURACION_FORMULARIOS = {
   },
 
   cerrarSesionForm: {
-  endpoint: "/cerrar-sesion",
-  modal: "cerrarSesionModal",
-  campos: [],
-  validaciones: {},
-},
+    endpoint: "/cerrar-sesion",
+    modal: "cerrarSesionModal",
+    campos: [],
+    validaciones: {},
+  },
 
   crearRecetaForm: {
     endpoint: "/crear-receta",
@@ -31,9 +30,7 @@ const CONFIGURACION_FORMULARIOS = {
     campos: ["nombreReceta", "descripcion"],
     validaciones: {},
   },
-  
 };
-  
 
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar event listeners cuando el DOM esté cargado
@@ -104,7 +101,6 @@ async function manejarEnvioFormulario(e, formId) {
       body: JSON.stringify(formData),
     });
 
-    
     const result = await response.json();
 
     if (response.ok && result.exito) {
@@ -210,5 +206,13 @@ function limpiarMensajes(modalId) {
   }
 }
 
-
-
+/**
+ * Cierra el modal especificado
+ * @param {string} modalId - ID del modal a cerrar
+ */
+function cerrarModal(modalId) {
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+  if (modal) {
+    modal.hide();
+  }
+}
