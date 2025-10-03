@@ -69,36 +69,35 @@
 
             <form id="crearRecetaForm" action="/crear-receta" method="POST">
               <div class="mb-3">
-                <label for="nombreReceta" class="form-label"
-                  >Nombre de la Receta de comida</label
-                >
+                <label for="nombreReceta" class="form-label">Nombre</label>
                 <input
                   type="text"
                   class="form-control"
                   id="nombreReceta"
                   name="nombreReceta"
+                  placeholder="Escribe el nombre de la receta..."
                   required
                 />
               </div>
               <div class="mb-3">
                 <label for="descripcion" class="form-label">Descripción</label>
-                <input
+                <textarea
                   type="text"
                   class="form-control"
                   id="descripcion"
                   name="descripcion"
-                  required
-                />
+                  placeholder="Escribe una breve descripción de la receta..."
+                  required></textarea>
               </div>
               <div class="mb-3">
                 <label for="ingredientes" class="form-label">Ingredientes</label>
-                <input
+                <textarea
                   type="text"
                   class="form-control"
                   id="ingredientes"
                   name="ingredientes"
-                  required
-                />
+                  placeholder="Escribe los ingredientes separados por comas..."
+                  required></textarea>
               </div>
               <div class="mb-3">
                 <label for="alergenos" class="form-label">Alérgenos</label>
@@ -107,6 +106,7 @@
                   class="form-control"
                   id="alergenos"
                   name="alergenos"
+                  placeholder="Si hay posibles alergias, escribe los alérgenos separados por comas..."
                   required
                 />
               </div>
@@ -117,21 +117,22 @@
                   class="form-control"
                   id="paisOrigen"
                   name="paisOrigen"
+                  placeholder="Escribe el país de origen de la receta..."
                   required
                 />
               </div>
               <div class="mb-3">
                 <label for="pasosAseguir" class="form-label">Pasos a seguir</label>
-                <input
+                <textarea
                   type="text"
                   class="form-control"
                   id="pasosAseguir"
                   name="pasosAseguir"
-                  required
-                />
+                  placeholder="Escribe los pasos a seguir para preparar la receta..."
+                  required></textarea>
               </div>
               <div class="mb-3">
-                <label for="turnoComida" class="form-label">Dificultad</label>
+                <label for="turnoComida" class="form-label">Turno de comida</label>
                 <select class="form-select" name="turnoComida" id="turnoComida" required>
                   <option value="" selected>Selecciona una opción</option>
                   <option value="desayuno">Desayuno</option>
@@ -148,6 +149,7 @@
                   class="form-control"
                   id="duracion"
                   name="duracion"
+                  placeholder="Escribe la duración estimada para preparar la receta en minutos..."
                   required
                 />
               </div>
