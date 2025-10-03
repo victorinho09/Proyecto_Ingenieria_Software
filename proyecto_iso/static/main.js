@@ -27,7 +27,7 @@ const CONFIGURACION_FORMULARIOS = {
   crearRecetaForm: {
     endpoint: "/crear-receta",
     modal: "crearRecetaModal",
-    campos: ["nombreReceta", "descripcion", "ingredientes", "alergenos"],
+    campos: ["nombreReceta", "descripcion", "ingredientes", "alergenos", "paisOrigen"],
     validaciones: {},
   },
 };
