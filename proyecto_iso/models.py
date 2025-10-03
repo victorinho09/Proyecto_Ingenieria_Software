@@ -18,3 +18,4 @@ class Receta(BaseModel):
     pasosAseguir: str
     turnoComida: str
     duracion: int
+    dificultad: str
