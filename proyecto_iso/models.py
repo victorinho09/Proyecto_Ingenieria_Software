@@ -15,3 +15,4 @@ class Receta(BaseModel):
     ingredientes: str
     alergenos: str
     paisOrigen: str
+    pasosAseguir: str
