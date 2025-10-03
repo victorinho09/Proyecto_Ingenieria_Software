@@ -16,3 +16,4 @@ class Receta(BaseModel):
     alergenos: str
     paisOrigen: str
     pasosAseguir: str
+    turnoComida: str
