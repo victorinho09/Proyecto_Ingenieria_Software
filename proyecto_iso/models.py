@@ -13,3 +13,4 @@ class Receta(BaseModel):
     nombreReceta: str
     descripcion: str
     ingredientes: str
+    alergenos: str
