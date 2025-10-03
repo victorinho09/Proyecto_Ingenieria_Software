@@ -17,3 +17,4 @@ class Receta(BaseModel):
     paisOrigen: str
     pasosAseguir: str
     turnoComida: str
+    duracion: int
