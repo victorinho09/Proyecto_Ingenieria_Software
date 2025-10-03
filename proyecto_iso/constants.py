@@ -8,6 +8,10 @@ RUTA_MENU_SEMANAL = "./static/menusemanal.html"
 # Directorio de archivos estáticos
 DIRECTORIO_STATIC = "static"
 
+# Rutas de archivos de datos
+RUTA_CUENTAS_JSON = "./datos/cuentas.json"
+DIRECTORIO_DATOS = "datos"
+
 # ==================== CONFIGURACIÓN DEL SERVIDOR ====================
 
 # Configuración por defecto del servidor
@@ -28,6 +32,7 @@ MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO = "Error: Archivo no encontrado"
 MENSAJE_ERROR_VALIDACION = "Error de validación en los datos proporcionados"
 MENSAJE_ERROR_INTERNO = "Error interno del servidor"
 MENSAJE_ERROR_CONEXION = "Error de conexión con el servidor"
+MENSAJE_ERROR_EMAIL_DUPLICADO = "Ya existe una cuenta con este email"
 
 # ==================== CÓDIGOS DE ESTADO HTTP ====================
 

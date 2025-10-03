@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 # Importar módulos locales
 from constants import *
 from models import Cuenta, LoginData, Receta
-from utils import verificar_archivo_existe
+from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe
 
 # Crear instancia de FastAPI
 app = FastAPI(
@@ -81,24 +81,48 @@ async def crear_cuenta(cuenta: Cuenta):
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
-                
-        # Respuesta de éxito (diccionario simple)
-        respuesta = {
-            "mensaje": MENSAJE_CUENTA_CREADA,
-            "exito": True,
-            "usuario_creado": cuenta.nombreUsuario
+        # Verificar si el email ya existe
+        if email_ya_existe(cuenta.email):
+            error_respuesta = {
+                "mensaje": MENSAJE_ERROR_EMAIL_DUPLICADO,
+                "exito": False,
+                "codigo_error": "EMAIL_DUPLICADO"
+            }
+            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
+        
+        # Convertir la cuenta a diccionario para guardado
+        cuenta_data = {
+            "nombreUsuario": cuenta.nombreUsuario,
+            "email": cuenta.email,
+            "password": cuenta.password  # En producción esto debería estar hasheado
         }
         
-        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        # Intentar guardar la cuenta
+        if guardar_nueva_cuenta(cuenta_data):
+            # Respuesta de éxito
+            respuesta = {
+                "mensaje": MENSAJE_CUENTA_CREADA,
+                "exito": True,
+                "usuario_creado": cuenta.nombreUsuario
+            }
+            return JSONResponse(content=respuesta, status_code=HTTP_CREATED)
+        else:
+            # Error al guardar
+            error_respuesta = {
+                "mensaje": "Error al guardar la cuenta",
+                "exito": False,
+                "codigo_error": "ERROR_GUARDADO"
+            }
+            return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
         
     except Exception as e:        
-        # Respuesta de error (diccionario simple)
+        # Respuesta de error inesperado
+        print(f"{LOG_ERROR} Error inesperado en crear_cuenta: {e}")
         error_respuesta = {
             "mensaje": MENSAJE_ERROR_INTERNO,
             "exito": False,
             "codigo_error": "INTERNAL_ERROR"
         }
-        
         return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
 
 @app.post("/iniciar-sesion")
