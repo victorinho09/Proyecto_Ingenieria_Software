@@ -12,3 +12,4 @@ class LoginData(BaseModel):
 class Receta(BaseModel):
     nombreReceta: str
     descripcion: str
+    ingredientes: str
