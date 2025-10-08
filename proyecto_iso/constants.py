@@ -5,6 +5,8 @@ RUTA_INDEX = "./static/index.html"
 RUTA_INVITADO = "./static/invitado.html"
 RUTA_RECETAS = "./static/recetas.html"
 RUTA_MENU_SEMANAL = "./static/menusemanal.html"
+RUTA_MIS_RECETAS = "./static/misrecetas.html"
+RUTA_RECETAS_GUARDADAS = "./static/recetasguardadas.html"
 
 # Directorio de archivos estáticos
 DIRECTORIO_STATIC = "static"

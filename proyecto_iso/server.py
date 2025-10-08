@@ -54,6 +54,38 @@ def get_recetas():
             status_code=HTTP_NOT_FOUND
         )
 
+@app.get("/mis-recetas", response_class=HTMLResponse)
+def get_recetas():
+    """
+    Endpoint para servir la página de mis recetas.
+    
+    Returns:
+        FileResponse: Página HTML de recetas o error 404
+    """
+    if verificar_archivo_existe(RUTA_MIS_RECETAS):
+        return FileResponse(RUTA_MIS_RECETAS, media_type=CONTENT_TYPE_HTML)
+    else:
+        return HTMLResponse(
+            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
+            status_code=HTTP_NOT_FOUND
+        )
+
+@app.get("/recetas-guardadas", response_class=HTMLResponse)
+def get_recetas():
+    """
+    Endpoint para servir la página de recetas guardadas.
+    
+    Returns:
+        FileResponse: Página HTML de recetas guardadas o error 404
+    """
+    if verificar_archivo_existe(RUTA_RECETAS_GUARDADAS):
+        return FileResponse(RUTA_RECETAS_GUARDADAS, media_type=CONTENT_TYPE_HTML)
+    else:
+        return HTMLResponse(
+            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
+            status_code=HTTP_NOT_FOUND
+        )
+
 @app.get("/menu-semanal", response_class=HTMLResponse)
 def get_menu_semanal():
     """

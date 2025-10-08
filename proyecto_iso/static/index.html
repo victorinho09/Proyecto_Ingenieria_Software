@@ -68,8 +68,6 @@
           >
             <i class="bi bi-box-arrow-in-left"></i> Cerrar Sesión
           </button>
-
-          
         </div>
       </div>
     </nav>
@@ -86,7 +84,7 @@
             compartir tus recetas favoritas. También podrás crear nuevas recetas
             y generar un menú semanal con ellas.
           </p>
-          
+
           <a href="/recetas" class="btn btn-outline-primary btn-lg">
             <i class="bi bi-book-half"></i> Ver Recetas
           </a>
@@ -157,162 +155,7 @@
       </div>
     </div>
 
-    <!-- Modal de Crear Cuenta -->
-    <div
-      class="modal fade"
-      id="crearCuentaModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="crearCuentaModalLabel">
-              Crear Nueva Cuenta
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <!-- Contenedor para mensajes -->
-            <div
-              id="mensajeContainer"
-              class="alert"
-              style="display: none"
-            ></div>
-
-            <form id="crearCuentaForm" action="/crear-cuenta" method="POST">
-              <div class="mb-3">
-                <label for="nombreUsuario" class="form-label"
-                  >Nombre de Usuario</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombreUsuario"
-                  name="nombreUsuario"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer" id="modalFooter">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              form="crearCuentaForm"
-              class="btn btn-primary"
-            >
-              Crear Cuenta
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal de Iniciar Sesión -->
-    <div
-      class="modal fade"
-      id="iniciarSesionModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="iniciarSesionModalLabel">
-              Iniciar Sesión
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div
-              id="mensajeContainer"
-              class="alert"
-              style="display: none"
-            ></div>
-
-            <form id="iniciarSesionForm" action="/iniciar-sesion" method="POST">
-              <div class="mb-3">
-                <label for="emailSesion" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="emailSesion"
-                  name="email"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="passwordSesion" class="form-label"
-                  >Contraseña</label
-                >
-                <input
-                  type="password"
-                  class="form-control"
-                  id="passwordSesion"
-                  name="password"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer" id="modalFooterSesion">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              form="iniciarSesionForm"
-              class="btn btn-primary"
-            >
-              Iniciar Sesión
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-   <!-- Modal de Cerrar Sesión -->
+    <!-- Modal de Cerrar Sesión -->
     <div
       class="modal fade"
       id="cerrarSesionModal"
@@ -341,8 +184,8 @@
             ></div>
             <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
               <div id="mensajeCerrarSesion" class="alert alert-warning">
-              ¿Estás seguro de querer cerrar sesión?
-            </div>
+                ¿Estás seguro de querer cerrar sesión?
+              </div>
             </form>
           </div>
           <div class="modal-footer" id="modalFooter">
@@ -365,15 +208,13 @@
       </div>
     </div>
 
-
-
     <!-- Footer -->
     <footer class="bg-dark text-light py-4 mt-5">
       <div class="container">
         <div class="row">
           <div class="col-md-6">
             <h6 class="fw-bold">Recetario Online</h6>
-            <p class="text-muted small mb-0">
+            <p class="text-light small mb-0">
               Proyecto de Ingeniería del Software - Universidad 2025/2026
             </p>
           </div>
