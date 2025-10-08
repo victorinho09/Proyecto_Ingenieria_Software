@@ -2,6 +2,7 @@
 
 # Rutas de las páginas HTML
 RUTA_INDEX = "./static/index.html"
+RUTA_INVITADO = "./static/invitado.html"
 RUTA_RECETAS = "./static/recetas.html"
 RUTA_MENU_SEMANAL = "./static/menusemanal.html"
 

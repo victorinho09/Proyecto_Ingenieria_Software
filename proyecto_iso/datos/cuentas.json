@@ -8,5 +8,10 @@
     "nombreUsuario": "victor",
     "email": "victor@gmail.com",
     "password": "victor"
+  },
+  {
+    "nombreUsuario": "pedro varona",
+    "email": "pedrovarona@hothothot.com",
+    "password": "pedrovarona"
   }
 ]
