@@ -109,42 +109,56 @@
           <div class="row g-4">
             <!-- Primera card inferior -->
             <div class="col-md-6">
-              <div class="card shadow-sm border-0">
-                <div class="card-body text-center p-4">
-                  <div
-                    class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                    style="width: 60px; height: 60px"
-                  >
-                    <i class="bi bi-book-half text-primary fs-3"></i>
+              <div
+                class="card shadow-sm border-0 h-100"
+                style="min-height: 280px"
+              >
+                <div
+                  class="card-body text-center p-4 d-flex flex-column justify-content-between"
+                >
+                  <div class="d-flex justify-content-center mb-3">
+                    <div
+                      class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 60px; height: 60px"
+                    >
+                      <i class="bi bi-person-circle text-primary fs-3"></i>
+                    </div>
                   </div>
-                  <h5 class="card-title fw-bold mb-3">Gestiona tus Recetas</h5>
+                  <h5 class="card-title fw-bold mb-3">Mis Recetas</h5>
                   <p class="card-text text-muted mb-3">
-                    Crea, organiza y comparte tus recetas favoritas de manera
-                    fácil e intuitiva.
+                    Accede a tu colección personal de recetas guardadas y
+                    organizadas para una consulta rápida y fácil.
                   </p>
-                  <a href="/recetas" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-right"></i> Explorar Recetas
+                  <a href="/mis-recetas" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-right"></i> Explorar mis recetas
                   </a>
                 </div>
               </div>
             </div>
             <!-- Segunda card inferior -->
             <div class="col-md-6">
-              <div class="card shadow-sm border-0">
-                <div class="card-body text-center p-4">
-                  <div
-                    class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                    style="width: 60px; height: 60px"
-                  >
-                    <i class="bi bi-book-half text-primary fs-3"></i>
+              <div
+                class="card shadow-sm border-0 h-100"
+                style="min-height: 280px"
+              >
+                <div
+                  class="card-body text-center p-4 d-flex flex-column justify-content-between"
+                >
+                  <div class="d-flex justify-content-center mb-3">
+                    <div
+                      class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                      style="width: 60px; height: 60px"
+                    >
+                      <i class="bi bi-heart-fill text-primary fs-3"></i>
+                    </div>
                   </div>
-                  <h5 class="card-title fw-bold mb-3">Gestiona tus Recetas</h5>
+                  <h5 class="card-title fw-bold mb-3">Recetas Guardadas</h5>
                   <p class="card-text text-muted mb-3">
-                    Crea, organiza y comparte tus recetas favoritas de manera
-                    fácil e intuitiva.
+                    Descubre tus recetas guardads para revisar tu repertorio
+                    culinario.
                   </p>
-                  <a href="/recetas" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-right"></i> Explorar Recetas
+                  <a href="/recetas-guardadas" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-right"></i> Explorar recetas guardadas
                   </a>
                 </div>
               </div>
@@ -387,6 +401,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="fw-bold">Recetario Online</h6>
+            <p class="text-muted small mb-0">
+              Proyecto de Ingeniería del Software - Universidad 2025/2026
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="text-muted small mb-0">
+              © 2025 Recetario Online. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
