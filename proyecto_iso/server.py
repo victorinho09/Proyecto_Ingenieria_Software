@@ -30,8 +30,8 @@ def get_page():
     Returns:
         FileResponse: Página HTML principal o error 404
     """
-    if verificar_archivo_existe(RUTA_INVITADO):
-        return FileResponse(RUTA_INVITADO, media_type=CONTENT_TYPE_HTML)
+    if verificar_archivo_existe(RUTA_INDEX):
+        return FileResponse(RUTA_INDEX, media_type=CONTENT_TYPE_HTML)
     else:
         return HTMLResponse(
             content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
