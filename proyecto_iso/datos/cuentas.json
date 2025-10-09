@@ -13,5 +13,10 @@
     "nombreUsuario": "pedro varona",
     "email": "pedrovarona@hothothot.com",
     "password": "pedrovarona"
+  },
+  {
+    "nombreUsuario": "pepe",
+    "email": "pepe@gmail.com",
+    "password": "pepe"
   }
 ]

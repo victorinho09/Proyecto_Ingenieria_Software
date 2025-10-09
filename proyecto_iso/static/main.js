@@ -179,10 +179,12 @@ async function manejarEnvioFormulario(e, formId) {
  */
 function validarDatosFormulario(data, config) {
   // Validar que todos los campos requeridos estén llenos
-  for (const campo of config.campos) {
-    console.log(data[campo]);
-    console.log(campo);
-    //modificar nombre de email y contraseña
+  for (let campo of config.campos) {
+    if (campo == "emailCrearCuenta") {
+      campo = "email";
+    } else if (campo == "passwordCrearCuenta") {
+      campo = "password";
+    }
     if (!data[campo] || data[campo].length === 0) {
       console.log("Devuelve falso");
       return false;
