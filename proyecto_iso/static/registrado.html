@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- Meta tags básicos -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Proyecto Ingeniería del Software - ISO 2025/2026</title>
+    <meta
+      name="description"
+      content="Proyecto web para la asignatura de Ingeniería del Software - Universidad 2025/2026"
+    />
+    <meta
+      name="keywords"
+      content="ingeniería software, proyecto web, fastapi, html, css, javascript"
+    />
+    <meta name="author" content="Victor Vega Martinez" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <!-- Navegación principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="#">
+          <i class="bi bi-book"></i> Recetario Online
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recetas">Recetas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/menu-semanal">Menú Semanal</a>
+            </li>
+          </ul>
+
+          <span class="navbar-text text-light me-3">
+            <i class="bi bi-person-circle"> Perfil</i>
+          </span>
+
+          <button
+            type="button"
+            class="btn btn-outline-light ms-2"
+            data-bs-toggle="modal"
+            data-bs-target="#cerrarSesionModal"
+          >
+            <i class="bi bi-box-arrow-in-left"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </nav>
+    <!-- Contenido principal -->
+    <div class="container my-5">
+      <!-- Hero Section -->
+      <div class="row justify-content-center text-center mb-5">
+        <div class="col-lg-8">
+          <h1 class="display-4 fw-bold text-primary mb-4">
+            🍳 Recetario Online de Comida
+          </h1>
+          <p class="lead text-muted mb-4">
+            Bienvenido a tu recetario online de comida, donde podrás encontrar y
+            compartir tus recetas favoritas. También podrás crear nuevas recetas
+            y generar un menú semanal con ellas.
+          </p>
+
+          <a href="/recetas" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-book-half"></i> Ver Recetas
+          </a>
+        </div>
+      </div>
+
+      <!-- Características principales -->
+      <div class="row g-4 mb-5">
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+              <div
+                class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                style="width: 60px; height: 60px"
+              >
+                <i class="bi bi-book-half text-primary fs-3"></i>
+              </div>
+              <h5 class="card-title fw-bold">Gestiona tus Recetas</h5>
+              <p class="card-text text-muted">
+                Crea, organiza y comparte tus recetas favoritas de manera fácil
+                e intuitiva.
+              </p>
+              <a href="/recetas" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-right"></i> Explorar Recetas
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+              <div
+                class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                style="width: 60px; height: 60px"
+              >
+                <i class="bi bi-calendar-week text-success fs-3"></i>
+              </div>
+              <h5 class="card-title fw-bold">Menú Semanal</h5>
+              <p class="card-text text-muted">
+                Planifica tus comidas semanales de forma organizada y eficiente.
+              </p>
+              <a href="/menu-semanal" class="btn btn-outline-success">
+                <i class="bi bi-arrow-right"></i> Planificar Menú
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center p-4">
+              <div
+                class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                style="width: 60px; height: 60px"
+              >
+                <i class="bi bi-people text-warning fs-3"></i>
+              </div>
+              <h5 class="card-title fw-bold">Comunidad</h5>
+              <p class="card-text text-muted">
+                Conecta con otros amantes de la cocina y comparte experiencias
+                culinarias.
+              </p>
+              <button class="btn btn-outline-warning" disabled>
+                <i class="bi bi-arrow-right"></i> Próximamente
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Cerrar Sesión -->
+    <div
+      class="modal fade"
+      id="cerrarSesionModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cerrarSesionModalLabel">
+              Cerrar Sesión
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Contenedor para mensajes -->
+            <div
+              id="mensajeContainer"
+              class="alert"
+              style="display: none"
+            ></div>
+            <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
+              <div id="mensajeCerrarSesion" class="alert alert-warning">
+                ¿Estás seguro de querer cerrar sesión?
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer" id="modalFooter">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              form="cerrarSesionForm"
+              class="btn btn-primary"
+            >
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="fw-bold">Recetario Online</h6>
+            <p class="text-light small mb-0">
+              Proyecto de Ingeniería del Software - Universidad 2025/2026
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="text-muted small mb-0">
+              © 2025 Recetario Online. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript de la aplicación -->
+    <script src="/static/main.js"></script>
+  </body>
+</html>
