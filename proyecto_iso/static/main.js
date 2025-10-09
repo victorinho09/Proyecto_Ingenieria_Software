@@ -139,7 +139,6 @@ async function manejarEnvioFormulario(e, formId) {
     if (response.ok && result.exito) {
       // Verificar si es un usuario invitado que ha iniciado sesión correctamente
       if (esInvitado() && config.endpoint === "/iniciar-sesion") {
-        console.log("Se ha entrado en zona de invitado");
         // Para usuarios invitados que inician sesión, redirigir directamente
         mostrarMensaje(
           mensajeContainer,
@@ -147,13 +146,15 @@ async function manejarEnvioFormulario(e, formId) {
           `✅ ${result.mensaje} Redirigiendo...`
         );
 
+        // Ocultar el formulario inmediatamente para evitar mostrar formulario vacío
+        form.style.display = "none";
+
         // Limpiar el formulario
         form.reset();
 
         // Solicitar al servidor la página de usuario registrado
         setTimeout(async () => {
           try {
-            console.log("Se va a mandar el registrado");
             const response = await fetch("/registrado");
             if (response.ok) {
               const html = await response.text();
