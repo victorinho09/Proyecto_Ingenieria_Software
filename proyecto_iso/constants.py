@@ -1,8 +1,8 @@
 # ==================== RUTAS DE ARCHIVOS ====================
 
 # Rutas de las páginas HTML
-RUTA_INDEX = "./static/index.html"
-RUTA_INVITADO = "./static/invitado.html"
+RUTA_USUARIO_REGISTRADO = "./static/registrado.html"
+RUTA_USUARIO_INVITADO = "./static/invitado.html"
 RUTA_RECETAS = "./static/recetas.html"
 RUTA_MENU_SEMANAL = "./static/menusemanal.html"
 RUTA_MIS_RECETAS = "./static/misrecetas.html"

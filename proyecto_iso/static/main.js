@@ -3,7 +3,7 @@ const CONFIGURACION_FORMULARIOS = {
   crearCuentaForm: {
     endpoint: "/crear-cuenta",
     modal: "crearCuentaModal",
-    campos: ["nombreUsuario", "email", "password"],
+    campos: ["nombreUsuario", "emailCrearCuenta", "passwordCrearCuenta"],
     validaciones: {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     },
@@ -11,7 +11,7 @@ const CONFIGURACION_FORMULARIOS = {
   iniciarSesionForm: {
     endpoint: "/iniciar-sesion",
     modal: "iniciarSesionModal",
-    campos: ["email", "password"],
+    campos: ["emailIniciarSesion", "passwordIniciarSesion"],
     validaciones: {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
     },
@@ -27,13 +27,25 @@ const CONFIGURACION_FORMULARIOS = {
   crearRecetaForm: {
     endpoint: "/crear-receta",
     modal: "crearRecetaModal",
-    campos: ["nombreReceta", "descripcion", "ingredientes", "alergenos", "paisOrigen", "pasosAseguir", "turnoComida", "duracion", "dificultad", "fotoReceta"],
+    campos: [
+      "nombreReceta",
+      "descripcion",
+      "ingredientes",
+      "alergenos",
+      "paisOrigen",
+      "pasosAseguir",
+      "turnoComida",
+      "duracion",
+      "dificultad",
+      "fotoReceta",
+    ],
     validaciones: {},
   },
 };
 
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar event listeners cuando el DOM esté cargado
+  console.log("DOM cargado");
   inicializarEventListeners();
 });
 
@@ -76,7 +88,13 @@ async function manejarEnvioFormulario(e, formId) {
   config.campos.forEach((campo) => {
     const element = form[campo];
     if (element) {
-      formData[campo] = element.value.trim();
+      if (element.id == "emailCrearCuenta") {
+        formData["email"] = element.value.trim();
+      } else if (element.id == "passwordCrearCuenta") {
+        formData["password"] = element.value.trim();
+      } else {
+        formData[campo] = element.value.trim();
+      }
     }
   });
 
@@ -162,7 +180,11 @@ async function manejarEnvioFormulario(e, formId) {
 function validarDatosFormulario(data, config) {
   // Validar que todos los campos requeridos estén llenos
   for (const campo of config.campos) {
+    console.log(data[campo]);
+    console.log(campo);
+    //modificar nombre de email y contraseña
     if (!data[campo] || data[campo].length === 0) {
+      console.log("Devuelve falso");
       return false;
     }
   }
