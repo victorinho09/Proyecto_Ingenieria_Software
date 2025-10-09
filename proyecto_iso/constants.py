@@ -29,6 +29,7 @@ MENSAJE_RECETA_CREADA = "Receta creada con éxito"
 MENSAJE_OPERACION_EXITOSA = "Operación realizada correctamente"
 MENSAJE_CUENTA_INICIADA = "Inicio de sesión exitoso"
 MENSAJE_CUENTA_CERRADA = "Cuenta cerrada con éxito"
+MENSAJE_INICIO_SESION_SATISFACTORIO = "Inicio de sesión exitoso"
 
 # Mensajes de error
 MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO = "Error: Archivo no encontrado"
@@ -36,6 +37,7 @@ MENSAJE_ERROR_VALIDACION = "Error de validación en los datos proporcionados"
 MENSAJE_ERROR_INTERNO = "Error interno del servidor"
 MENSAJE_ERROR_CONEXION = "Error de conexión con el servidor"
 MENSAJE_ERROR_EMAIL_DUPLICADO = "Ya existe una cuenta con este email"
+MENSAJE_INICIO_SESION_NO_SATISFACTORIO = "No se encuentra cuenta creada para iniciar sesión"
 
 # ==================== CÓDIGOS DE ESTADO HTTP ====================
 

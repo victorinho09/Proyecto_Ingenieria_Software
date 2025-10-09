@@ -1,3 +1,5 @@
+const RUTA_USUARIO_INVITADO = "invitado.html";
+
 // Configuración de formularios por ID
 const CONFIGURACION_FORMULARIOS = {
   crearCuentaForm: {
@@ -42,6 +44,15 @@ const CONFIGURACION_FORMULARIOS = {
     validaciones: {},
   },
 };
+
+// Función para detectar si el usuario está en modo invitado
+function esInvitado() {
+  // El archivo invitado.html se sirve desde la ruta raíz "/"
+  const pathname = window.location.pathname;
+  const esRaiz = pathname === "/" || pathname === "";
+
+  return esRaiz;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar event listeners cuando el DOM esté cargado
@@ -92,6 +103,10 @@ async function manejarEnvioFormulario(e, formId) {
         formData["email"] = element.value.trim();
       } else if (element.id == "passwordCrearCuenta") {
         formData["password"] = element.value.trim();
+      } else if (element.id == "emailIniciarSesion") {
+        formData["email"] = element.value.trim();
+      } else if (element.id == "passwordIniciarSesion") {
+        formData["password"] = element.value.trim();
       } else {
         formData[campo] = element.value.trim();
       }
@@ -122,6 +137,43 @@ async function manejarEnvioFormulario(e, formId) {
     const result = await response.json();
 
     if (response.ok && result.exito) {
+      // Verificar si es un usuario invitado que ha iniciado sesión correctamente
+      if (esInvitado() && config.endpoint === "/iniciar-sesion") {
+        console.log("Se ha entrado en zona de invitado");
+        // Para usuarios invitados que inician sesión, redirigir directamente
+        mostrarMensaje(
+          mensajeContainer,
+          "success",
+          `✅ ${result.mensaje} Redirigiendo...`
+        );
+
+        // Limpiar el formulario
+        form.reset();
+
+        // Solicitar al servidor la página de usuario registrado
+        setTimeout(async () => {
+          try {
+            console.log("Se va a mandar el registrado");
+            const response = await fetch("/registrado");
+            if (response.ok) {
+              const html = await response.text();
+              // Reemplazar todo el contenido de la página con el HTML del servidor
+              document.documentElement.innerHTML = html;
+            } else {
+              console.error("Error al obtener la página de registrado");
+            }
+          } catch (error) {
+            console.error(
+              "Error de conexión al obtener registrado.html:",
+              error
+            );
+          }
+        }, 1000);
+
+        return; // Salir temprano para evitar el comportamiento normal del modal
+      }
+
+      // Comportamiento normal para otros casos (crear cuenta, etc.)
       // Ocultar el formulario
       form.style.display = "none";
 
@@ -184,7 +236,13 @@ function validarDatosFormulario(data, config) {
       campo = "email";
     } else if (campo == "passwordCrearCuenta") {
       campo = "password";
+    } else if (campo == "emailIniciarSesion") {
+      campo = "email";
+    } else if (campo == "passwordIniciarSesion") {
+      campo = "password";
     }
+    console.log(campo);
+    console.log(data[campo]);
     if (!data[campo] || data[campo].length === 0) {
       console.log("Devuelve falso");
       return false;

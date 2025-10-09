@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 # Importar módulos locales
 from constants import *
 from models import Cuenta, LoginData, Receta
-from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe
+from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, validar_cuenta
 
 # Crear instancia de FastAPI
 app = FastAPI(
@@ -101,6 +101,23 @@ def get_menu_semanal():
             content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
             status_code=HTTP_NOT_FOUND
         )
+
+@app.get("/registrado", response_class=HTMLResponse)
+def get_registrado():
+    """
+    Endpoint para servir la página de usuario registrado/autenticado.
+    
+    Returns:
+        FileResponse: Página HTML de usuario registrado o error 404
+    """
+    if verificar_archivo_existe(RUTA_USUARIO_REGISTRADO):
+        return FileResponse(RUTA_USUARIO_REGISTRADO, media_type=CONTENT_TYPE_HTML)
+    else:
+        return HTMLResponse(
+            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
+            status_code=HTTP_NOT_FOUND
+        )
+
 @app.post("/crear-cuenta")
 async def crear_cuenta(cuenta: Cuenta):
     """
@@ -160,7 +177,7 @@ async def crear_cuenta(cuenta: Cuenta):
 @app.post("/iniciar-sesion")
 async def iniciar_sesion(login_data: LoginData):
     """
-    Endpoint para iniciar sesión (simulado).
+    Endpoint para iniciar sesión.
 
     Args:
         login_data (LoginData): Datos de login (email y password)
@@ -169,12 +186,22 @@ async def iniciar_sesion(login_data: LoginData):
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
-        respuesta = {
-            "mensaje": MENSAJE_CUENTA_INICIADA,
-            "exito": True,
-            "usuario": login_data.email,
-        }
-        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        
+        cuenta_existente = validar_cuenta(login_data.email, login_data.password)   
+
+        if (cuenta_existente):
+            respuesta = {
+                "mensaje": MENSAJE_INICIO_SESION_SATISFACTORIO,
+                "exito": True,
+                "usuario": login_data.email,
+            }
+            return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        else:
+            respuesta = {
+                "mensaje": MENSAJE_INICIO_SESION_NO_SATISFACTORIO,
+                "exito": False,
+                "usuario": login_data.email,
+            }
     
     except Exception as e:
         error_respuesta = {

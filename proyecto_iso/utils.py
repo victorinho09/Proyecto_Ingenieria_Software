@@ -16,32 +16,6 @@ def verificar_archivo_existe(ruta: str) -> bool:
     """
     return os.path.exists(ruta)
 
-"""
-def log_operacion(tipo: str, mensaje: str, detalles: Optional[str] = None) -> None:
-
-    Registra una operación en los logs con formato consistente.
-    
-    Args:
-        tipo (str): Tipo de log (success, error, warning, info)
-        mensaje (str): Mensaje principal
-        detalles (Optional[str]): Detalles adicionales opcionales
-    
-    prefijos = {
-        'success': LOG_SUCCESS,
-        'error': LOG_ERROR,
-        'warning': LOG_WARNING,
-        'info': LOG_INFO
-    }
-    
-    prefijo = prefijos.get(tipo, LOG_INFO)
-    log_message = f"{prefijo} {mensaje}"
-    
-    if detalles:
-        log_message += f" - {detalles}"
-    
-    print(log_message)
-"""
-
 
 def crear_directorio_si_no_existe(directorio: str) -> None:
     """
@@ -96,6 +70,28 @@ def guardar_cuentas(cuentas: List[Dict[str, Any]]) -> bool:
         print(f"{LOG_ERROR} Error al guardar cuentas: {e}")
         return False
 
+def validar_cuenta(email: str, password: str) -> bool:
+    """
+    Verifica si existe una cuenta que coincida con el email y passwords especificados por parametro
+    
+    Args:
+        email (str): Email a verificar
+        password (str): Password a verificar
+        
+    Returns:
+        bool: True si existe una cuenta, False en caso contrario
+    """
+    try:
+        cuentas = cargar_cuentas()
+        # Buscar una cuenta que coincida con email y password
+        return any(
+            cuenta['email'].lower() == email.lower() and 
+            cuenta['password'] == password 
+            for cuenta in cuentas
+        )
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al validar cuenta: {e}")
+        return False 
 
 def email_ya_existe(email: str) -> bool:
     """
