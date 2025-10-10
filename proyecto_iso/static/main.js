@@ -43,6 +43,14 @@ const CONFIGURACION_FORMULARIOS = {
       "dificultad",
       "fotoReceta",
     ],
+    camposRequeridos: [
+      "nombreReceta",
+      "descripcion",
+      "ingredientes",
+      "pasosAseguir",
+      "duracion",
+      "fotoReceta",
+    ],
     validaciones: {},
   },
 };
@@ -296,8 +304,11 @@ async function manejarEnvioFormulario(e, formId) {
  * @returns {boolean} - true si los datos son válidos
  */
 function validarDatosFormulario(data, config) {
+  // Usar camposRequeridos si está definido, de lo contrario usar todos los campos
+  const camposAValidar = config.camposRequeridos || config.campos;
+
   // Validar que todos los campos requeridos estén llenos
-  for (let campo of config.campos) {
+  for (let campo of camposAValidar) {
     if (campo == "emailCrearCuenta") {
       campo = "email";
     } else if (campo == "passwordCrearCuenta") {
