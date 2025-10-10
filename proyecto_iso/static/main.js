@@ -196,6 +196,11 @@ async function manejarEnvioFormulario(e, formId) {
         "❌ Por favor, completa todos los campos correctamente."
       );
     }
+    // Asegurar que el texto de campos obligatorios siga visible
+    const textoObligatorio = modal.querySelector(".text-danger");
+    if (textoObligatorio) {
+      textoObligatorio.style.display = "block";
+    }
     return;
   }
 
@@ -253,8 +258,12 @@ async function manejarEnvioFormulario(e, formId) {
       }
 
       // Comportamiento normal para otros casos (crear cuenta, etc.)
-      // Ocultar el formulario
+      // Ocultar el formulario y el texto de campos obligatorios
       form.style.display = "none";
+      const textoObligatorio = modal.querySelector(".text-danger");
+      if (textoObligatorio) {
+        textoObligatorio.style.display = "none";
+      }
 
       ocultarBotonesModal(config);
 

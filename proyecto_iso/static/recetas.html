@@ -248,10 +248,14 @@
               class="alert"
               style="display: none"
             ></div>
+             <!-- Texto de aviso -->
+            <p class="text-danger mb-1" style="font-size: 0.9rem;">
+            * obligatorio
+            </p>
 
             <form id="crearRecetaForm" action="/crear-receta" method="POST">
               <div class="mb-3">
-                <label for="nombreReceta" class="form-label">Nombre</label>
+                <label for="nombreReceta" class="form-label">Nombre *</label>
                 <input
                   type="text"
                   class="form-control"
@@ -263,7 +267,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
+                <label for="descripcion" class="form-label">Descripción *</label>
                 <textarea
                   type="text"
                   class="form-control"
@@ -275,7 +279,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="ingredientes" class="form-label">Ingredientes</label>
+                <label for="ingredientes" class="form-label">Ingredientes *</label>
                 <textarea
                   type="text"
                   class="form-control"
@@ -308,7 +312,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="pasosAseguir" class="form-label">Pasos a seguir</label>
+                <label for="pasosAseguir" class="form-label">Pasos a seguir *</label>
                 <textarea
                   type="text"
                   class="form-control"
@@ -332,7 +336,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="duracion" class="form-label">Duración (en minutos)</label>
+                <label for="duracion" class="form-label">Duración (en minutos) *</label>
                 <input
                   type="number"
                   class="form-control"
@@ -354,7 +358,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="fotoReceta" class="form-label">Imagen de la receta</label>
+                <label for="fotoReceta" class="form-label">Imagen de la receta *</label>
                 <input
                   type="file"
                   class="form-control"
