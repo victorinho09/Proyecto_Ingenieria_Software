@@ -1,7 +1,8 @@
 import os
 import json
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from constants import *
+import re
 
 
 def verificar_archivo_existe(ruta: str) -> bool:
@@ -106,6 +107,30 @@ def email_ya_existe(email: str) -> bool:
     cuentas = cargar_cuentas()
     return any(cuenta['email'].lower() == email.lower() for cuenta in cuentas)
 
+
+def validar_password(password: str) -> Tuple[bool, str]:
+    """
+    Valida que la contraseña cumpla con los requisitos de seguridad.
+    
+    Args:
+        password (str): Contraseña a validar
+        
+    Returns:
+        Tuple[bool, str]: (True, "") si la contraseña es válida, (False, mensaje_error) si no lo es
+    """
+    if len(password) < 8:
+        return False, "La contraseña debe tener al menos 8 caracteres"
+    
+    if not re.search(r'[A-Z]', password):
+        return False, "La contraseña debe contener al menos una letra mayúscula"
+        
+    if not re.search(r'[a-z]', password):
+        return False, "La contraseña debe contener al menos una letra minúscula"
+        
+    if not re.search(r'[0-9]', password):
+        return False, "La contraseña debe contener al menos un número"
+    
+    return True, ""
 
 def guardar_nueva_cuenta(cuenta_data: Dict[str, Any]) -> bool:
     """

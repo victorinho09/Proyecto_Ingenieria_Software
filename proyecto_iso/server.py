@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 # Importar módulos locales
 from constants import *
 from models import Cuenta, LoginData, Receta
-from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, validar_cuenta
+from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, validar_cuenta, validar_password
 
 # Crear instancia de FastAPI
 app = FastAPI(
@@ -130,6 +130,16 @@ async def crear_cuenta(cuenta: Cuenta):
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
+        # Validar contraseña primero
+        is_valid_password, error_mensaje = validar_password(cuenta.password)
+        if not is_valid_password:
+            error_respuesta = {
+                "mensaje": error_mensaje,
+                "exito": False,
+                "codigo_error": "PASSWORD_INVALIDO"
+            }
+            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
+        
         # Verificar si el email ya existe
         if email_ya_existe(cuenta.email):
             error_respuesta = {
@@ -186,6 +196,15 @@ async def iniciar_sesion(login_data: LoginData):
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
+        # Validar contraseña primero
+        is_valid_password, error_mensaje = validar_password(login_data.password)
+        if not is_valid_password:
+            error_respuesta = {
+                "mensaje": error_mensaje,
+                "exito": False,
+                "codigo_error": "PASSWORD_INVALIDO"
+            }
+            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
         
         cuenta_existente = validar_cuenta(login_data.email, login_data.password)   
 

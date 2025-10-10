@@ -8,6 +8,7 @@ const CONFIGURACION_FORMULARIOS = {
     campos: ["nombreUsuario", "emailCrearCuenta", "passwordCrearCuenta"],
     validaciones: {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      password: validarPassword,
     },
   },
   iniciarSesionForm: {
@@ -16,6 +17,7 @@ const CONFIGURACION_FORMULARIOS = {
     campos: ["emailIniciarSesion", "passwordIniciarSesion"],
     validaciones: {
       email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      password: validarPassword,
     },
   },
 
@@ -44,6 +46,49 @@ const CONFIGURACION_FORMULARIOS = {
     validaciones: {},
   },
 };
+
+// Función para validar la contraseña
+function validarPassword(password) {
+  const longitud = password.length >= 8;
+  const tieneMayuscula = /[A-Z]/.test(password);
+  const tieneMinuscula = /[a-z]/.test(password);
+  const tieneNumero = /[0-9]/.test(password);
+
+  if (!longitud) {
+    mostrarErrorPassword("La contraseña debe tener al menos 8 caracteres");
+    return false;
+  }
+  if (!tieneMayuscula) {
+    mostrarErrorPassword("La contraseña debe contener al menos una letra mayúscula");
+    return false;
+  }
+  if (!tieneMinuscula) {
+    mostrarErrorPassword("La contraseña debe contener al menos una letra minúscula");
+    return false;
+  }
+  if (!tieneNumero) {
+    mostrarErrorPassword("La contraseña debe contener al menos un número");
+    return false;
+  }
+
+  return true;
+}
+
+// Función para mostrar errores específicos de la contraseña
+function mostrarErrorPassword(mensaje) {
+  const forms = ['crearCuentaForm', 'iniciarSesionForm'];
+  forms.forEach(formId => {
+    const form = document.getElementById(formId);
+    if (form) {
+      const config = CONFIGURACION_FORMULARIOS[formId];
+      const modal = document.getElementById(config.modal);
+      const mensajeContainer = modal ? modal.querySelector("#mensajeContainer, .alert") : null;
+      if (mensajeContainer) {
+        mostrarMensaje(mensajeContainer, "error", `❌ ${mensaje}`);
+      }
+    }
+  });
+}
 
 // Función para detectar si el usuario está en modo invitado
 function esInvitado() {
@@ -135,11 +180,14 @@ async function manejarEnvioFormulario(e, formId) {
 
   // Validación básica del lado cliente
   if (!validarDatosFormulario(formData, config)) {
-    mostrarMensaje(
-      mensajeContainer,
-      "error",
-      "❌ Por favor, completa todos los campos correctamente."
-    );
+    // Solo mostrar el mensaje genérico si no hay un mensaje específico de error de contraseña
+    if (!mensajeContainer.innerHTML) {
+      mostrarMensaje(
+        mensajeContainer,
+        "error",
+        "❌ Por favor, completa todos los campos correctamente."
+      );
+    }
     return;
   }
 
@@ -259,18 +307,25 @@ function validarDatosFormulario(data, config) {
     } else if (campo == "passwordIniciarSesion") {
       campo = "password";
     }
-    console.log(campo);
-    console.log(data[campo]);
+
     if (!data[campo] || data[campo].length === 0) {
-      console.log("Devuelve falso");
       return false;
     }
   }
 
   // Ejecutar validaciones específicas
   for (const [campo, validador] of Object.entries(config.validaciones)) {
-    if (data[campo] && !validador(data[campo])) {
-      return false;
+    if (data[campo]) {
+      // Si hay una contraseña, validarla primero
+      if (campo === 'password') {
+        if (!validador(data[campo])) {
+          return false;
+        }
+      }
+      // Luego validar otros campos
+      else if (!validador(data[campo])) {
+        return false;
+      }
     }
   }
 
