@@ -54,6 +54,26 @@ function esInvitado() {
   return esRaiz;
 }
 
+function ocultarBotonesModal(config) {
+  // Ocultar los botones del footer del modal específico
+  const modal = document.getElementById(config.modal);
+  const modalFooter = modal ? modal.querySelector(".modal-footer") : null;
+  if (modalFooter) {
+    modalFooter.style.display = "none";
+  }
+}
+
+/**
+ * Cierra el modal especificado
+ * @param {string} modalId - ID del modal a cerrar
+ */
+function cerrarModal(modalId) {
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+  if (modal) {
+    modal.hide();
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Inicializar event listeners cuando el DOM esté cargado
   console.log("DOM cargado");
@@ -152,6 +172,8 @@ async function manejarEnvioFormulario(e, formId) {
         // Limpiar el formulario
         form.reset();
 
+        ocultarBotonesModal(config);
+
         // Solicitar al servidor la página de usuario registrado
         setTimeout(async () => {
           try {
@@ -178,12 +200,7 @@ async function manejarEnvioFormulario(e, formId) {
       // Ocultar el formulario
       form.style.display = "none";
 
-      // Ocultar los botones del footer del modal específico
-      const modal = document.getElementById(config.modal);
-      const modalFooter = modal ? modal.querySelector(".modal-footer") : null;
-      if (modalFooter) {
-        modalFooter.style.display = "none";
-      }
+      ocultarBotonesModal(config);
 
       // Mostrar mensaje de éxito
       mostrarMensaje(mensajeContainer, "success", `✅ ${result.mensaje}`);
@@ -286,16 +303,5 @@ function limpiarMensajes(modalId) {
     : null;
   if (mensajeContainer) {
     mensajeContainer.style.display = "none";
-  }
-}
-
-/**
- * Cierra el modal especificado
- * @param {string} modalId - ID del modal a cerrar
- */
-function cerrarModal(modalId) {
-  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-  if (modal) {
-    modal.hide();
   }
 }

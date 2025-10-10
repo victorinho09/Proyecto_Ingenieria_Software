@@ -18,5 +18,10 @@
     "nombreUsuario": "pepe",
     "email": "pepe@gmail.com",
     "password": "pepe"
+  },
+  {
+    "nombreUsuario": "juan",
+    "email": "juan@gmail.com",
+    "password": "juan"
   }
 ]
