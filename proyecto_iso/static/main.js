@@ -280,12 +280,8 @@ async function manejarEnvioFormulario(e, formId) {
 
       // Restaurar elementos después de que el modal se haya cerrado
       setTimeout(() => {
-        form.style.display = "block";
-        const modal = document.getElementById(config.modal);
-        const modalFooter = modal ? modal.querySelector(".modal-footer") : null;
-        if (modalFooter) {
-          modalFooter.style.display = "block";
-        }
+        // Usar la función existente para restablecer todo el estado
+        limpiarMensajes(config.modal);
       }, 1500);
     } else {
       // Mostrar mensaje de error del servidor
@@ -368,15 +364,34 @@ function mostrarMensaje(container, type, message) {
 }
 
 /**
- * Limpia los mensajes cuando se abre el modal
+ * Limpia los mensajes cuando se abre el modal y restablece el estado inicial
  * @param {string} modalId - ID del modal que se está abriendo
  */
 function limpiarMensajes(modalId) {
   const modal = document.getElementById(modalId);
-  const mensajeContainer = modal
-    ? modal.querySelector("#mensajeContainer, .alert")
-    : null;
+  if (!modal) return;
+
+  // Limpiar mensajes de alerta
+  const mensajeContainer = modal.querySelector("#mensajeContainer, .alert");
   if (mensajeContainer) {
     mensajeContainer.style.display = "none";
+  }
+
+  // Restablecer el formulario a su estado visible
+  const form = modal.querySelector("form");
+  if (form) {
+    form.style.display = "block";
+  }
+
+  // Restablecer texto de campos obligatorios
+  const textoObligatorio = modal.querySelector(".text-danger");
+  if (textoObligatorio) {
+    textoObligatorio.style.display = "block";
+  }
+
+  // Restablecer los botones del modal
+  const modalFooter = modal.querySelector(".modal-footer");
+  if (modalFooter) {
+    modalFooter.style.display = "block";
   }
 }
