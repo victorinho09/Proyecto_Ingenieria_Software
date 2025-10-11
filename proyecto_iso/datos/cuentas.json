@@ -58,5 +58,10 @@
     "nombreUsuario": "prueba",
     "email": "prueba@gmail.com",
     "password": "Prueba#1313"
+  },
+  {
+    "nombreUsuario": "hola",
+    "email": "hola@hola.com",
+    "password": "Holaquetal#13"
   }
 ]

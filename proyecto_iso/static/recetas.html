@@ -248,9 +248,9 @@
               class="alert"
               style="display: none"
             ></div>
-             <!-- Texto de aviso -->
-            <p class="text-danger mb-1" style="font-size: 0.9rem;">
-            * obligatorio
+            <!-- Texto de aviso -->
+            <p class="text-danger mb-1" style="font-size: 0.9rem">
+              * obligatorio
             </p>
 
             <form id="crearRecetaForm" action="/crear-receta" method="POST">
@@ -267,7 +267,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción *</label>
+                <label for="descripcion" class="form-label"
+                  >Descripción *</label
+                >
                 <textarea
                   type="text"
                   class="form-control"
@@ -279,7 +281,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="ingredientes" class="form-label">Ingredientes *</label>
+                <label for="ingredientes" class="form-label"
+                  >Ingredientes *</label
+                >
                 <textarea
                   type="text"
                   class="form-control"
@@ -301,7 +305,9 @@
                 ></textarea>
               </div>
               <div class="mb-3">
-                <label for="paisOrigen" class="form-label">País de Origen</label>
+                <label for="paisOrigen" class="form-label"
+                  >País de Origen</label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -312,7 +318,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="pasosAseguir" class="form-label">Pasos a seguir *</label>
+                <label for="pasosAseguir" class="form-label"
+                  >Pasos a seguir *</label
+                >
                 <textarea
                   type="text"
                   class="form-control"
@@ -324,7 +332,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="turnoComida" class="form-label">Turno de comida</label>
+                <label for="turnoComida" class="form-label"
+                  >Turno de comida</label
+                >
                 <select class="form-select" name="turnoComida" id="turnoComida">
                   <option value="" selected>Selecciona una opción</option>
                   <option value="desayuno">Desayuno</option>
@@ -336,7 +346,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="duracion" class="form-label">Duración (en minutos) *</label>
+                <label for="duracion" class="form-label"
+                  >Duración (en minutos) *</label
+                >
                 <input
                   type="number"
                   class="form-control"
@@ -358,7 +370,9 @@
               </div>
 
               <div class="mb-3">
-                <label for="fotoReceta" class="form-label">Imagen de la receta *</label>
+                <label for="fotoReceta" class="form-label"
+                  >Imagen de la receta *</label
+                >
                 <input
                   type="file"
                   class="form-control"
@@ -413,6 +427,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- JavaScript de la aplicación -->
-    <script src="/static/main.js"></script>
+    <script type="module" src="/static/js/main.js"></script>
   </body>
 </html>

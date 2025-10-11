@@ -290,11 +290,8 @@ async def iniciar_sesion(login_data: LoginData) -> JSONResponse:
     try:
         print(f"🔍 [LOGIN] Intento de login para: {login_data.email}")
         
-        # Validar formato de contraseña
-        is_valid_password, error_mensaje = validar_password(login_data.password)
-        if not is_valid_password:
-            print(f"❌ [LOGIN] Password inválido para {login_data.email}")
-            return crear_respuesta_error(error_mensaje, "PASSWORD_INVALIDO")
+        # SEGURIDAD: NO validar formato de contraseña en login
+        # Solo verificar si las credenciales coinciden con una cuenta existente
         
         # Validar credenciales contra base de datos
         cuenta_existente = validar_cuenta(login_data.email, login_data.password)   
