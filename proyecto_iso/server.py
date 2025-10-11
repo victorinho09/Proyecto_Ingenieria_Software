@@ -47,7 +47,7 @@ app.mount(f"/{DIRECTORIO_STATIC}", StaticFiles(directory=DIRECTORIO_STATIC), nam
 
 def establecer_estado_usuario(response: Response, estado: str) -> None:
     """
-    Establece el estado del usuario en una cookie HTTP.
+    Establece el estado del usuario en una cookie HTTP con configuración anti-cache.
     
     Args:
         response: Objeto Response de FastAPI
@@ -55,11 +55,33 @@ def establecer_estado_usuario(response: Response, estado: str) -> None:
     """
     response.set_cookie(
         key=COOKIE_ESTADO_USUARIO, 
-        value=estado, 
-        max_age=86400,  # 24 horas
-        path="/",  # Disponible en todo el sitio
-        samesite="lax"  # Protección CSRF básica
+        value=estado,
+        **COOKIE_CONFIG
     )
+
+def establecer_email_usuario(response: Response, email: str) -> None:
+    """
+    Establece el email del usuario en una cookie HTTP con configuración anti-cache.
+    
+    Args:
+        response: Objeto Response de FastAPI
+        email: Email del usuario registrado
+    """
+    response.set_cookie(
+        key=COOKIE_EMAIL_USUARIO,
+        value=email,
+        **COOKIE_CONFIG
+    )
+
+def eliminar_cookies_usuario(response: Response) -> None:
+    """
+    Elimina todas las cookies relacionadas con el usuario al cerrar sesión.
+    
+    Args:
+        response: Objeto Response de FastAPI
+    """
+    response.delete_cookie(key=COOKIE_ESTADO_USUARIO, path="/")
+    response.delete_cookie(key=COOKIE_EMAIL_USUARIO, path="/")
 
 def obtener_estado_usuario(request: Request) -> str:
     """
@@ -72,6 +94,20 @@ def obtener_estado_usuario(request: Request) -> str:
         Estado del usuario (invitado por defecto si no existe cookie)
     """
     return request.cookies.get(COOKIE_ESTADO_USUARIO, ESTADO_INVITADO)
+
+def obtener_email_usuario(request: Request) -> str:
+    """
+    Obtiene el email del usuario desde la cookie.
+    
+    Args:
+        request: Objeto Request de FastAPI
+        
+    Returns:
+        Email del usuario registrado (None si no está registrado o no existe cookie)
+    """
+    if es_usuario_registrado(request):
+        return request.cookies.get(COOKIE_EMAIL_USUARIO)
+    return None
 
 def es_usuario_registrado(request: Request) -> bool:
     """
@@ -191,15 +227,12 @@ def get_pagina_principal(request: Request, response: Response, logout: bool = Fa
     # Solo aplicar logout si el usuario NO está registrado
     # Esto evita que el parámetro logout interfiera con un login reciente
     if logout and estado_actual != ESTADO_REGISTRADO:
-        establecer_estado_usuario(response, ESTADO_INVITADO)
         file_response = FileResponse(RUTA_USUARIO_INVITADO, media_type=CONTENT_TYPE_HTML)
-        file_response.set_cookie(
-            key=COOKIE_ESTADO_USUARIO, 
-            value=ESTADO_INVITADO, 
-            max_age=86400,
-            path="/",
-            samesite="lax"
-        )
+        
+        # Eliminar todas las cookies del usuario y establecer como invitado
+        eliminar_cookies_usuario(file_response)
+        establecer_estado_usuario(file_response, ESTADO_INVITADO)
+        
         return file_response
     
     # Servir página según estado del usuario (priorizar cookie sobre parámetro logout)
@@ -309,22 +342,17 @@ async def iniciar_sesion(login_data: LoginData) -> JSONResponse:
         print(f"🔍 [LOGIN] Cuenta existente: {cuenta_existente}")
 
         if cuenta_existente:
-            # Éxito: crear respuesta con cookie de usuario registrado
+            # Éxito: crear respuesta con cookies de usuario registrado
             json_response = crear_respuesta_exito(
                 MENSAJE_INICIO_SESION_SATISFACTORIO,
                 {"usuario": login_data.email}
             )
             
-            # Establecer cookie de autenticación
-            json_response.set_cookie(
-                key=COOKIE_ESTADO_USUARIO, 
-                value=ESTADO_REGISTRADO, 
-                max_age=86400,
-                path="/",
-                samesite="lax"
-            )
+            # Establecer cookies de autenticación y email
+            establecer_estado_usuario(json_response, ESTADO_REGISTRADO)
+            establecer_email_usuario(json_response, login_data.email)
             
-            print(f"✅ [LOGIN] Login exitoso para {login_data.email}, cookie establecida")
+            print(f"✅ [LOGIN] Login exitoso para {login_data.email}, cookies establecidas")
             return json_response
         else:
             # Credenciales incorrectas
@@ -351,19 +379,16 @@ async def cerrar_sesion() -> JSONResponse:
         JSONResponse: Respuesta con resultado de la operación y cookie actualizada
     """
     try:
-        # Crear respuesta de éxito con cookie de invitado y cabeceras anti-caché
+        # Crear respuesta de éxito
         json_response = crear_respuesta_exito(MENSAJE_CUENTA_CERRADA)
-        json_response.delete_cookie(key=COOKIE_ESTADO_USUARIO, path="/")
+        
+        # Eliminar cookies del usuario
+        eliminar_cookies_usuario(json_response)
         
         # Establecer cookie de invitado (cerrar sesión)
-        json_response.set_cookie(
-            key=COOKIE_ESTADO_USUARIO, 
-            value=ESTADO_INVITADO, 
-            max_age=86400,
-            path="/",
-            samesite="lax"
-        )
+        establecer_estado_usuario(json_response, ESTADO_INVITADO)
         
+        print("✅ [LOGOUT] Cookies eliminadas y estado establecido como invitado")
         return json_response
         
     except Exception as e:        
@@ -445,22 +470,20 @@ async def obtener_estado_usuario_api(request: Request, response: Response) -> JS
     estado = obtener_estado_usuario(request)
     es_registrado = es_usuario_registrado(request)
     
+    # Obtener email del usuario si está registrado
+    email_usuario = obtener_email_usuario(request) if es_registrado else None
+    
     # Crear respuesta con información del estado
     json_response = JSONResponse(content={
         "estado": estado,
         "es_registrado": es_registrado,
-        "es_invitado": not es_registrado
+        "es_invitado": not es_registrado,
+        "email_usuario": email_usuario
     }, status_code=HTTP_OK)
     
     # Establecer cookie si no existía
     if COOKIE_ESTADO_USUARIO not in request.cookies:
-        json_response.set_cookie(
-            key=COOKIE_ESTADO_USUARIO, 
-            value=ESTADO_INVITADO, 
-            max_age=86400,
-            path="/",
-            samesite="lax"
-        )
+        establecer_estado_usuario(json_response, ESTADO_INVITADO)
     
     return json_response
 

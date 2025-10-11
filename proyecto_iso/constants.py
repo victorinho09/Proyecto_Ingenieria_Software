@@ -61,12 +61,20 @@ CONTENT_TYPE_JSON = "application/json"
 
 # ==================== CONFIGURACIÓN DE COOKIES ====================
 
-# Nombre de la cookie para el estado del usuario
+# Nombres de las cookies
 COOKIE_ESTADO_USUARIO = "estado_usuario"
+COOKIE_EMAIL_USUARIO = "email_usuario"
 
 # Valores posibles para el estado del usuario
 ESTADO_INVITADO = "invitado"
 ESTADO_REGISTRADO = "registrado"
+
+# Configuración común de cookies (aprovecha middleware anti-cache)
+COOKIE_CONFIG = {
+    "max_age": 86400,  # 24 horas
+    "path": "/",
+    "samesite": "lax"
+}
 
 # ==================== CONFIGURACIÓN DE LOGGING ====================
 
