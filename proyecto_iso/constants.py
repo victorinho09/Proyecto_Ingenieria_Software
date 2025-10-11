@@ -13,6 +13,7 @@ DIRECTORIO_STATIC = "static"
 
 # Rutas de archivos de datos
 RUTA_CUENTAS_JSON = "./datos/cuentas.json"
+RUTA_RECETAS_JSON = "./datos/recetas.json"
 DIRECTORIO_DATOS = "datos"
 
 # ==================== CONFIGURACIÓN DEL SERVIDOR ====================

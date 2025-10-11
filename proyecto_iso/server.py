@@ -17,7 +17,10 @@ from fastapi.staticfiles import StaticFiles
 # Importar módulos locales
 from constants import *
 from models import Cuenta, LoginData, Receta
-from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, validar_cuenta, validar_password
+from utils import (
+    verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
+    validar_cuenta, validar_password, guardar_nueva_receta
+)
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
 
@@ -490,26 +493,56 @@ async def obtener_estado_usuario_api(request: Request, response: Response) -> JS
 # ==================== ENDPOINTS DE FUNCIONALIDADES ESPECÍFICAS ====================
 
 @app.post("/crear-receta")
-async def crear_receta(receta: Receta) -> JSONResponse:
+async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
     """
     Endpoint para crear una nueva receta de cocina.
+    Solo accesible para usuarios autenticados.
     
     Args:
         receta: Datos de la receta a crear (nombre, descripción, ingredientes, etc.)
+        request: Objeto Request de FastAPI para obtener cookies
 
     Returns:
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
-        # TODO: Implementar validación de datos de receta
-        # TODO: Implementar guardado de receta en base de datos/archivo
-        # TODO: Implementar validación de autenticación para este endpoint
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para crear recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
         
-        # Por ahora, simular éxito
-        return crear_respuesta_exito(
-            MENSAJE_RECETA_CREADA,
-            {"receta_creada": receta.nombreReceta}
-        )
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"🍳 [CREAR RECETA] Usuario {email_usuario} creando receta '{receta.nombreReceta}'")
+        
+        # Convertir modelo Pydantic a diccionario para facilitar el manejo
+        receta_data = receta.model_dump()
+        
+        # Guardar la receta con el email del usuario
+        if guardar_nueva_receta(receta_data, email_usuario):
+            return crear_respuesta_exito(
+                MENSAJE_RECETA_CREADA,
+                {
+                    "receta_creada": receta.nombreReceta,
+                    "usuario": email_usuario
+                }
+            )
+        else:
+            return crear_respuesta_error(
+                "Error al guardar la receta",
+                "ERROR_GUARDADO",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
         
     except Exception as e:        
         print(f"{LOG_ERROR} Error inesperado en crear_receta: {e}")
