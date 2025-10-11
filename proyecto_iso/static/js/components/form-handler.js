@@ -53,21 +53,33 @@ export async function manejarEnvioFormulario(event) {
       data.password.trim() === ""
     ) {
       mostrarMensaje("Por favor, completa todos los campos.", "error");
-      return;
+      return; // CRÍTICO: Salir aquí para no continuar con el procesamiento
     }
   } else if (formId === "cerrarSesionForm") {
     // CERRAR SESIÓN: No necesita validación
     // Se procesa directamente
+  } else if (formId === "crearCuentaForm" || formId === "crearCuentaForm2") {
+    // CREAR CUENTA: Validación detallada con mensaje local (no flotante)
+    const validacion = validarDatosFormularioConErrores(data, config);
+    if (!validacion.isValid) {
+      const mensajeError =
+        "Errores encontrados: " + validacion.errors.join(", ");
+      mostrarErrorLocalFormulario(form, mensajeError);
+      return; // CRÍTICO: Salir aquí para no continuar con el procesamiento
+    }
   } else {
-    // OTROS FORMULARIOS (crear cuenta, crear receta, etc.): Validación detallada
+    // OTROS FORMULARIOS (crear receta, etc.): Validación detallada con mensaje flotante
     const validacion = validarDatosFormularioConErrores(data, config);
     if (!validacion.isValid) {
       const mensajeError =
         "❌ Errores encontrados:\n• " + validacion.errors.join("\n• ");
       mostrarMensaje(mensajeError, "error");
-      return;
+      return; // CRÍTICO: Salir aquí para no continuar con el procesamiento
     }
   }
+
+  // NO LIMPIAR ERRORES AQUÍ - Solo los limpia la validación inteligente cuando el campo es válido
+  // limpiarErroresFormulario(form); // ELIMINADO para evitar parpadeos
 
   // Deshabilitar botón durante el envío
   manejarEstadoBoton(button, true);
@@ -77,6 +89,7 @@ export async function manejarEnvioFormulario(event) {
 
     switch (formId) {
       case "crearCuentaForm":
+      case "crearCuentaForm2":
         resultado = await crearCuenta(data);
         if (resultado.success) {
           mostrarMensaje(
@@ -86,6 +99,12 @@ export async function manejarEnvioFormulario(event) {
             "success"
           );
           return;
+        } else {
+          // Mostrar error de crear cuenta como mensaje local (no flotante)
+          const mensajeError =
+            resultado.data.mensaje || "Error al crear la cuenta";
+          mostrarErrorLocalFormulario(form, mensajeError);
+          return; // Salir para no ejecutar el manejo general de errores
         }
         break;
 
@@ -100,6 +119,12 @@ export async function manejarEnvioFormulario(event) {
             "success"
           );
           return;
+        } else {
+          // Mostrar error de login como mensaje local (no flotante)
+          const mensajeError =
+            resultado.data.mensaje || "Error de inicio de sesión";
+          mostrarErrorLocalFormulario(form, mensajeError);
+          return; // Salir para no ejecutar el manejo general de errores
         }
         break;
 
@@ -148,6 +173,158 @@ export async function manejarEnvioFormulario(event) {
   } finally {
     // Rehabilitar botón
     manejarEstadoBoton(button, false);
+  }
+}
+
+/**
+ * Muestra un mensaje de error local en un formulario de forma consistente
+ * Esta función es reutilizable para todos los formularios (login, crear cuenta, etc.)
+ * @param {HTMLElement} form - Formulario donde mostrar el error
+ * @param {string} mensaje - Mensaje de error a mostrar
+ */
+function mostrarErrorLocalFormulario(form, mensaje) {
+  // Buscar error existente para evitar parpadeo innecesario
+  const modal = form.closest(".modal");
+  const contenedorCompleto = modal || form.parentNode || document;
+  const errorExistente = contenedorCompleto.querySelector(".error-formulario");
+
+  // Si ya existe el mismo mensaje, no hacer nada para evitar parpadeo
+  if (errorExistente && errorExistente.textContent === mensaje) {
+    console.log(
+      `🔄 [ERROR LOCAL] Mensaje ya mostrado, manteniendo: ${mensaje}`
+    );
+    return;
+  }
+
+  // Si existe un error diferente, actualizar el contenido sin recrear el elemento
+  if (errorExistente) {
+    console.log(`🔄 [ERROR LOCAL] Actualizando mensaje: ${mensaje}`);
+    errorExistente.textContent = mensaje;
+    return;
+  }
+
+  // Solo crear nuevo elemento si no existe ningún error
+  const errorElement = document.createElement("div");
+  errorElement.className = "error-formulario";
+  errorElement.style.cssText = `
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.25rem;
+    text-align: left;
+    opacity: 1;
+  `;
+  errorElement.textContent = mensaje;
+
+  // Insertar el error en el lugar apropiado
+  insertarErrorEnFormulario(form, errorElement);
+
+  console.log(`✅ [ERROR LOCAL] Creado nuevo mensaje: ${mensaje}`);
+}
+
+/**
+ * Limpia todos los errores de formulario de forma inmediata
+ * @param {HTMLElement} form - Formulario del que limpiar errores
+ */
+function limpiarErroresFormulario(form) {
+  // Buscar el contenedor más amplio (modal completo si existe, o el formulario)
+  const modal = form.closest(".modal");
+  const contenedorCompleto = modal || form.parentNode || document;
+
+  // Encontrar todos los errores previos
+  const erroresPrevios =
+    contenedorCompleto.querySelectorAll(".error-formulario");
+
+  if (erroresPrevios.length > 0) {
+    erroresPrevios.forEach((error) => {
+      // Eliminación inmediata - no más setTimeout que causa problemas
+      error.remove();
+    });
+
+    console.log(
+      `🧹 [LIMPIEZA] Eliminando ${erroresPrevios.length} errores previos`
+    );
+  }
+}
+
+/**
+ * Limpia todos los errores de formulario de forma instantánea (para reemplazos)
+ * @param {HTMLElement} form - Formulario del que limpiar errores
+ */
+function limpiarErroresFormularioInstantaneo(form) {
+  // Buscar el contenedor más amplio (modal completo si existe, o el formulario)
+  const modal = form.closest(".modal");
+  const contenedorCompleto = modal || form.parentNode || document;
+
+  // Encontrar todos los errores previos
+  const erroresPrevios =
+    contenedorCompleto.querySelectorAll(".error-formulario");
+
+  if (erroresPrevios.length > 0) {
+    erroresPrevios.forEach((error) => {
+      // Eliminación instantánea cuando se va a reemplazar inmediatamente
+      error.remove();
+    });
+
+    console.log(
+      `🧹 [LIMPIEZA INSTANTÁNEA] Eliminando ${erroresPrevios.length} errores previos`
+    );
+  }
+}
+
+/**
+ * Inserta un elemento de error en el lugar apropiado del formulario
+ * @param {HTMLElement} form - Formulario donde insertar
+ * @param {HTMLElement} errorElement - Elemento de error a insertar
+ */
+function insertarErrorEnFormulario(form, errorElement) {
+  const modalBody = form.closest(".modal-body");
+  const contenedor = modalBody || form;
+
+  // Buscar el lugar apropiado para insertar (después de los campos pero antes de los botones)
+  const modalFooter = contenedor.querySelector(".modal-footer");
+  const submitButton = contenedor.querySelector('button[type="submit"]');
+
+  if (modalFooter) {
+    // Si hay modal footer, insertar antes del footer
+    modalFooter.parentNode.insertBefore(errorElement, modalFooter);
+  } else if (submitButton) {
+    // Si no hay footer pero hay botón submit, insertar antes del botón
+    submitButton.parentNode.insertBefore(errorElement, submitButton);
+  } else {
+    // Como último recurso, añadir al final del contenedor
+    contenedor.appendChild(errorElement);
+  }
+}
+
+/**
+ * Valida un formulario completo y limpia errores solo si todo es válido
+ * @param {HTMLElement} form - Formulario a validar
+ */
+function validarYLimpiarErroresInteligente(form) {
+  const formId = form.id;
+  const config = CONFIGURACION_FORMULARIOS[formId];
+
+  if (!config) return;
+
+  const data = obtenerDatosFormulario(form, config.campos);
+  const validacion = validarDatosFormularioConErrores(data, config);
+
+  // Solo limpiar errores de formulario si TODO es válido
+  if (validacion.isValid) {
+    console.log(
+      `✅ [VALIDACIÓN INTELIGENTE] Formulario válido, limpiando errores`
+    );
+    limpiarErroresFormulario(form);
+  } else {
+    console.log(
+      `❌ [VALIDACIÓN INTELIGENTE] Formulario inválido, manteniendo errores: ${validacion.errors.join(
+        ", "
+      )}`
+    );
   }
 }
 
@@ -208,16 +385,28 @@ function añadirValidacionEnTiempoReal(campo, tipoCampo) {
       }
 
       mostrarErrorCampo(errores);
+
+      // Validar también el formulario completo para limpiar errores generales si todo es válido
+      const form = campo.closest("form");
+      if (form) {
+        validarYLimpiarErroresInteligente(form);
+      }
     }
   });
 
-  // Limpiar errores cuando el usuario empieza a escribir
+  // Limpiar errores de campo individual cuando el usuario empieza a escribir
   campo.addEventListener("input", () => {
     const errorPrevio = campo.parentNode.querySelector(".error-campo");
     if (errorPrevio) {
       errorPrevio.remove();
       campo.classList.remove("is-invalid");
       campo.style.borderColor = "";
+    }
+
+    // Validar también el formulario completo para limpiar errores generales si todo es válido
+    const form = campo.closest("form");
+    if (form) {
+      validarYLimpiarErroresInteligente(form);
     }
   });
 }
@@ -248,6 +437,11 @@ export function inicializarFormularios() {
           // Limpiar estilos de error
           nuevoCampo.classList.remove("is-invalid");
           nuevoCampo.style.borderColor = "";
+
+          // Añadir listener para validación inteligente cuando el usuario escriba
+          nuevoCampo.addEventListener("input", () => {
+            validarYLimpiarErroresInteligente(form);
+          });
         });
 
         console.log(
@@ -260,6 +454,7 @@ export function inicializarFormularios() {
         // SOLO añadir validación en tiempo real para crear cuenta
         const campoEmail = form.querySelector('input[type="email"]');
         const campoPassword = form.querySelector('input[type="password"]');
+        const todosCampos = form.querySelectorAll("input");
 
         if (campoEmail) {
           añadirValidacionEnTiempoReal(campoEmail, "email");
@@ -268,6 +463,13 @@ export function inicializarFormularios() {
         if (campoPassword) {
           añadirValidacionEnTiempoReal(campoPassword, "password");
         }
+
+        // Añadir listener para validación inteligente cuando el usuario escriba en cualquier campo
+        todosCampos.forEach((campo) => {
+          campo.addEventListener("input", () => {
+            validarYLimpiarErroresInteligente(form);
+          });
+        });
 
         console.log(
           `✅ [VALIDACIÓN] Validación añadida al formulario: ${formId}`
