@@ -67,11 +67,15 @@ function validarPassword(password) {
     return false;
   }
   if (!tieneMayuscula) {
-    mostrarErrorPassword("La contraseña debe contener al menos una letra mayúscula");
+    mostrarErrorPassword(
+      "La contraseña debe contener al menos una letra mayúscula"
+    );
     return false;
   }
   if (!tieneMinuscula) {
-    mostrarErrorPassword("La contraseña debe contener al menos una letra minúscula");
+    mostrarErrorPassword(
+      "La contraseña debe contener al menos una letra minúscula"
+    );
     return false;
   }
   if (!tieneNumero) {
@@ -84,13 +88,15 @@ function validarPassword(password) {
 
 // Función para mostrar errores específicos de la contraseña
 function mostrarErrorPassword(mensaje) {
-  const forms = ['crearCuentaForm', 'iniciarSesionForm'];
-  forms.forEach(formId => {
+  const forms = ["crearCuentaForm", "iniciarSesionForm"];
+  forms.forEach((formId) => {
     const form = document.getElementById(formId);
     if (form) {
       const config = CONFIGURACION_FORMULARIOS[formId];
       const modal = document.getElementById(config.modal);
-      const mensajeContainer = modal ? modal.querySelector("#mensajeContainer, .alert") : null;
+      const mensajeContainer = modal
+        ? modal.querySelector("#mensajeContainer, .alert")
+        : null;
       if (mensajeContainer) {
         mostrarMensaje(mensajeContainer, "error", `❌ ${mensaje}`);
       }
@@ -99,12 +105,43 @@ function mostrarErrorPassword(mensaje) {
 }
 
 // Función para detectar si el usuario está en modo invitado
-function esInvitado() {
-  // El archivo invitado.html se sirve desde la ruta raíz "/"
-  const pathname = window.location.pathname;
-  const esRaiz = pathname === "/" || pathname === "";
+/**
+ * Verifica si el usuario es invitado consultando el servidor
+ * @returns {Promise<boolean>} True si es usuario invitado
+ */
+async function esInvitado() {
+  try {
+    // Agregar timestamp para evitar caché del navegador
+    const timestamp = Date.now();
+    const response = await fetch(`/api/estado-usuario?t=${timestamp}`, {
+      credentials: "same-origin", // Importante: incluir cookies en la petición y respuesta
+      cache: "no-cache", // Forzar no usar caché
+    });
+    console.log(`[esInvitado] Response status: ${response.status}`);
 
-  return esRaiz;
+    if (response.ok) {
+      const data = await response.json();
+      console.log(
+        `[esInvitado] ✅ Estado del servidor: ${data.estado}, es_invitado: ${data.es_invitado}`
+      );
+      return data.es_invitado;
+    } else {
+      console.error(`[esInvitado] ❌ Error del servidor: ${response.status}`);
+    }
+
+    // Fallback: usar lógica de URL si falla la consulta al servidor
+    const pathname = window.location.pathname;
+    const esRaiz = pathname === "/" || pathname === "";
+    console.log(
+      `[esInvitado] 🔄 Fallback - pathname: "${pathname}", esRaiz: ${esRaiz}`
+    );
+    return esRaiz;
+  } catch (error) {
+    console.error("Error al verificar estado del usuario:", error);
+    // Fallback: usar lógica de URL
+    const pathname = window.location.pathname;
+    return pathname === "/" || pathname === "";
+  }
 }
 
 function ocultarBotonesModal(config) {
@@ -127,9 +164,14 @@ function cerrarModal(modalId) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   // Inicializar event listeners cuando el DOM esté cargado
   console.log("DOM cargado");
+
+  // Verificar estado del usuario al cargar la página (esto establece la cookie inicial)
+  console.log("🔍 Verificando estado inicial del usuario...");
+  await esInvitado();
+
   inicializarEventListeners();
 });
 
@@ -212,15 +254,19 @@ async function manejarEnvioFormulario(e, formId) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      credentials: "same-origin", // Importante: incluir cookies en formularios
       body: JSON.stringify(formData),
     });
 
     const result = await response.json();
 
     if (response.ok && result.exito) {
-      // Verificar si es un usuario invitado que ha iniciado sesión correctamente
-      if (esInvitado() && config.endpoint === "/iniciar-sesion") {
-        // Para usuarios invitados que inician sesión, redirigir directamente
+      // Verificar si es un login o logout exitoso para redirigir
+      if (
+        config.endpoint === "/iniciar-sesion" ||
+        config.endpoint === "/cerrar-sesion"
+      ) {
+        // Para login y logout exitosos, mostrar mensaje y recargar
         mostrarMensaje(
           mensajeContainer,
           "success",
@@ -235,24 +281,17 @@ async function manejarEnvioFormulario(e, formId) {
 
         ocultarBotonesModal(config);
 
-        // Solicitar al servidor la página de usuario registrado
-        setTimeout(async () => {
-          try {
-            const response = await fetch("/registrado");
-            if (response.ok) {
-              const html = await response.text();
-              // Reemplazar todo el contenido de la página con el HTML del servidor
-              document.documentElement.innerHTML = html;
-            } else {
-              console.error("Error al obtener la página de registrado");
-            }
-          } catch (error) {
-            console.error(
-              "Error de conexión al obtener registrado.html:",
-              error
-            );
+        // Redirigir según el tipo de operación
+        setTimeout(() => {
+          if (config.endpoint === "/iniciar-sesion") {
+            // Login: recargar página actual para mostrar contenido de usuario registrado
+            window.location.reload();
+          } else if (config.endpoint === "/cerrar-sesion") {
+            // Logout: limpiar caché y redirigir a página principal como invitado
+            // Forzar limpieza completa del caché del navegador
+            window.location.href = "/?logout=true&t=" + Date.now();
           }
-        }, 1000);
+        }, 1500);
 
         return; // Salir temprano para evitar el comportamiento normal del modal
       }
@@ -333,7 +372,7 @@ function validarDatosFormulario(data, config) {
   for (const [campo, validador] of Object.entries(config.validaciones)) {
     if (data[campo]) {
       // Si hay una contraseña, validarla primero
-      if (campo === 'password') {
+      if (campo === "password") {
         if (!validador(data[campo])) {
           return false;
         }

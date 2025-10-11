@@ -59,6 +59,15 @@ HTTP_INTERNAL_SERVER_ERROR = 500
 CONTENT_TYPE_HTML = "text/html"
 CONTENT_TYPE_JSON = "application/json"
 
+# ==================== CONFIGURACIÓN DE COOKIES ====================
+
+# Nombre de la cookie para el estado del usuario
+COOKIE_ESTADO_USUARIO = "estado_usuario"
+
+# Valores posibles para el estado del usuario
+ESTADO_INVITADO = "invitado"
+ESTADO_REGISTRADO = "registrado"
+
 # ==================== CONFIGURACIÓN DE LOGGING ====================
 
 # Prefijos para logs
