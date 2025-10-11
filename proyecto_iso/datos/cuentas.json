@@ -63,5 +63,15 @@
     "nombreUsuario": "hola",
     "email": "hola@hola.com",
     "password": "Holaquetal#13"
+  },
+  {
+    "nombreUsuario": "Pedro",
+    "email": "pericoperez2712@gmail.com",
+    "password": "Perico1234"
+  },
+  {
+    "nombreUsuario": "PedRO",
+    "email": "prueba3.0@gmail.com",
+    "password": "Prueba3.0"
   }
 ]

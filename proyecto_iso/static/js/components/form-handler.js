@@ -58,7 +58,7 @@ export async function manejarEnvioFormulario(event) {
   } else if (formId === "cerrarSesionForm") {
     // CERRAR SESIÓN: No necesita validación
     // Se procesa directamente
-  } else if (formId === "crearCuentaForm" || formId === "crearCuentaForm2") {
+  } else if (formId === "crearCuentaForm") {
     // CREAR CUENTA: Validación detallada con mensaje local (no flotante)
     const validacion = validarDatosFormularioConErrores(data, config);
     if (!validacion.isValid) {
@@ -89,7 +89,6 @@ export async function manejarEnvioFormulario(event) {
 
     switch (formId) {
       case "crearCuentaForm":
-      case "crearCuentaForm2":
         resultado = await crearCuenta(data);
         if (resultado.success) {
           mostrarMensaje(
@@ -136,6 +135,21 @@ export async function manejarEnvioFormulario(event) {
 
       case "crearRecetaForm":
         resultado = await crearReceta(data);
+        if (resultado.success) {
+          // Solo para el formulario de crear receta:
+          // 1. Cerrar el modal si existe
+          const modal = form.closest('.modal');
+          if (modal) {
+            const bootstrapModal = bootstrap.Modal.getInstance(modal);
+            if (bootstrapModal) {
+              bootstrapModal.hide();
+            }
+          }
+          // 2. Limpiar el formulario específico
+          form.reset();
+          // 3. Limpiar cualquier error que pudiera quedar
+          limpiarErroresFormulario(form);
+        }
         break;
 
       default:
@@ -143,7 +157,7 @@ export async function manejarEnvioFormulario(event) {
         return;
     }
 
-    // Manejar la respuesta
+    // Manejar la respuesta general para todos los formularios
     if (resultado.success) {
       if (resultado.data.mensaje) {
         mostrarMensaje(resultado.data.mensaje, "success");
@@ -250,30 +264,7 @@ function limpiarErroresFormulario(form) {
   }
 }
 
-/**
- * Limpia todos los errores de formulario de forma instantánea (para reemplazos)
- * @param {HTMLElement} form - Formulario del que limpiar errores
- */
-function limpiarErroresFormularioInstantaneo(form) {
-  // Buscar el contenedor más amplio (modal completo si existe, o el formulario)
-  const modal = form.closest(".modal");
-  const contenedorCompleto = modal || form.parentNode || document;
 
-  // Encontrar todos los errores previos
-  const erroresPrevios =
-    contenedorCompleto.querySelectorAll(".error-formulario");
-
-  if (erroresPrevios.length > 0) {
-    erroresPrevios.forEach((error) => {
-      // Eliminación instantánea cuando se va a reemplazar inmediatamente
-      error.remove();
-    });
-
-    console.log(
-      `🧹 [LIMPIEZA INSTANTÁNEA] Eliminando ${erroresPrevios.length} errores previos`
-    );
-  }
-}
 
 /**
  * Inserta un elemento de error en el lugar apropiado del formulario
@@ -448,8 +439,7 @@ export function inicializarFormularios() {
           `🔒 [SEGURIDAD] Validación eliminada del formulario: ${formId}`
         );
       } else if (
-        formId === "crearCuentaForm" ||
-        formId === "crearCuentaForm2"
+        formId === "crearCuentaForm"
       ) {
         // SOLO añadir validación en tiempo real para crear cuenta
         const campoEmail = form.querySelector('input[type="email"]');
