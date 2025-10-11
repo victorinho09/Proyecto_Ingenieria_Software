@@ -1,8 +1,15 @@
 """
 Servidor principal de la aplicación web usando FastAPI.
-Maneja las rutas y endpoints de la aplicación.
+Maneja las rutas y endpoints de la aplicación de recetas con sistema de autenticación basado en cookies.
+
+Características principales:
+- Sistema de autenticación con cookies (invitado/registrado)
+- Endpoints protegidos que requieren autenticación
+- Gestión de cuentas de usuario y recetas
+- Validación de formularios y manejo de errores consistente
 """
 
+from typing import Union
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -12,86 +19,195 @@ from constants import *
 from models import Cuenta, LoginData, Receta
 from utils import verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, validar_cuenta, validar_password
 
-# Crear instancia de FastAPI
+# ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
+
 app = FastAPI(
     title="Aplicación Web de Recetas",
-    description="API para gestión de recetas y creación de cuentas de usuario",
-    version="1.0.0"
+    description="API para gestión de recetas y creación de cuentas de usuario con autenticación basada en cookies",
+    version="1.0.0",
+    docs_url="/docs",  # Documentación Swagger
+    redoc_url="/redoc"  # Documentación ReDoc
 )
 
 # Montar archivos estáticos
 app.mount(f"/{DIRECTORIO_STATIC}", StaticFiles(directory=DIRECTORIO_STATIC), name=DIRECTORIO_STATIC)
 
-# ==================== FUNCIONES DE UTILIDAD PARA COOKIES ====================
+# ==================== FUNCIONES DE UTILIDAD PARA COOKIES Y AUTENTICACIÓN ====================
 
-def establecer_estado_usuario(response: Response, estado: str):
-    """Establece el estado del usuario en una cookie."""
-    response.set_cookie(key=COOKIE_ESTADO_USUARIO, value=estado, max_age=86400)  # 24 horas
+def establecer_estado_usuario(response: Response, estado: str) -> None:
+    """
+    Establece el estado del usuario en una cookie HTTP.
+    
+    Args:
+        response: Objeto Response de FastAPI
+        estado: Estado del usuario (ESTADO_INVITADO o ESTADO_REGISTRADO)
+    """
+    response.set_cookie(
+        key=COOKIE_ESTADO_USUARIO, 
+        value=estado, 
+        max_age=86400,  # 24 horas
+        path="/",  # Disponible en todo el sitio
+        samesite="lax"  # Protección CSRF básica
+    )
 
 def obtener_estado_usuario(request: Request) -> str:
-    """Obtiene el estado del usuario desde la cookie."""
+    """
+    Obtiene el estado del usuario desde la cookie.
+    
+    Args:
+        request: Objeto Request de FastAPI
+        
+    Returns:
+        Estado del usuario (invitado por defecto si no existe cookie)
+    """
     return request.cookies.get(COOKIE_ESTADO_USUARIO, ESTADO_INVITADO)
 
 def es_usuario_registrado(request: Request) -> bool:
-    """Verifica si el usuario está registrado según la cookie."""
-    return obtener_estado_usuario(request) == ESTADO_REGISTRADO
-
-# ==================== ENDPOINTS ====================
-
-@app.get("/", response_class=HTMLResponse)
-def get_page(request: Request, response: Response, logout: bool = False):
     """
-    Endpoint para servir la página principal.
-    Sirve la página según el estado del usuario (invitado o registrado).
+    Verifica si el usuario está registrado según la cookie.
     
     Args:
+        request: Objeto Request de FastAPI
+        
+    Returns:
+        True si el usuario está registrado, False en caso contrario
+    """
+    return obtener_estado_usuario(request) == ESTADO_REGISTRADO
+
+def requiere_autenticacion(request: Request) -> Union[None, RedirectResponse]:
+    """
+    Verifica si el usuario está autenticado y devuelve redirección si no lo está.
+    Función helper para eliminar duplicación en endpoints protegidos.
+    
+    Args:
+        request: Objeto Request de FastAPI
+        
+    Returns:
+        None si está autenticado, RedirectResponse si no lo está
+    """
+    if not es_usuario_registrado(request):
+        return RedirectResponse(url="/", status_code=302)
+    return None
+
+# ==================== FUNCIONES HELPER PARA RESPUESTAS ====================
+
+def crear_respuesta_exito(mensaje: str, data: dict = None, status_code: int = HTTP_OK) -> JSONResponse:
+    """
+    Crea una respuesta JSON de éxito estandarizada.
+    
+    Args:
+        mensaje: Mensaje de éxito
+        data: Datos adicionales opcionales
+        status_code: Código de estado HTTP
+        
+    Returns:
+        JSONResponse con formato estandarizado
+    """
+    content = {
+        "mensaje": mensaje,
+        "exito": True
+    }
+    if data:
+        content.update(data)
+    
+    return JSONResponse(content=content, status_code=status_code)
+
+def crear_respuesta_error(mensaje: str, codigo_error: str = None, status_code: int = HTTP_BAD_REQUEST) -> JSONResponse:
+    """
+    Crea una respuesta JSON de error estandarizada.
+    
+    Args:
+        mensaje: Mensaje de error
+        codigo_error: Código de error específico
+        status_code: Código de estado HTTP
+        
+    Returns:
+        JSONResponse con formato estandarizado de error
+    """
+    content = {
+        "mensaje": mensaje,
+        "exito": False
+    }
+    if codigo_error:
+        content["codigo_error"] = codigo_error
+    
+    return JSONResponse(content=content, status_code=status_code)
+
+def servir_pagina_html(ruta_archivo: str, mensaje_error: str = None) -> Union[FileResponse, HTMLResponse]:
+    """
+    Sirve una página HTML si existe, o devuelve error 404.
+    
+    Args:
+        ruta_archivo: Ruta al archivo HTML
+        mensaje_error: Mensaje de error personalizado (opcional)
+        
+    Returns:
+        FileResponse si el archivo existe, HTMLResponse con error 404 si no existe
+    """
+    if verificar_archivo_existe(ruta_archivo):
+        return FileResponse(ruta_archivo, media_type=CONTENT_TYPE_HTML)
+    else:
+        error_msg = mensaje_error or MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO
+        return HTMLResponse(
+            content=f"<h1>{error_msg}</h1>", 
+            status_code=HTTP_NOT_FOUND
+        )
+
+# ==================== ENDPOINTS PÚBLICOS ====================
+
+@app.get("/", response_class=HTMLResponse)
+def get_pagina_principal(request: Request, response: Response, logout: bool = False):
+    """
+    Endpoint para servir la página principal de la aplicación.
+    Sirve diferentes páginas según el estado del usuario (invitado o registrado).
+    
+    Args:
+        request: Objeto Request de FastAPI
+        response: Objeto Response de FastAPI  
         logout: Si es True, fuerza el estado a invitado (usado después de logout)
     
     Returns:
-        FileResponse: Página HTML según el estado del usuario
+        FileResponse: Página HTML correspondiente al estado del usuario
     """
-    # Si viene de un logout, forzar estado de invitado
-    if logout:
-        establecer_estado_usuario(response, ESTADO_INVITADO)
-        # Servir directamente página de invitado con cookie establecida
-        if verificar_archivo_existe(RUTA_USUARIO_INVITADO):
-            file_response = FileResponse(RUTA_USUARIO_INVITADO, media_type=CONTENT_TYPE_HTML)
-            # Establecer cookie en la respuesta
-            file_response.set_cookie(
-                key=COOKIE_ESTADO_USUARIO, 
-                value=ESTADO_INVITADO, 
-                max_age=86400
-            )
-            return file_response
-        else:
-            return HTMLResponse(
-                content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-                status_code=HTTP_NOT_FOUND
-            )
-    
-    # Si no hay cookie de estado, establecer como invitado por defecto
+    # Establecer cookie por defecto si no existe
     if COOKIE_ESTADO_USUARIO not in request.cookies:
         establecer_estado_usuario(response, ESTADO_INVITADO)
     
-    # Verificar si el usuario está registrado según la cookie
+    # Verificar el estado actual del usuario desde la cookie
+    estado_actual = obtener_estado_usuario(request)
+    print(f"🏠 [PÁGINA PRINCIPAL] Estado actual: {estado_actual}, logout param: {logout}")
+    
+    # Solo aplicar logout si el usuario NO está registrado
+    # Esto evita que el parámetro logout interfiera con un login reciente
+    if logout and estado_actual != ESTADO_REGISTRADO:
+        establecer_estado_usuario(response, ESTADO_INVITADO)
+        file_response = FileResponse(RUTA_USUARIO_INVITADO, media_type=CONTENT_TYPE_HTML)
+        file_response.set_cookie(
+            key=COOKIE_ESTADO_USUARIO, 
+            value=ESTADO_INVITADO, 
+            max_age=86400,
+            path="/",
+            samesite="lax"
+        )
+        return file_response
+    
+    # Servir página según estado del usuario (priorizar cookie sobre parámetro logout)
     if es_usuario_registrado(request):
-        # Usuario registrado: servir página de registrado
-        if verificar_archivo_existe(RUTA_USUARIO_REGISTRADO):
-            return FileResponse(RUTA_USUARIO_REGISTRADO, media_type=CONTENT_TYPE_HTML)
-        else:
-            return HTMLResponse(
-                content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-                status_code=HTTP_NOT_FOUND
-            )
+        return servir_pagina_html(RUTA_USUARIO_REGISTRADO)
     else:
-        # Usuario invitado: servir página de invitado
-        if verificar_archivo_existe(RUTA_USUARIO_INVITADO):
-            return FileResponse(RUTA_USUARIO_INVITADO, media_type=CONTENT_TYPE_HTML)
-        else:
-            return HTMLResponse(
-                content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-                status_code=HTTP_NOT_FOUND
-            )
+        return servir_pagina_html(RUTA_USUARIO_INVITADO)
+
+@app.get("/registrado", response_class=HTMLResponse)
+def get_pagina_registrado():
+    """
+    Endpoint para servir la página de usuario registrado/autenticado.
+    
+    Returns:
+        FileResponse: Página HTML de usuario registrado
+    """
+    return servir_pagina_html(RUTA_USUARIO_REGISTRADO)
+
+# ==================== ENDPOINTS PROTEGIDOS (REQUIEREN AUTENTICACIÓN) ====================
 
 @app.get("/recetas", response_class=HTMLResponse)
 def get_recetas(request: Request):
@@ -100,70 +216,46 @@ def get_recetas(request: Request):
     Solo accesible para usuarios autenticados.
     
     Returns:
-        FileResponse: Página HTML de recetas o redirección a página principal
+        FileResponse: Página HTML de recetas o redirección si no está autenticado
     """
-    # Verificar si el usuario está autenticado
-    if not es_usuario_registrado(request):
-        # Usuario no autenticado: redirigir a página principal
-        from fastapi.responses import RedirectResponse
-        return RedirectResponse(url="/", status_code=302)
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
     
-    # Usuario autenticado: servir página de recetas
-    if verificar_archivo_existe(RUTA_RECETAS):
-        return FileResponse(RUTA_RECETAS, media_type=CONTENT_TYPE_HTML)
-    else:
-        return HTMLResponse(
-            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-            status_code=HTTP_NOT_FOUND
-        )
+    return servir_pagina_html(RUTA_RECETAS)
 
 @app.get("/mis-recetas", response_class=HTMLResponse)
 def get_mis_recetas(request: Request):
     """
-    Endpoint para servir la página de mis recetas.
+    Endpoint para servir la página de mis recetas personales.
     Solo accesible para usuarios autenticados.
     
     Returns:
-        FileResponse: Página HTML de mis recetas o redirección a página principal
+        FileResponse: Página HTML de mis recetas o redirección si no está autenticado
     """
-    # Verificar si el usuario está autenticado
-    if not es_usuario_registrado(request):
-        # Usuario no autenticado: redirigir a página principal
-        from fastapi.responses import RedirectResponse
-        return RedirectResponse(url="/", status_code=302)
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
     
-    # Usuario autenticado: servir página de mis recetas
-    if verificar_archivo_existe(RUTA_MIS_RECETAS):
-        return FileResponse(RUTA_MIS_RECETAS, media_type=CONTENT_TYPE_HTML)
-    else:
-        return HTMLResponse(
-            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-            status_code=HTTP_NOT_FOUND
-        )
+    return servir_pagina_html(RUTA_MIS_RECETAS)
 
-@app.get("/recetas-guardadas", response_class=HTMLResponse)
+@app.get("/recetas-guardadas", response_class=HTMLResponse) 
 def get_recetas_guardadas(request: Request):
     """
-    Endpoint para servir la página de recetas guardadas.
+    Endpoint para servir la página de recetas guardadas por el usuario.
     Solo accesible para usuarios autenticados.
     
     Returns:
-        FileResponse: Página HTML de recetas guardadas o redirección a página principal
+        FileResponse: Página HTML de recetas guardadas o redirección si no está autenticado
     """
-    # Verificar si el usuario está autenticado
-    if not es_usuario_registrado(request):
-        # Usuario no autenticado: redirigir a página principal
-        from fastapi.responses import RedirectResponse
-        return RedirectResponse(url="/", status_code=302)
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
     
-    # Usuario autenticado: servir página de recetas guardadas
-    if verificar_archivo_existe(RUTA_RECETAS_GUARDADAS):
-        return FileResponse(RUTA_RECETAS_GUARDADAS, media_type=CONTENT_TYPE_HTML)
-    else:
-        return HTMLResponse(
-            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-            status_code=HTTP_NOT_FOUND
-        )
+    return servir_pagina_html(RUTA_RECETAS_GUARDADAS)
 
 @app.get("/menu-semanal", response_class=HTMLResponse)
 def get_menu_semanal(request: Request):
@@ -172,255 +264,225 @@ def get_menu_semanal(request: Request):
     Solo accesible para usuarios autenticados.
     
     Returns:
-        FileResponse: Página HTML del menú semanal o redirección a página principal
+        FileResponse: Página HTML del menú semanal o redirección si no está autenticado
     """
-    # Verificar si el usuario está autenticado
-    if not es_usuario_registrado(request):
-        # Usuario no autenticado: redirigir a página principal
-        from fastapi.responses import RedirectResponse
-        return RedirectResponse(url="/", status_code=302)
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
     
-    # Usuario autenticado: servir página del menú semanal
-    if verificar_archivo_existe(RUTA_MENU_SEMANAL):
-        return FileResponse(RUTA_MENU_SEMANAL, media_type=CONTENT_TYPE_HTML)
-    else:
-        return HTMLResponse(
-            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-            status_code=HTTP_NOT_FOUND
+    return servir_pagina_html(RUTA_MENU_SEMANAL)
+
+# ==================== ENDPOINTS DE AUTENTICACIÓN ====================
+
+@app.post("/iniciar-sesion")
+async def iniciar_sesion(login_data: LoginData) -> JSONResponse:
+    """
+    Endpoint para iniciar sesión de usuario.
+    Valida credenciales y establece cookie de usuario registrado si es exitoso.
+
+    Args:
+        login_data: Datos de login (email y password)
+
+    Returns:
+        JSONResponse: Respuesta con resultado de la operación y cookie establecida
+    """
+    try:
+        print(f"🔍 [LOGIN] Intento de login para: {login_data.email}")
+        
+        # Validar formato de contraseña
+        is_valid_password, error_mensaje = validar_password(login_data.password)
+        if not is_valid_password:
+            print(f"❌ [LOGIN] Password inválido para {login_data.email}")
+            return crear_respuesta_error(error_mensaje, "PASSWORD_INVALIDO")
+        
+        # Validar credenciales contra base de datos
+        cuenta_existente = validar_cuenta(login_data.email, login_data.password)   
+        print(f"🔍 [LOGIN] Cuenta existente: {cuenta_existente}")
+
+        if cuenta_existente:
+            # Éxito: crear respuesta con cookie de usuario registrado
+            json_response = crear_respuesta_exito(
+                MENSAJE_INICIO_SESION_SATISFACTORIO,
+                {"usuario": login_data.email}
+            )
+            
+            # Establecer cookie de autenticación
+            json_response.set_cookie(
+                key=COOKIE_ESTADO_USUARIO, 
+                value=ESTADO_REGISTRADO, 
+                max_age=86400,
+                path="/",
+                samesite="lax"
+            )
+            
+            print(f"✅ [LOGIN] Login exitoso para {login_data.email}, cookie establecida")
+            return json_response
+        else:
+            # Credenciales incorrectas
+            return crear_respuesta_error(
+                MENSAJE_INICIO_SESION_NO_SATISFACTORIO,
+                "CREDENCIALES_INCORRECTAS"
+            )
+    
+    except Exception as e:
+        # Error interno del servidor
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
         )
 
-@app.get("/registrado", response_class=HTMLResponse)
-def get_registrado():
+@app.post("/cerrar-sesion")
+async def cerrar_sesion() -> JSONResponse:
     """
-    Endpoint para servir la página de usuario registrado/autenticado.
+    Endpoint para cerrar sesión del usuario.
+    Cambia la cookie a estado invitado.
     
     Returns:
-        FileResponse: Página HTML de usuario registrado o error 404
+        JSONResponse: Respuesta con resultado de la operación y cookie actualizada
     """
-    if verificar_archivo_existe(RUTA_USUARIO_REGISTRADO):
-        return FileResponse(RUTA_USUARIO_REGISTRADO, media_type=CONTENT_TYPE_HTML)
-    else:
-        return HTMLResponse(
-            content=f"<h1>{MENSAJE_ERROR_ARCHIVO_NO_ENCONTRADO}</h1>", 
-            status_code=HTTP_NOT_FOUND
+    try:
+        # Crear respuesta de éxito con cookie de invitado
+        json_response = crear_respuesta_exito(MENSAJE_CUENTA_CERRADA)
+        
+        # Establecer cookie de invitado (cerrar sesión)
+        json_response.set_cookie(
+            key=COOKIE_ESTADO_USUARIO, 
+            value=ESTADO_INVITADO, 
+            max_age=86400,
+            path="/",
+            samesite="lax"
         )
+        
+        return json_response
+        
+    except Exception as e:        
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.post("/crear-cuenta")
+async def crear_cuenta(cuenta: Cuenta) -> JSONResponse:
+    """
+    Endpoint para crear una nueva cuenta de usuario.
+    Valida datos y crea la cuenta si todo es correcto.
+    
+    Args:
+        cuenta: Datos básicos de la cuenta a crear (nombreUsuario, email, password)
+        
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Validar formato de contraseña
+        is_valid_password, error_mensaje = validar_password(cuenta.password)
+        if not is_valid_password:
+            return crear_respuesta_error(error_mensaje, "PASSWORD_INVALIDO")
+        
+        # Verificar si el email ya existe
+        if email_ya_existe(cuenta.email):
+            return crear_respuesta_error(
+                MENSAJE_ERROR_EMAIL_DUPLICADO,
+                "EMAIL_DUPLICADO"
+            )
+        
+        # Preparar datos de la cuenta
+        cuenta_data = {
+            "nombreUsuario": cuenta.nombreUsuario,
+            "email": cuenta.email,
+            "password": cuenta.password  # TODO: En producción hashear la contraseña
+        }
+        
+        # Intentar guardar la cuenta
+        if guardar_nueva_cuenta(cuenta_data):
+            return crear_respuesta_exito(
+                MENSAJE_CUENTA_CREADA,
+                {"usuario_creado": cuenta.nombreUsuario},
+                HTTP_CREATED
+            )
+        else:
+            return crear_respuesta_error(
+                "Error al guardar la cuenta",
+                "ERROR_GUARDADO",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:        
+        print(f"{LOG_ERROR} Error inesperado en crear_cuenta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+# ==================== ENDPOINTS DE API ====================
 
 @app.get("/api/estado-usuario")
-async def obtener_estado_usuario_endpoint(request: Request, response: Response):
+async def obtener_estado_usuario_api(request: Request, response: Response) -> JSONResponse:
     """
-    Endpoint simple para obtener el estado del usuario desde JavaScript.
+    Endpoint API para consultar el estado del usuario desde JavaScript.
+    Establece cookie por defecto si no existe.
     
     Returns:
-        JSONResponse: Estado del usuario (invitado o registrado)
+        JSONResponse: Estado actual del usuario (invitado o registrado)
     """
-    # Si no hay cookie de estado, establecer como invitado por defecto
+    # Establecer cookie por defecto si no existe
     if COOKIE_ESTADO_USUARIO not in request.cookies:
         establecer_estado_usuario(response, ESTADO_INVITADO)
     
     estado = obtener_estado_usuario(request)
     es_registrado = es_usuario_registrado(request)
     
-    # Crear la respuesta JSON
+    # Crear respuesta con información del estado
     json_response = JSONResponse(content={
         "estado": estado,
         "es_registrado": es_registrado,
         "es_invitado": not es_registrado
     }, status_code=HTTP_OK)
     
-    # Si necesitamos establecer cookie, hacerlo en la respuesta final
+    # Establecer cookie si no existía
     if COOKIE_ESTADO_USUARIO not in request.cookies:
         json_response.set_cookie(
             key=COOKIE_ESTADO_USUARIO, 
             value=ESTADO_INVITADO, 
-            max_age=86400
+            max_age=86400,
+            path="/",
+            samesite="lax"
         )
     
     return json_response
 
-@app.post("/crear-cuenta")
-async def crear_cuenta(cuenta: Cuenta):
-    """
-    Endpoint para crear una nueva cuenta de usuario.
-    
-    Args:
-        cuenta (Cuenta): Datos básicos de la cuenta a crear
-        
-    Returns:
-        JSONResponse: Respuesta con el resultado de la operación
-    """
-    try:
-        # Validar contraseña primero
-        is_valid_password, error_mensaje = validar_password(cuenta.password)
-        if not is_valid_password:
-            error_respuesta = {
-                "mensaje": error_mensaje,
-                "exito": False,
-                "codigo_error": "PASSWORD_INVALIDO"
-            }
-            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
-        
-        # Verificar si el email ya existe
-        if email_ya_existe(cuenta.email):
-            error_respuesta = {
-                "mensaje": MENSAJE_ERROR_EMAIL_DUPLICADO,
-                "exito": False,
-                "codigo_error": "EMAIL_DUPLICADO"
-            }
-            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
-        
-        # Convertir la cuenta a diccionario para guardado
-        cuenta_data = {
-            "nombreUsuario": cuenta.nombreUsuario,
-            "email": cuenta.email,
-            "password": cuenta.password  # En producción esto debería estar hasheado
-        }
-        
-        # Intentar guardar la cuenta
-        if guardar_nueva_cuenta(cuenta_data):
-            # Respuesta de éxito
-            respuesta = {
-                "mensaje": MENSAJE_CUENTA_CREADA,
-                "exito": True,
-                "usuario_creado": cuenta.nombreUsuario
-            }
-            return JSONResponse(content=respuesta, status_code=HTTP_CREATED)
-        else:
-            # Error al guardar
-            error_respuesta = {
-                "mensaje": "Error al guardar la cuenta",
-                "exito": False,
-                "codigo_error": "ERROR_GUARDADO"
-            }
-            return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
-        
-    except Exception as e:        
-        # Respuesta de error inesperado
-        print(f"{LOG_ERROR} Error inesperado en crear_cuenta: {e}")
-        error_respuesta = {
-            "mensaje": MENSAJE_ERROR_INTERNO,
-            "exito": False,
-            "codigo_error": "INTERNAL_ERROR"
-        }
-        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
-
-@app.post("/iniciar-sesion")
-async def iniciar_sesion(login_data: LoginData, response: Response):
-    """
-    Endpoint para iniciar sesión.
-
-    Args:
-        login_data (LoginData): Datos de login (email y password)
-
-    Returns:
-        JSONResponse: Respuesta con el resultado de la operación
-    """
-    try:
-        # Validar contraseña primero
-        is_valid_password, error_mensaje = validar_password(login_data.password)
-        if not is_valid_password:
-            error_respuesta = {
-                "mensaje": error_mensaje,
-                "exito": False,
-                "codigo_error": "PASSWORD_INVALIDO"
-            }
-            return JSONResponse(content=error_respuesta, status_code=HTTP_BAD_REQUEST)
-        
-        cuenta_existente = validar_cuenta(login_data.email, login_data.password)   
-
-        if (cuenta_existente):
-            # Crear respuesta JSON de éxito
-            json_response = JSONResponse(content={
-                "mensaje": MENSAJE_INICIO_SESION_SATISFACTORIO,
-                "exito": True,
-                "usuario": login_data.email,
-            }, status_code=HTTP_OK)
-            
-            # Establecer cookie de usuario registrado directamente en la respuesta
-            json_response.set_cookie(
-                key=COOKIE_ESTADO_USUARIO, 
-                value=ESTADO_REGISTRADO, 
-                max_age=86400
-            )
-            
-            return json_response
-        else:
-            respuesta = {
-                "mensaje": MENSAJE_INICIO_SESION_NO_SATISFACTORIO,
-                "exito": False,
-                "usuario": login_data.email,
-            }
-    
-    except Exception as e:
-        error_respuesta = {
-            "mensaje": MENSAJE_ERROR_INTERNO,
-            "exito": False,
-            "codigo_error": "INTERNAL_ERROR",
-        }
-        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
-
-@app.post("/cerrar-sesion")
-async def cerrar_sesion(response: Response):
-    """
-    Endpoint para cerrar sesion.
-    
-    Returns:
-        JSONResponse: Respuesta con el resultado de la operación
-    """
-    try:
-        # Crear respuesta JSON de éxito
-        json_response = JSONResponse(content={
-            "mensaje": MENSAJE_CUENTA_CERRADA,
-            "exito": True,
-        }, status_code=HTTP_OK)
-        
-        # Establecer cookie de usuario invitado (cerrar sesión) directamente en la respuesta
-        json_response.set_cookie(
-            key=COOKIE_ESTADO_USUARIO, 
-            value=ESTADO_INVITADO, 
-            max_age=86400
-        )
-        
-        return json_response
-        
-    except Exception as e:        
-        # Respuesta de error (diccionario simple)
-        error_respuesta = {
-            "mensaje": MENSAJE_ERROR_INTERNO,
-            "exito": False,
-            "codigo_error": "INTERNAL_ERROR"
-        }
-        
-        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
-
+# ==================== ENDPOINTS DE FUNCIONALIDADES ESPECÍFICAS ====================
 
 @app.post("/crear-receta")
-async def crear_receta(receta: Receta):
+async def crear_receta(receta: Receta) -> JSONResponse:
     """
-    Endpoint para crear una nueva receta.
+    Endpoint para crear una nueva receta de cocina.
     
     Args:
-        receta (Receta): Datos básicos de la receta a crear
+        receta: Datos de la receta a crear (nombre, descripción, ingredientes, etc.)
 
     Returns:
         JSONResponse: Respuesta con el resultado de la operación
     """
     try:
-                
-        # Respuesta de éxito (diccionario simple)
-        respuesta = {
-            "mensaje": MENSAJE_RECETA_CREADA,
-            "exito": True,
-            "receta_creada": receta.nombreReceta
-        }
+        # TODO: Implementar validación de datos de receta
+        # TODO: Implementar guardado de receta en base de datos/archivo
+        # TODO: Implementar validación de autenticación para este endpoint
         
-        return JSONResponse(content=respuesta, status_code=HTTP_OK)
+        # Por ahora, simular éxito
+        return crear_respuesta_exito(
+            MENSAJE_RECETA_CREADA,
+            {"receta_creada": receta.nombreReceta}
+        )
         
     except Exception as e:        
-        # Respuesta de error (diccionario simple)
-        error_respuesta = {
-            "mensaje": MENSAJE_ERROR_INTERNO,
-            "exito": False,
-            "codigo_error": "INTERNAL_ERROR"
-        }
-        
-        return JSONResponse(content=error_respuesta, status_code=HTTP_INTERNAL_SERVER_ERROR)
+        print(f"{LOG_ERROR} Error inesperado en crear_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )

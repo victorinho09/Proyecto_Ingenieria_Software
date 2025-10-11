@@ -284,11 +284,20 @@ async function manejarEnvioFormulario(e, formId) {
         // Redirigir según el tipo de operación
         setTimeout(() => {
           if (config.endpoint === "/iniciar-sesion") {
-            // Login: recargar página actual para mostrar contenido de usuario registrado
-            window.location.reload();
+            // Login: asegurar redirección limpia sin query parameters problemáticos
+            const currentUrl = new URL(window.location);
+
+            // Si hay query parameters de logout, limpiarlos
+            if (currentUrl.searchParams.has("logout")) {
+              currentUrl.searchParams.delete("logout");
+              currentUrl.searchParams.delete("t");
+              window.location.href = currentUrl.toString();
+            } else {
+              // Si no hay query parameters problemáticos, simplemente recargar
+              window.location.reload();
+            }
           } else if (config.endpoint === "/cerrar-sesion") {
             // Logout: limpiar caché y redirigir a página principal como invitado
-            // Forzar limpieza completa del caché del navegador
             window.location.href = "/?logout=true&t=" + Date.now();
           }
         }, 1500);

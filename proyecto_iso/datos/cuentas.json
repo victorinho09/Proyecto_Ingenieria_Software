@@ -7,7 +7,7 @@
   {
     "nombreUsuario": "victor",
     "email": "victor@gmail.com",
-    "password": "victor"
+    "password": "Victor#1313"
   },
   {
     "nombreUsuario": "pedro varona",
@@ -53,5 +53,10 @@
     "nombreUsuario": "Javier",
     "email": "javier@gmail.com",
     "password": "Javier#1313"
+  },
+  {
+    "nombreUsuario": "prueba",
+    "email": "prueba@gmail.com",
+    "password": "Prueba#1313"
   }
 ]
