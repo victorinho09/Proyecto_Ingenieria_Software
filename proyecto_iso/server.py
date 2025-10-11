@@ -29,6 +29,17 @@ app = FastAPI(
     redoc_url="/redoc"  # Documentación ReDoc
 )
 
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    """
+    Middleware para añadir cabeceras que evitan el cacheo en el navegador.
+    """
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 # Montar archivos estáticos
 app.mount(f"/{DIRECTORIO_STATIC}", StaticFiles(directory=DIRECTORIO_STATIC), name=DIRECTORIO_STATIC)
 
@@ -334,14 +345,15 @@ async def iniciar_sesion(login_data: LoginData) -> JSONResponse:
 async def cerrar_sesion() -> JSONResponse:
     """
     Endpoint para cerrar sesión del usuario.
-    Cambia la cookie a estado invitado.
+    Cambia la cookie a estado invitado y asegura que no haya caché.
     
     Returns:
         JSONResponse: Respuesta con resultado de la operación y cookie actualizada
     """
     try:
-        # Crear respuesta de éxito con cookie de invitado
+        # Crear respuesta de éxito con cookie de invitado y cabeceras anti-caché
         json_response = crear_respuesta_exito(MENSAJE_CUENTA_CERRADA)
+        json_response.delete_cookie(key=COOKIE_ESTADO_USUARIO, path="/")
         
         # Establecer cookie de invitado (cerrar sesión)
         json_response.set_cookie(
