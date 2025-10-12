@@ -272,6 +272,7 @@ def get_perfil(request: Request):
     
     return servir_pagina_html(RUTA_PERFIL)
 
+
 @app.get("/recetas", response_class=HTMLResponse)
 def get_recetas(request: Request):
     """
