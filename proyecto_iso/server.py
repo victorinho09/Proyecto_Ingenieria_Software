@@ -256,6 +256,22 @@ def get_pagina_registrado():
 
 # ==================== ENDPOINTS PROTEGIDOS (REQUIEREN AUTENTICACIÓN) ====================
 
+@app.get("/perfil", response_class=HTMLResponse)
+def get_perfil(request: Request):
+    """
+    Endpoint para servir la página de perfil.
+    Solo accesible para usuarios autenticados.
+    
+    Returns:
+        FileResponse: Página HTML de recetas o redirección si no está autenticado
+    """
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
+    
+    return servir_pagina_html(RUTA_PERFIL)
+
 @app.get("/recetas", response_class=HTMLResponse)
 def get_recetas(request: Request):
     """
