@@ -51,19 +51,27 @@
 
             <li class="nav-item dropdown d-flex align-items-center">
               <a class="nav-link" href="/recetas">Recetas</a>
-            <a
-              class="nav-link dropdown-toggle dropdown-toggle-split px-1"
-              href="#"
-              id="navbarRecetas"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              aria-label="Más opciones de Recetas">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2" aria-labelledby="navbarRecetas">
-              <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
-              <li><a class="nav-link" href="/recetas-guardadas">Recetas Guardadas</a></li>
-            </ul>
+              <a
+                class="nav-link dropdown-toggle dropdown-toggle-split px-1"
+                href="#"
+                id="navbarRecetas"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Más opciones de Recetas"
+              >
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2"
+                aria-labelledby="navbarRecetas"
+              >
+                <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
+                <li>
+                  <a class="nav-link" href="/recetas-guardadas"
+                    >Recetas Guardadas</a
+                  >
+                </li>
+              </ul>
             </li>
 
             <li class="nav-item">
@@ -72,9 +80,13 @@
           </ul>
 
           <span class="navbar-text text-light me-3">
-          <a class="bi bi-person-circle nav-link" href="/perfil" style="text-decoration: none;">
-            <i>Perfil</i>
-          </a>
+            <a
+              class="bi bi-person-circle nav-link"
+              href="/perfil"
+              style="text-decoration: none"
+            >
+              <i>Perfil</i>
+            </a>
           </span>
 
           <button
@@ -93,21 +105,15 @@
       <h2>Recetas Guardadas</h2>
     </div>
 
-     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-auto">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <h6 class="fw-bold">Recetario Online</h6>
-            <p class="text-light small mb-0">
-              Proyecto de Ingeniería del Software - Universidad 2025/2026
-            </p>
+    <!-- Footer -->
+    <footer class="bg-light border-top mt-auto">
+      <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-book text-primary me-2"></i>
+            <span class="text-muted small">Recetario Online</span>
           </div>
-          <div class="col-md-6 text-md-end">
-            <p class="text-muted small mb-0">
-              © 2025 Recetario Online. Todos los derechos reservados.
-            </p>
-          </div>
+          <div class="text-muted small">© 2025 • ISO 2025/2026</div>
         </div>
       </div>
     </footer>
@@ -170,16 +176,19 @@
 
     <!-- Script para dropdowns en hover -->
     <script>
-      document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
-      const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-      const dd = new bootstrap.Dropdown(toggle, { popperConfig: { strategy: 'fixed' } });
+      document
+        .querySelectorAll(".nav-item.dropdown")
+        .forEach(function (dropdown) {
+          const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+          const dd = new bootstrap.Dropdown(toggle, {
+            popperConfig: { strategy: "fixed" },
+          });
 
-      dropdown.addEventListener('mouseenter', () => dd.show());
-      dropdown.addEventListener('mouseleave', () => dd.hide());
-      });
+          dropdown.addEventListener("mouseenter", () => dd.show());
+          dropdown.addEventListener("mouseleave", () => dd.hide());
+        });
     </script>
 
-    
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>
   </body>

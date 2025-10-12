@@ -51,19 +51,27 @@
 
             <li class="nav-item dropdown d-flex align-items-center">
               <a class="nav-link" href="/recetas">Recetas</a>
-            <a
-              class="nav-link dropdown-toggle dropdown-toggle-split px-1"
-              href="#"
-              id="navbarRecetas"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              aria-label="Más opciones de Recetas">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2" aria-labelledby="navbarRecetas">
-              <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
-              <li><a class="nav-link" href="/recetas-guardadas">Recetas Guardadas</a></li>
-            </ul>
+              <a
+                class="nav-link dropdown-toggle dropdown-toggle-split px-1"
+                href="#"
+                id="navbarRecetas"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Más opciones de Recetas"
+              >
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2"
+                aria-labelledby="navbarRecetas"
+              >
+                <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
+                <li>
+                  <a class="nav-link" href="/recetas-guardadas"
+                    >Recetas Guardadas</a
+                  >
+                </li>
+              </ul>
             </li>
 
             <li class="nav-item">
@@ -72,9 +80,13 @@
           </ul>
 
           <span class="navbar-text text-light me-3">
-          <a class="bi bi-person-circle nav-link" href="/perfil" style="text-decoration: none;">
-            <i>Perfil</i>
-          </a>
+            <a
+              class="bi bi-person-circle nav-link"
+              href="/perfil"
+              style="text-decoration: none"
+            >
+              <i>Perfil</i>
+            </a>
           </span>
 
           <button
@@ -90,7 +102,7 @@
     </nav>
 
     <!-- Contenedor principal con espaciado superior -->
-    <main class = "flex-grow-1">
+    <main class="flex-grow-1">
       <div class="container-fluid mt-3 pt-2 px-4">
         <div class="row justify-content-center">
           <div class="col-12 col-md-11 col-lg-10">
@@ -100,11 +112,12 @@
                   class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                   style="width: 60px; height: 60px"
                 >
-                <i class="bi bi-book-half text-primary fs-3"></i>
+                  <i class="bi bi-book-half text-primary fs-3"></i>
                 </div>
                 <h5 class="card-title fw-bold mb-3">Nueva Receta</h5>
                 <p class="card-text text-muted mb-3">
-                  Pincha aquí para crear una nueva receta de comida personalizada.
+                  Pincha aquí para crear una nueva receta de comida
+                  personalizada.
                 </p>
                 <button
                   type="button"
@@ -120,324 +133,326 @@
         </div>
       </div>
 
-    <!-- Cards inferiores -->
-    <div class="container-fluid mt-4 px-4">
-      <div class="row justify-content-center">
-        <div class="col-12 col-md-11 col-lg-10">
-          <div class="row g-4">
-            <!-- Primera card inferior -->
-            <div class="col-md-6">
-              <div
-                class="card shadow-sm border-0 h-100"
-                style="min-height: 280px"
-              >
+      <!-- Cards inferiores -->
+      <div class="container-fluid mt-4 px-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="row g-4">
+              <!-- Primera card inferior -->
+              <div class="col-md-6">
                 <div
-                  class="card-body text-center p-4 d-flex flex-column justify-content-between"
+                  class="card shadow-sm border-0 h-100"
+                  style="min-height: 280px"
                 >
-                  <div class="d-flex justify-content-center mb-3">
-                    <div
-                      class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
-                      style="width: 60px; height: 60px"
-                    >
-                      <i class="bi bi-person-circle text-primary fs-3"></i>
+                  <div
+                    class="card-body text-center p-4 d-flex flex-column justify-content-between"
+                  >
+                    <div class="d-flex justify-content-center mb-3">
+                      <div
+                        class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 60px; height: 60px"
+                      >
+                        <i class="bi bi-person-circle text-primary fs-3"></i>
+                      </div>
                     </div>
+                    <h5 class="card-title fw-bold mb-3">Mis Recetas</h5>
+                    <p class="card-text text-muted mb-3">
+                      Accede a tu colección personal de recetas guardadas y
+                      organizadas para una consulta rápida y fácil.
+                    </p>
+                    <a href="/mis-recetas" class="btn btn-outline-primary">
+                      <i class="bi bi-arrow-right"></i> Explorar mis recetas
+                    </a>
                   </div>
-                  <h5 class="card-title fw-bold mb-3">Mis Recetas</h5>
-                  <p class="card-text text-muted mb-3">
-                    Accede a tu colección personal de recetas guardadas y
-                    organizadas para una consulta rápida y fácil.
-                  </p>
-                  <a href="/mis-recetas" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-right"></i> Explorar mis recetas
-                  </a>
+                </div>
+              </div>
+              <!-- Segunda card inferior -->
+              <div class="col-md-6">
+                <div
+                  class="card shadow-sm border-0 h-100"
+                  style="min-height: 280px"
+                >
+                  <div
+                    class="card-body text-center p-4 d-flex flex-column justify-content-between"
+                  >
+                    <div class="d-flex justify-content-center mb-3">
+                      <div
+                        class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 60px; height: 60px"
+                      >
+                        <i class="bi bi-heart-fill text-primary fs-3"></i>
+                      </div>
+                    </div>
+                    <h5 class="card-title fw-bold mb-3">Recetas Guardadas</h5>
+                    <p class="card-text text-muted mb-3">
+                      Descubre tus recetas guardads para revisar tu repertorio
+                      culinario.
+                    </p>
+                    <a
+                      href="/recetas-guardadas"
+                      class="btn btn-outline-primary"
+                    >
+                      <i class="bi bi-arrow-right"></i> Explorar recetas
+                      guardadas
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-            <!-- Segunda card inferior -->
-            <div class="col-md-6">
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Cerrar Sesión -->
+      <div
+        class="modal fade"
+        id="cerrarSesionModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="cerrarSesionModalLabel">
+                Cerrar Sesión
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- Contenedor para mensajes -->
               <div
-                class="card shadow-sm border-0 h-100"
-                style="min-height: 280px"
-              >
-                <div
-                  class="card-body text-center p-4 d-flex flex-column justify-content-between"
-                >
-                  <div class="d-flex justify-content-center mb-3">
-                    <div
-                      class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
-                      style="width: 60px; height: 60px"
-                    >
-                      <i class="bi bi-heart-fill text-primary fs-3"></i>
-                    </div>
-                  </div>
-                  <h5 class="card-title fw-bold mb-3">Recetas Guardadas</h5>
-                  <p class="card-text text-muted mb-3">
-                    Descubre tus recetas guardads para revisar tu repertorio
-                    culinario.
-                  </p>
-                  <a href="/recetas-guardadas" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-right"></i> Explorar recetas guardadas
-                  </a>
+                id="mensajeContainer"
+                class="alert"
+                style="display: none"
+              ></div>
+              <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
+                <div id="mensajeCerrarSesion" class="alert alert-warning">
+                  ¿Estás seguro de querer cerrar sesión?
                 </div>
-              </div>
+              </form>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                form="cerrarSesionForm"
+                class="btn btn-primary"
+              >
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal de Cerrar Sesión -->
-    <div
-      class="modal fade"
-      id="cerrarSesionModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="cerrarSesionModalLabel">
-              Cerrar Sesión
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <!-- Contenedor para mensajes -->
-            <div
-              id="mensajeContainer"
-              class="alert"
-              style="display: none"
-            ></div>
-            <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
-              <div id="mensajeCerrarSesion" class="alert alert-warning">
-                ¿Estás seguro de querer cerrar sesión?
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer" id="modalFooter">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              form="cerrarSesionForm"
-              class="btn btn-primary"
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- Modal de Crear Receta -->
+      <div
+        class="modal fade"
+        id="crearRecetaModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="crearRecetaModalLabel">
+                Crear Nueva Receta de comida
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- Contenedor para mensajes -->
+              <div
+                id="mensajeContainer"
+                class="alert"
+                style="display: none"
+              ></div>
+              <!-- Texto de aviso -->
+              <p class="text-danger mb-1" style="font-size: 0.9rem">
+                * obligatorio
+              </p>
 
-    <!-- Modal de Crear Receta -->
-    <div
-      class="modal fade"
-      id="crearRecetaModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="crearRecetaModalLabel">
-              Crear Nueva Receta de comida
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <!-- Contenedor para mensajes -->
-            <div
-              id="mensajeContainer"
-              class="alert"
-              style="display: none"
-            ></div>
-            <!-- Texto de aviso -->
-            <p class="text-danger mb-1" style="font-size: 0.9rem">
-              * obligatorio
-            </p>
+              <form id="crearRecetaForm" action="/crear-receta" method="POST">
+                <div class="mb-3">
+                  <label for="nombreReceta" class="form-label">Nombre *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nombreReceta"
+                    name="nombreReceta"
+                    placeholder="Escribe el nombre de la receta..."
+                    required
+                  />
+                </div>
 
-            <form id="crearRecetaForm" action="/crear-receta" method="POST">
-              <div class="mb-3">
-                <label for="nombreReceta" class="form-label">Nombre *</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombreReceta"
-                  name="nombreReceta"
-                  placeholder="Escribe el nombre de la receta..."
-                  required
-                />
-              </div>
+                <div class="mb-3">
+                  <label for="descripcion" class="form-label"
+                    >Descripción *</label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="descripcion"
+                    name="descripcion"
+                    placeholder="Escribe una breve descripción de la receta..."
+                    required
+                  ></textarea>
+                </div>
 
-              <div class="mb-3">
-                <label for="descripcion" class="form-label"
-                  >Descripción *</label
-                >
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="descripcion"
-                  name="descripcion"
-                  placeholder="Escribe una breve descripción de la receta..."
-                  required
-                ></textarea>
-              </div>
+                <div class="mb-3">
+                  <label for="ingredientes" class="form-label"
+                    >Ingredientes *</label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="ingredientes"
+                    name="ingredientes"
+                    placeholder="Escribe los ingredientes..."
+                    required
+                  ></textarea>
+                </div>
 
-              <div class="mb-3">
-                <label for="ingredientes" class="form-label"
-                  >Ingredientes *</label
-                >
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="ingredientes"
-                  name="ingredientes"
-                  placeholder="Escribe los ingredientes..."
-                  required
-                ></textarea>
-              </div>
+                <div class="mb-3">
+                  <label for="alergenos" class="form-label">Alérgenos</label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="alergenos"
+                    name="alergenos"
+                    placeholder="Escribe posibles alérgenos..."
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="paisOrigen" class="form-label"
+                    >País de Origen</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="paisOrigen"
+                    name="paisOrigen"
+                    placeholder="Escribe el país de origen de la receta..."
+                  />
+                </div>
 
-              <div class="mb-3">
-                <label for="alergenos" class="form-label">Alérgenos</label>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="alergenos"
-                  name="alergenos"
-                  placeholder="Escribe posibles alérgenos..."
-                ></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="paisOrigen" class="form-label"
-                  >País de Origen</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="paisOrigen"
-                  name="paisOrigen"
-                  placeholder="Escribe el país de origen de la receta..."
-                />
-              </div>
+                <div class="mb-3">
+                  <label for="pasosAseguir" class="form-label"
+                    >Pasos a seguir *</label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="pasosAseguir"
+                    name="pasosAseguir"
+                    placeholder="Escribe los pasos a seguir para preparar la receta..."
+                    required
+                  ></textarea>
+                </div>
 
-              <div class="mb-3">
-                <label for="pasosAseguir" class="form-label"
-                  >Pasos a seguir *</label
-                >
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="pasosAseguir"
-                  name="pasosAseguir"
-                  placeholder="Escribe los pasos a seguir para preparar la receta..."
-                  required
-                ></textarea>
-              </div>
+                <div class="mb-3">
+                  <label for="turnoComida" class="form-label"
+                    >Turno de comida</label
+                  >
+                  <select
+                    class="form-select"
+                    name="turnoComida"
+                    id="turnoComida"
+                  >
+                    <option value="" selected>Selecciona una opción</option>
+                    <option value="desayuno">Desayuno</option>
+                    <option value="aperitivo">Aperitivo</option>
+                    <option value="comida">Comida</option>
+                    <option value="merienda">Merienda</option>
+                    <option value="cena">Cena</option>
+                  </select>
+                </div>
 
-              <div class="mb-3">
-                <label for="turnoComida" class="form-label"
-                  >Turno de comida</label
-                >
-                <select class="form-select" name="turnoComida" id="turnoComida">
-                  <option value="" selected>Selecciona una opción</option>
-                  <option value="desayuno">Desayuno</option>
-                  <option value="aperitivo">Aperitivo</option>
-                  <option value="comida">Comida</option>
-                  <option value="merienda">Merienda</option>
-                  <option value="cena">Cena</option>
-                </select>
-              </div>
+                <div class="mb-3">
+                  <label for="duracion" class="form-label"
+                    >Duración (en minutos) *</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="duracion"
+                    name="duracion"
+                    placeholder="Escribe la duración para preparar la receta..."
+                    required
+                  />
+                </div>
 
-              <div class="mb-3">
-                <label for="duracion" class="form-label"
-                  >Duración (en minutos) *</label
-                >
-                <input
-                  type="number"
-                  class="form-control"
-                  id="duracion"
-                  name="duracion"
-                  placeholder="Escribe la duración para preparar la receta..."
-                  required
-                />
-              </div>
+                <div class="mb-3">
+                  <label for="dificultad" class="form-label">Dificultad</label>
+                  <select class="form-select" name="dificultad" id="dificultad">
+                    <option value="" selected>Selecciona una opción</option>
+                    <option value="Facil">Fácil</option>
+                    <option value="Media">Media</option>
+                    <option value="Dificil">Difícil</option>
+                  </select>
+                </div>
 
-              <div class="mb-3">
-                <label for="dificultad" class="form-label">Dificultad</label>
-                <select class="form-select" name="dificultad" id="dificultad">
-                  <option value="" selected>Selecciona una opción</option>
-                  <option value="Facil">Fácil</option>
-                  <option value="Media">Media</option>
-                  <option value="Dificil">Difícil</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="fotoReceta" class="form-label"
-                  >Imagen de la receta *</label
-                >
-                <input
-                  type="file"
-                  class="form-control"
-                  id="fotoReceta"
-                  name="fotoReceta"
-                  accept="image/*"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer" id="modalFooter">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              form="crearRecetaForm"
-              class="btn btn-primary"
-            >
-              Crear Receta de comida
-            </button>
+                <div class="mb-3">
+                  <label for="fotoReceta" class="form-label"
+                    >Imagen de la receta *</label
+                  >
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="fotoReceta"
+                    name="fotoReceta"
+                    accept="image/*"
+                    required
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer" id="modalFooter">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                form="crearRecetaForm"
+                class="btn btn-primary"
+              >
+                Crear Receta de comida
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <h6 class="fw-bold">Recetario Online</h6>
-            <p class="text-light small mb-0">
-              Proyecto de Ingeniería del Software - Universidad 2025/2026
-            </p>
+    <footer class="bg-light border-top mt-auto">
+      <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-book text-primary me-2"></i>
+            <span class="text-muted small">Recetario Online</span>
           </div>
-          <div class="col-md-6 text-md-end">
-            <p class="text-muted small mb-0">
-              © 2025 Recetario Online. Todos los derechos reservados.
-            </p>
-          </div>
+          <div class="text-muted small">© 2025 • ISO 2025/2026</div>
         </div>
       </div>
     </footer>
@@ -447,15 +462,18 @@
 
     <!-- Script para dropdowns en hover -->
     <script>
-      document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
-      const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-      const dd = new bootstrap.Dropdown(toggle, { popperConfig: { strategy: 'fixed' } });
+      document
+        .querySelectorAll(".nav-item.dropdown")
+        .forEach(function (dropdown) {
+          const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+          const dd = new bootstrap.Dropdown(toggle, {
+            popperConfig: { strategy: "fixed" },
+          });
 
-      dropdown.addEventListener('mouseenter', () => dd.show());
-      dropdown.addEventListener('mouseleave', () => dd.hide());
-      });
+          dropdown.addEventListener("mouseenter", () => dd.show());
+          dropdown.addEventListener("mouseleave", () => dd.hide());
+        });
     </script>
-
 
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>
