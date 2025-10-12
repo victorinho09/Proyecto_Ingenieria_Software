@@ -51,19 +51,27 @@
 
             <li class="nav-item dropdown d-flex align-items-center">
               <a class="nav-link" href="/recetas">Recetas</a>
-            <a
-              class="nav-link dropdown-toggle dropdown-toggle-split px-1"
-              href="#"
-              id="navbarRecetas"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              aria-label="Más opciones de Recetas">
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2" aria-labelledby="navbarRecetas">
-              <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
-              <li><a class="nav-link" href="/recetas-guardadas">Recetas Guardadas</a></li>
-            </ul>
+              <a
+                class="nav-link dropdown-toggle dropdown-toggle-split px-1"
+                href="#"
+                id="navbarRecetas"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Más opciones de Recetas"
+              >
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2"
+                aria-labelledby="navbarRecetas"
+              >
+                <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
+                <li>
+                  <a class="nav-link" href="/recetas-guardadas"
+                    >Recetas Guardadas</a
+                  >
+                </li>
+              </ul>
             </li>
 
             <li class="nav-item">
@@ -72,9 +80,13 @@
           </ul>
 
           <span class="navbar-text text-light me-3">
-          <a class="bi bi-person-circle nav-link" href="/perfil" style="text-decoration: none;">
-            <i>Perfil</i>
-          </a>
+            <a
+              class="bi bi-person-circle nav-link"
+              href="/perfil"
+              style="text-decoration: none"
+            >
+              <i>Perfil</i>
+            </a>
           </span>
 
           <button
@@ -89,8 +101,271 @@
       </div>
     </nav>
 
-    <div>
-      <h2>Mis Recetas</h2>
+    <!-- Contenedor principal -->
+    <main class="flex-grow-1">
+      <div class="container-fluid mt-3 pt-2 px-4">
+        <!-- Sección superior: Crear receta -->
+        <div class="row justify-content-center mb-4">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="card shadow-sm border-0">
+              <div class="card-body text-center p-4">
+                <div
+                  class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                  style="width: 60px; height: 60px"
+                >
+                  <i class="bi bi-plus-circle text-primary fs-3"></i>
+                </div>
+                <h5 class="card-title fw-bold mb-3">Nueva Receta</h5>
+                <p class="card-text text-muted mb-3">
+                  Crea una nueva receta personalizada y agrégala a tu colección.
+                </p>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#crearRecetaModal"
+                >
+                  <i class="bi bi-plus-circle"></i> Crear Receta
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección inferior: Mis recetas -->
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-bold mb-0">
+                <i class="bi bi-person-circle text-primary"></i> Mis Recetas
+              </h4>
+              <small class="text-muted" id="totalRecetas">Cargando...</small>
+            </div>
+
+            <!-- Contenedor de recetas -->
+            <div id="contenedorRecetas" class="row g-4">
+              <!-- Las recetas se cargarán aquí dinámicamente -->
+              <div class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Cargando recetas...</span>
+                </div>
+                <p class="mt-2 text-muted">Cargando tus recetas...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal de Crear Receta -->
+    <div
+      class="modal fade"
+      id="crearRecetaModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearRecetaModalLabel">
+              <i class="bi bi-plus-circle"></i> Crear Nueva Receta
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Contenedor para mensajes -->
+            <div
+              id="mensajeContainer"
+              class="alert"
+              style="display: none"
+            ></div>
+            <!-- Texto de aviso -->
+            <p class="text-danger mb-3" style="font-size: 0.9rem">
+              * campos obligatorios
+            </p>
+
+            <form id="crearRecetaForm" action="/crear-receta" method="POST">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="nombreReceta" class="form-label"
+                      >Nombre *</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="nombreReceta"
+                      name="nombreReceta"
+                      placeholder="Nombre de la receta..."
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="duracion" class="form-label"
+                      >Duración (minutos) *</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="duracion"
+                      name="duracion"
+                      placeholder="Tiempo de preparación..."
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="descripcion" class="form-label"
+                  >Descripción *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="descripcion"
+                  name="descripcion"
+                  rows="3"
+                  placeholder="Describe tu receta..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="ingredientes" class="form-label"
+                  >Ingredientes *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="ingredientes"
+                  name="ingredientes"
+                  rows="3"
+                  placeholder="Lista los ingredientes necesarios..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="pasosAseguir" class="form-label"
+                  >Pasos a seguir *</label
+                >
+                <textarea
+                  class="form-control"
+                  id="pasosAseguir"
+                  name="pasosAseguir"
+                  rows="4"
+                  placeholder="Describe los pasos de preparación..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="turnoComida" class="form-label"
+                      >Turno de comida</label
+                    >
+                    <select
+                      class="form-select"
+                      name="turnoComida"
+                      id="turnoComida"
+                    >
+                      <option value="" selected>Selecciona una opción</option>
+                      <option value="desayuno">Desayuno</option>
+                      <option value="aperitivo">Aperitivo</option>
+                      <option value="comida">Comida</option>
+                      <option value="merienda">Merienda</option>
+                      <option value="cena">Cena</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="dificultad" class="form-label"
+                      >Dificultad</label
+                    >
+                    <select
+                      class="form-select"
+                      name="dificultad"
+                      id="dificultad"
+                    >
+                      <option value="" selected>Selecciona una opción</option>
+                      <option value="Facil">Fácil</option>
+                      <option value="Media">Media</option>
+                      <option value="Dificil">Difícil</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="paisOrigen" class="form-label"
+                      >País de Origen</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="paisOrigen"
+                      name="paisOrigen"
+                      placeholder="País de origen..."
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="alergenos" class="form-label">Alérgenos</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="alergenos"
+                      name="alergenos"
+                      placeholder="Posibles alérgenos..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="fotoReceta" class="form-label"
+                  >Imagen de la receta *</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="fotoReceta"
+                  name="fotoReceta"
+                  accept="image/*"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              form="crearRecetaForm"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-check-circle"></i> Crear Receta
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Footer -->
@@ -170,15 +445,142 @@
 
     <!-- Script para dropdowns en hover -->
     <script>
-      document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
-      const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-      const dd = new bootstrap.Dropdown(toggle, { popperConfig: { strategy: 'fixed' } });
+      document
+        .querySelectorAll(".nav-item.dropdown")
+        .forEach(function (dropdown) {
+          const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+          const dd = new bootstrap.Dropdown(toggle, {
+            popperConfig: { strategy: "fixed" },
+          });
 
-      dropdown.addEventListener('mouseenter', () => dd.show());
-      dropdown.addEventListener('mouseleave', () => dd.hide());
-      });
+          dropdown.addEventListener("mouseenter", () => dd.show());
+          dropdown.addEventListener("mouseleave", () => dd.hide());
+        });
     </script>
 
+    <!-- Script específico para mis recetas -->
+    <script>
+      // Función para formatear la duración
+      function formatearDuracion(duracion) {
+        if (duracion < 60) {
+          return `${duracion} min`;
+        } else {
+          const horas = Math.floor(duracion / 60);
+          const minutos = duracion % 60;
+          return minutos > 0 ? `${horas}h ${minutos}min` : `${horas}h`;
+        }
+      }
+
+      // Función para crear una card de receta
+      function crearCardReceta(receta) {
+        return `
+          <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                ${
+                  receta.fotoReceta
+                    ? `<img src="${receta.fotoReceta}" class="img-fluid rounded-top" style="max-height: 100%; object-fit: cover;" alt="${receta.nombreReceta}">`
+                    : `<i class="bi bi-image text-muted" style="font-size: 3rem;"></i>`
+                }
+              </div>
+              <div class="card-body d-flex flex-column">
+                <h6 class="card-title fw-bold mb-2">${receta.nombreReceta}</h6>
+                
+                <p class="card-text text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                  ${receta.descripcion}
+                </p>
+                
+                <div class="mt-auto">
+                  <div class="d-flex align-items-center text-muted small">
+                    <i class="bi bi-clock me-1"></i>
+                    <span>${formatearDuracion(receta.duracion)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Función para cargar las recetas
+      async function cargarMisRecetas() {
+        try {
+          const response = await fetch("/api/mis-recetas", {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Cache-Control": "no-cache",
+            },
+          });
+
+          const resultado = await response.json();
+          const contenedor = document.getElementById("contenedorRecetas");
+          const totalRecetas = document.getElementById("totalRecetas");
+
+          if (resultado.exito && resultado.recetas) {
+            const recetas = resultado.recetas;
+
+            if (recetas.length === 0) {
+              contenedor.innerHTML = `
+                <div class="col-12 text-center py-5">
+                  <div class="text-muted">
+                    <i class="bi bi-journal-x" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No tienes recetas aún</h5>
+                    <p>¡Crea tu primera receta usando el botón de arriba!</p>
+                  </div>
+                </div>
+              `;
+              totalRecetas.textContent = "Sin recetas";
+            } else {
+              contenedor.innerHTML = recetas.map(crearCardReceta).join("");
+              totalRecetas.textContent = `${recetas.length} receta${
+                recetas.length !== 1 ? "s" : ""
+              }`;
+            }
+          } else {
+            contenedor.innerHTML = `
+              <div class="col-12 text-center py-5">
+                <div class="text-danger">
+                  <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+                  <h5 class="mt-3">Error al cargar recetas</h5>
+                  <p>${
+                    resultado.mensaje || "Ha ocurrido un error inesperado"
+                  }</p>
+                </div>
+              </div>
+            `;
+            totalRecetas.textContent = "Error";
+          }
+        } catch (error) {
+          console.error("Error al cargar recetas:", error);
+          document.getElementById("contenedorRecetas").innerHTML = `
+            <div class="col-12 text-center py-5">
+              <div class="text-danger">
+                <i class="bi bi-wifi-off" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Error de conexión</h5>
+                <p>No se pudieron cargar las recetas. Verifica tu conexión.</p>
+              </div>
+            </div>
+          `;
+          document.getElementById("totalRecetas").textContent = "Error";
+        }
+      }
+
+      // Cargar recetas al cargar la página
+      document.addEventListener("DOMContentLoaded", cargarMisRecetas);
+
+      // Recargar recetas cuando se crea una nueva (escuchar el evento de éxito del modal)
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("crearRecetaModal");
+        if (modal) {
+          modal.addEventListener("hidden.bs.modal", function () {
+            // Recargar recetas después de cerrar el modal (podría haberse creado una nueva)
+            setTimeout(cargarMisRecetas, 500);
+          });
+        }
+      });
+    </script>
 
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>

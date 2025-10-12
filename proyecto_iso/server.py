@@ -19,7 +19,7 @@ from constants import *
 from models import Cuenta, LoginData, Receta
 from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
-    validar_cuenta, validar_password, guardar_nueva_receta
+    validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -563,6 +563,55 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
         
     except Exception as e:        
         print(f"{LOG_ERROR} Error inesperado en crear_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.get("/api/mis-recetas")
+async def obtener_mis_recetas(request: Request) -> JSONResponse:
+    """
+    Endpoint API para obtener todas las recetas del usuario autenticado.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies
+        
+    Returns:
+        JSONResponse: Lista de recetas del usuario
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver tus recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener recetas del usuario
+        recetas_usuario = obtener_recetas_usuario(email_usuario)
+        
+        return crear_respuesta_exito(
+            f"Recetas obtenidas correctamente",
+            {
+                "recetas": recetas_usuario,
+                "total": len(recetas_usuario),
+                "usuario": email_usuario
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_mis_recetas: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

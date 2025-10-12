@@ -272,3 +272,31 @@ def guardar_nueva_receta(receta_data: Dict[str, Any], email_usuario: str) -> boo
     except Exception as e:
         print(f"{LOG_ERROR} Error al guardar nueva receta: {e}")
         return False
+
+
+def obtener_recetas_usuario(email_usuario: str) -> List[Dict[str, Any]]:
+    """
+    Obtiene todas las recetas de un usuario específico.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        List[Dict[str, Any]]: Lista de recetas del usuario
+    """
+    try:
+        # Cargar todas las recetas
+        todas_las_recetas = cargar_recetas()
+        
+        # Filtrar solo las recetas del usuario
+        recetas_usuario = [
+            receta for receta in todas_las_recetas 
+            if receta.get("usuario", "").lower() == email_usuario.lower()
+        ]
+        
+        print(f"{LOG_INFO} Encontradas {len(recetas_usuario)} recetas para usuario {email_usuario}")
+        return recetas_usuario
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener recetas del usuario: {e}")
+        return []
