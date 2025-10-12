@@ -24,5 +24,44 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "victor@gmail.com"
+  },
+  {
+    "nombreReceta": "receta2",
+    "descripcion": "Receta numero 2",
+    "ingredientes": "sdf",
+    "pasosAseguir": "sdfds",
+    "duracion": 4,
+    "fotoReceta": "/static/uploads/recetas/20251012_211323_javier_f791b5c1.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "javier@gmail.com"
+  },
+  {
+    "nombreReceta": "Receta3",
+    "descripcion": "Receta numero 3",
+    "ingredientes": "mas cosas",
+    "pasosAseguir": "sdfdsf",
+    "duracion": 6,
+    "fotoReceta": "/static/uploads/recetas/20251012_211345_javier_75be6d6a.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "javier@gmail.com"
+  },
+  {
+    "nombreReceta": "Receta 4",
+    "descripcion": "asdfs",
+    "ingredientes": "sdf",
+    "pasosAseguir": "adsf",
+    "duracion": 2,
+    "fotoReceta": "/static/uploads/recetas/20251012_211403_javier_12d9159c.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "javier@gmail.com"
   }
 ]
