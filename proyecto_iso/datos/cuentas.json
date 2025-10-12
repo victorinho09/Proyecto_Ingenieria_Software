@@ -73,5 +73,10 @@
     "nombreUsuario": "PedRO",
     "email": "prueba3.0@gmail.com",
     "password": "Prueba3.0"
+  },
+  {
+    "nombreUsuario": "123",
+    "email": "123@123.com",
+    "password": "123123123Aa"
   }
 ]
