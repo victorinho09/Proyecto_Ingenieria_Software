@@ -48,9 +48,24 @@
             <li class="nav-item">
               <a class="nav-link" href="/">Inicio</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="/recetas">Recetas</a>
+
+            <li class="nav-item dropdown d-flex align-items-center">
+              <a class="nav-link" href="/recetas">Recetas</a>
+            <a
+              class="nav-link dropdown-toggle dropdown-toggle-split px-1"
+              href="#"
+              id="navbarRecetas"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              aria-label="Más opciones de Recetas">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2" aria-labelledby="navbarRecetas">
+              <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
+              <li><a class="nav-link" href="/recetas-guardadas">Recetas Guardadas</a></li>
+            </ul>
             </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/menu-semanal">Menú Semanal</a>
             </li>
@@ -429,6 +444,18 @@
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para dropdowns en hover -->
+    <script>
+      document.querySelectorAll('.nav-item.dropdown').forEach(function (dropdown) {
+      const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+      const dd = new bootstrap.Dropdown(toggle, { popperConfig: { strategy: 'fixed' } });
+
+      dropdown.addEventListener('mouseenter', () => dd.show());
+      dropdown.addEventListener('mouseleave', () => dd.hide());
+      });
+    </script>
+
 
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>

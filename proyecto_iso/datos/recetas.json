@@ -24,5 +24,18 @@
     "turnoComida": "cena",
     "dificultad": "Facil",
     "usuario": "123@123.com"
+  },
+  {
+    "nombreReceta": "jdsjfjd",
+    "descripcion": "1212",
+    "ingredientes": "212121",
+    "pasosAseguir": "2121",
+    "duracion": 12121,
+    "fotoReceta": "",
+    "alergenos": "21212",
+    "paisOrigen": "1121",
+    "turnoComida": "cena",
+    "dificultad": "Facil",
+    "usuario": "123@123.com"
   }
 ]
