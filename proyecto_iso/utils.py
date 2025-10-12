@@ -1,5 +1,8 @@
 import os
 import json
+import base64
+import uuid
+from datetime import datetime
 from typing import Optional, List, Dict, Any, Tuple
 from constants import *
 import re
@@ -25,8 +28,15 @@ def crear_directorio_si_no_existe(directorio: str) -> None:
     Args:
         directorio (str): Ruta del directorio a crear
     """
-    if not os.path.exists(directorio):
-        os.makedirs(directorio)
+    try:
+        if not os.path.exists(directorio):
+            os.makedirs(directorio, exist_ok=True)
+            print(f"{LOG_SUCCESS} Directorio creado: {directorio}")
+        else:
+            print(f"{LOG_INFO} Directorio ya existe: {directorio}")
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al crear directorio {directorio}: {e}")
+        raise
 
 
 def cargar_cuentas() -> List[Dict[str, Any]]:
@@ -300,3 +310,180 @@ def obtener_recetas_usuario(email_usuario: str) -> List[Dict[str, Any]]:
     except Exception as e:
         print(f"{LOG_ERROR} Error al obtener recetas del usuario: {e}")
         return []
+
+
+# ==================== FUNCIONES DE UTILIDAD PARA IMÁGENES ====================
+
+def validar_base64_imagen(base64_string: str) -> Tuple[bool, str]:
+    """
+    Valida si una cadena Base64 representa una imagen válida.
+    
+    Args:
+        base64_string (str): Cadena Base64 a validar
+        
+    Returns:
+        Tuple[bool, str]: (True, tipo_mime) si es válida, (False, mensaje_error) si no lo es
+    """
+    try:
+        # Verificar si tiene el prefijo data:image
+        if not base64_string.startswith('data:image/'):
+            return False, "La imagen debe estar en formato Base64 con prefijo data:image/"
+        
+        # Extraer tipo MIME y datos Base64
+        header, data = base64_string.split(',', 1)
+        tipo_mime = header.split(':')[1].split(';')[0]
+        
+        # Validar tipo MIME
+        if tipo_mime not in TIPOS_IMAGEN_PERMITIDOS:
+            return False, f"Tipo de imagen no permitido. Tipos válidos: {', '.join(TIPOS_IMAGEN_PERMITIDOS)}"
+        
+        # Decodificar Base64 para verificar validez
+        imagen_bytes = base64.b64decode(data)
+        
+        # Verificar tamaño
+        if len(imagen_bytes) > TAMAÑO_MAXIMO_IMAGEN:
+            return False, f"La imagen es muy grande. Tamaño máximo: {TAMAÑO_MAXIMO_IMAGEN // (1024*1024)}MB"
+        
+        # Verificar que no esté vacía
+        if len(imagen_bytes) == 0:
+            return False, "La imagen está vacía"
+        
+        return True, tipo_mime
+        
+    except Exception as e:
+        return False, f"Error al validar imagen: {str(e)}"
+
+
+def obtener_extension_desde_mime(tipo_mime: str) -> str:
+    """
+    Obtiene la extensión de archivo basada en el tipo MIME.
+    
+    Args:
+        tipo_mime (str): Tipo MIME de la imagen
+        
+    Returns:
+        str: Extensión del archivo
+    """
+    extensiones = {
+        "image/jpeg": ".jpg",
+        "image/jpg": ".jpg", 
+        "image/png": ".png",
+        "image/webp": ".webp"
+    }
+    return extensiones.get(tipo_mime, ".jpg")
+
+
+def generar_nombre_archivo_unico(email_usuario: str, extension: str) -> str:
+    """
+    Genera un nombre de archivo único para evitar colisiones.
+    
+    Args:
+        email_usuario (str): Email del usuario que sube la imagen
+        extension (str): Extensión del archivo
+        
+    Returns:
+        str: Nombre de archivo único
+    """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    usuario_limpio = re.sub(r'[^a-zA-Z0-9]', '_', email_usuario.split('@')[0])
+    id_unico = str(uuid.uuid4())[:8]
+    
+    return f"{timestamp}_{usuario_limpio}_{id_unico}{extension}"
+
+
+def guardar_imagen_base64(base64_string: str, email_usuario: str) -> Tuple[bool, str]:
+    """
+    Guarda una imagen Base64 como archivo en el servidor.
+    
+    Args:
+        base64_string (str): Imagen en formato Base64
+        email_usuario (str): Email del usuario que sube la imagen
+        
+    Returns:
+        Tuple[bool, str]: (True, url_imagen) si se guardó correctamente, (False, mensaje_error) si falló
+    """
+    try:
+        # Validar imagen Base64
+        es_valida, resultado = validar_base64_imagen(base64_string)
+        if not es_valida:
+            return False, resultado
+        
+        tipo_mime = resultado
+        
+        # Crear directorios si no existen
+        crear_directorio_si_no_existe(DIRECTORIO_UPLOADS)
+        crear_directorio_si_no_existe(DIRECTORIO_IMAGENES_RECETAS)
+        
+        # Extraer datos Base64
+        header, data = base64_string.split(',', 1)
+        imagen_bytes = base64.b64decode(data)
+        
+        # Generar nombre de archivo único
+        extension = obtener_extension_desde_mime(tipo_mime)
+        nombre_archivo = generar_nombre_archivo_unico(email_usuario, extension)
+        
+        # Ruta completa del archivo
+        ruta_archivo = os.path.join(DIRECTORIO_IMAGENES_RECETAS, nombre_archivo)
+        
+        # Guardar archivo
+        with open(ruta_archivo, 'wb') as archivo:
+            archivo.write(imagen_bytes)
+        
+        # Generar URL de la imagen
+        url_imagen = f"{URL_BASE_IMAGENES}/{nombre_archivo}"
+        
+        print(f"{LOG_SUCCESS} Imagen guardada: {nombre_archivo} para usuario {email_usuario}")
+        return True, url_imagen
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al guardar imagen: {e}")
+        return False, f"Error interno al guardar imagen: {str(e)}"
+
+
+def procesar_imagen_receta(receta_data: Dict[str, Any], email_usuario: str) -> Dict[str, Any]:
+    """
+    Procesa la imagen de una receta: convierte Base64 a archivo y actualiza la URL.
+    
+    Args:
+        receta_data (Dict[str, Any]): Datos de la receta
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        Dict[str, Any]: Datos de la receta con imagen procesada
+    """
+    try:
+        foto_receta = receta_data.get("fotoReceta", "")
+        print(f"{LOG_INFO} [PROCESAR IMAGEN] Procesando imagen para usuario: {email_usuario}")
+        print(f"{LOG_INFO} [PROCESAR IMAGEN] Longitud de fotoReceta: {len(foto_receta) if foto_receta else 0}")
+        
+        # Si no hay imagen o está vacía, es un error ahora que es obligatoria
+        if not foto_receta or foto_receta.strip() == "":
+            print(f"{LOG_ERROR} [PROCESAR IMAGEN] La imagen es obligatoria pero no se proporcionó")
+            receta_data["fotoReceta"] = ""
+            return receta_data
+        
+        # Si ya es una URL (no Base64), mantenerla
+        if not foto_receta.startswith('data:image/'):
+            print(f"{LOG_INFO} [PROCESAR IMAGEN] Ya es una URL, no procesando: {foto_receta[:50]}...")
+            return receta_data
+        
+        print(f"{LOG_INFO} [PROCESAR IMAGEN] Detectado Base64, procesando...")
+        
+        # Procesar imagen Base64
+        exito, resultado = guardar_imagen_base64(foto_receta, email_usuario)
+        
+        if exito:
+            # Actualizar con la URL de la imagen guardada
+            receta_data["fotoReceta"] = resultado
+            print(f"{LOG_SUCCESS} Imagen procesada correctamente: {resultado}")
+        else:
+            # En caso de error, dejar vacío y loggear el error
+            print(f"{LOG_ERROR} Error al procesar imagen de receta: {resultado}")
+            receta_data["fotoReceta"] = ""
+        
+        return receta_data
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado al procesar imagen de receta: {e}")
+        receta_data["fotoReceta"] = ""
+        return receta_data

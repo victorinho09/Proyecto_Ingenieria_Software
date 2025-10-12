@@ -472,9 +472,12 @@
             <div class="card shadow-sm border-0 h-100">
               <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                 ${
-                  receta.fotoReceta
-                    ? `<img src="${receta.fotoReceta}" class="img-fluid rounded-top" style="max-height: 100%; object-fit: cover;" alt="${receta.nombreReceta}">`
-                    : `<i class="bi bi-image text-muted" style="font-size: 3rem;"></i>`
+                  receta.fotoReceta && receta.fotoReceta.trim() !== ""
+                    ? `<img src="${receta.fotoReceta}" class="img-fluid rounded-top w-100 h-100" style="object-fit: cover;" alt="${receta.nombreReceta}" loading="lazy">`
+                    : `<div class="d-flex flex-column align-items-center justify-content-center text-muted">
+                         <i class="bi bi-image" style="font-size: 3rem;"></i>
+                         <small class="mt-2">Sin imagen</small>
+                       </div>`
                 }
               </div>
               <div class="card-body d-flex flex-column">

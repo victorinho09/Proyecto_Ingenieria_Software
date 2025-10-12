@@ -19,7 +19,8 @@ from constants import *
 from models import Cuenta, LoginData, Receta
 from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
-    validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario
+    validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
+    procesar_imagen_receta
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -544,6 +545,9 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
         
         # Convertir modelo Pydantic a diccionario para facilitar el manejo
         receta_data = receta.model_dump()
+        
+        # Procesar imagen Base64 si existe
+        receta_data = procesar_imagen_receta(receta_data, email_usuario)
         
         # Guardar la receta con el email del usuario
         if guardar_nueva_receta(receta_data, email_usuario):

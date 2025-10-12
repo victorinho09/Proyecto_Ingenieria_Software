@@ -19,4 +19,4 @@ class Receta(BaseModel):
     turnoComida: str
     duracion: int
     dificultad: str
-    # fotoReceta: file  FALTA IMPLEMENTAR
+    fotoReceta: str  # Campo para imagen en Base64 o URL, obligatorio

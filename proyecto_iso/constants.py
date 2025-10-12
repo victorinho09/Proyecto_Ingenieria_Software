@@ -1,3 +1,11 @@
+# ==================== IMPORTS ====================
+import os
+
+# ==================== RUTAS ABSOLUTAS ====================
+
+# Obtener la ruta absoluta del directorio del proyecto
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # ==================== RUTAS DE ARCHIVOS ====================
 
 # Rutas de las páginas HTML
@@ -13,9 +21,17 @@ RUTA_PERFIL = "./static/perfil.html"
 DIRECTORIO_STATIC = "static"
 
 # Rutas de archivos de datos
-RUTA_CUENTAS_JSON = "./datos/cuentas.json"
-RUTA_RECETAS_JSON = "./datos/recetas.json"
-DIRECTORIO_DATOS = "datos"
+DIRECTORIO_DATOS = os.path.join(BASE_DIR, "datos")
+RUTA_CUENTAS_JSON = os.path.join(DIRECTORIO_DATOS, "cuentas.json")
+RUTA_RECETAS_JSON = os.path.join(DIRECTORIO_DATOS, "recetas.json")
+
+# Configuración de imágenes
+DIRECTORIO_UPLOADS = os.path.join(BASE_DIR, "static", "uploads")
+DIRECTORIO_IMAGENES_RECETAS = os.path.join(BASE_DIR, "static", "uploads", "recetas")
+URL_BASE_IMAGENES = "/static/uploads/recetas"
+TIPOS_IMAGEN_PERMITIDOS = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+EXTENSIONES_PERMITIDAS = [".jpg", ".jpeg", ".png", ".webp"]
+TAMAÑO_MAXIMO_IMAGEN = 5 * 1024 * 1024  # 5MB en bytes
 
 # ==================== CONFIGURACIÓN DEL SERVIDOR ====================
 

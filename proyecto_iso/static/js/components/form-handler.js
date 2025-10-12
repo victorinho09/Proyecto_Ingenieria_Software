@@ -12,6 +12,7 @@ import {
 } from "../utils/validators.js";
 import {
   obtenerDatosFormulario,
+  obtenerDatosFormularioConArchivos,
   manejarEstadoBoton,
   obtenerBotonSubmit,
 } from "../utils/dom-utils.js";
@@ -40,7 +41,22 @@ export async function manejarEnvioFormulario(event) {
   }
 
   const button = obtenerBotonSubmit(form);
-  const data = obtenerDatosFormulario(form, config.campos);
+
+  // Obtener datos del formulario - usar función especial para crear receta (con archivos)
+  let data;
+  try {
+    if (formId === "crearRecetaForm") {
+      data = await obtenerDatosFormularioConArchivos(form, config.campos);
+    } else {
+      data = obtenerDatosFormulario(form, config.campos);
+    }
+  } catch (error) {
+    mostrarMensaje(
+      `Error al procesar el formulario: ${error.message}`,
+      "error"
+    );
+    return;
+  }
 
   // Validación específica por tipo de formulario
   if (formId === "iniciarSesionForm") {
@@ -138,7 +154,7 @@ export async function manejarEnvioFormulario(event) {
         if (resultado.success) {
           // Solo para el formulario de crear receta:
           // 1. Cerrar el modal si existe
-          const modal = form.closest('.modal');
+          const modal = form.closest(".modal");
           if (modal) {
             const bootstrapModal = bootstrap.Modal.getInstance(modal);
             if (bootstrapModal) {
@@ -263,8 +279,6 @@ function limpiarErroresFormulario(form) {
     );
   }
 }
-
-
 
 /**
  * Inserta un elemento de error en el lugar apropiado del formulario
@@ -438,9 +452,7 @@ export function inicializarFormularios() {
         console.log(
           `🔒 [SEGURIDAD] Validación eliminada del formulario: ${formId}`
         );
-      } else if (
-        formId === "crearCuentaForm"
-      ) {
+      } else if (formId === "crearCuentaForm") {
         // SOLO añadir validación en tiempo real para crear cuenta
         const campoEmail = form.querySelector('input[type="email"]');
         const campoPassword = form.querySelector('input[type="password"]');
