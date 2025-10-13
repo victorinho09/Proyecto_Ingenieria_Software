@@ -58,6 +58,36 @@ export function cerrarTodosLosModales() {
 }
 
 /**
+ * Fuerza el cierre de un modal y limpia cualquier backdrop sobrante generado por Bootstrap
+ * @param {HTMLElement} modal - Elemento del modal a cerrar
+ */
+export function closeAndClean(modal) {
+  if (!modal) return;
+
+  // Intentar usar la instancia de bootstrap si existe
+  try {
+    const bsInstance = bootstrap.Modal.getInstance(modal);
+    if (bsInstance) {
+      bsInstance.hide();
+    }
+  } catch (e) {
+    // Silenciar si bootstrap no está presente o getInstance falla
+  }
+
+  // Asegurar que el modal quede oculto y los formularios reseteados
+  modal.style.display = "none";
+  const form = modal.querySelector("form");
+  if (form) form.reset();
+
+  // Eliminar cualquier backdrop que quede en el DOM
+  const backdrops = document.querySelectorAll('.modal-backdrop');
+  backdrops.forEach((bd) => bd.remove());
+
+  // Restaurar scroll del body
+  document.body.style.overflow = "";
+}
+
+/**
  * Inicializa los event listeners para los modales
  */
 export function inicializarModales() {
@@ -91,8 +121,24 @@ export function inicializarModales() {
 
   // Cerrar modal al hacer click en el overlay
   document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("modal")) {
-      cerrarModal(event.target.id);
+    // Si se hace click directamente en el elemento que coincide con .modal (overlay)
+    if (event.target.classList && event.target.classList.contains("modal")) {
+      // Si el modal usa backdrop 'static', bootstrap evita cerrarlo; forzamos cierre y limpieza
+      const modal = event.target;
+      closeAndClean(modal);
+    }
+
+    // Detectar clicks sobre backdrops creados por bootstrap (elementos con clase .modal-backdrop)
+    if (event.target.classList && event.target.classList.contains('modal-backdrop')) {
+      // Buscar el modal actualmente visible (si existe)
+      const modalVisible = document.querySelector('.modal[style*="display: block"], .modal.show');
+      if (modalVisible) {
+        closeAndClean(modalVisible);
+      } else {
+        // Si no hay modal visible, simplemente eliminar el backdrop y restaurar body
+        event.target.remove();
+        document.body.style.overflow = "";
+      }
     }
   });
 
