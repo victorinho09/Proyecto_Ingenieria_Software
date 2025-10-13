@@ -42,6 +42,12 @@ export async function manejarEnvioFormulario(event) {
 
   const button = obtenerBotonSubmit(form);
 
+  // Guard para evitar dobles envíos rápidos (evita ejecutar el handler dos veces)
+  if (form && form.dataset && form.dataset.enviando === "true") {
+    console.log("⛔ [DOBLE SUBMIT] Envío ignorado: ya existe un envío en curso");
+    return;
+  }
+
   // Obtener datos del formulario - usar función especial para crear receta (con archivos)
   let data;
   try {
@@ -88,8 +94,18 @@ export async function manejarEnvioFormulario(event) {
     // CREAR CUENTA: Validación detallada con mensaje local (no flotante)
     const validacion = validarDatosFormularioConErrores(data, config);
     if (!validacion.isValid) {
-      const mensajeError =
-        "Errores encontrados: " + validacion.errors.join(", ");
+      const mensajeError = "Errores encontrados: " + validacion.errors.join(", ");
+
+      // Si ya hay errores por campo visibles (errores individuales), preferimos
+      // mantenerlos y NO crear la caja resumen redundante.
+      const tieneErroresPorCampo = !!form.querySelector('.error-campo') || !!form.querySelector('.is-invalid');
+
+      if (tieneErroresPorCampo) {
+        console.log('ℹ️ [SKIP SUMMARY] Hay errores por campo visibles; no crear resumen');
+        return; // Salir sin crear la caja resumen
+      }
+
+      // Si no hay errores por campo visibles, mostrar el resumen global
       mostrarErrorLocalFormulario(form, mensajeError);
       return; // CRÍTICO: Salir aquí para no continuar con el procesamiento
     }

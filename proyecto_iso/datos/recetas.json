@@ -89,5 +89,57 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "jdsjfjd",
+    "descripcion": "hola",
+    "ingredientes": "hola",
+    "pasosAseguir": "dwdw",
+    "duracion": 6,
+    "fotoReceta": "",
+    "alergenos": "weew",
+    "paisOrigen": "wllw",
+    "turnoComida": "cena",
+    "dificultad": "Facil",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "121212",
+    "descripcion": "21212",
+    "ingredientes": "12121",
+    "pasosAseguir": "12121",
+    "duracion": 12121,
+    "fotoReceta": "",
+    "alergenos": "12121",
+    "paisOrigen": "2121",
+    "turnoComida": "desayuno",
+    "dificultad": "Facil",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "receta5",
+    "descripcion": "12121",
+    "ingredientes": "2121",
+    "pasosAseguir": "12121",
+    "duracion": 4,
+    "fotoReceta": "/static/uploads/recetas/20251013_165318_javiervega_ed928ebc.png",
+    "alergenos": "1212",
+    "paisOrigen": "12121",
+    "turnoComida": "cena",
+    "dificultad": "Facil",
+    "usuario": "javiervega@gmail.com"
+  },
+  {
+    "nombreReceta": "1221",
+    "descripcion": "21212",
+    "ingredientes": "21212",
+    "pasosAseguir": "12121",
+    "duracion": 121212,
+    "fotoReceta": "/static/uploads/recetas/20251013_171236_12121121221_f8a7012d.png",
+    "alergenos": "2121",
+    "paisOrigen": "12121",
+    "turnoComida": "aperitivo",
+    "dificultad": "Facil",
+    "usuario": "12121121221@gmail.com"
   }
 ]
