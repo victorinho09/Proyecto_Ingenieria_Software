@@ -31,7 +31,7 @@ function validarEmail(email) {
   if (local.length < 8) return false;
   if (!/^[A-Za-z0-9.]+$/.test(local)) return false;
 
-  const dominiosPermitidos = ['outlook.com','hotmail.com','gmail.com','icloud.com','ceu.es'];
+  const dominiosPermitidos = ['outlook.com','hotmail.com','gmail.com','icloud.com','ceu.es', 'usp.ceu.es'];
   if (!dominiosPermitidos.includes(dominio)) return false;
 
   return true;

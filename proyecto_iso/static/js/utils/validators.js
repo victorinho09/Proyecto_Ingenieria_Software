@@ -105,11 +105,12 @@ export function validarEmailConErrores(email) {
     'hotmail.com',
     'gmail.com',
     'icloud.com',
-    'ceu.es'
+    'ceu.es',
+    'usp.ceu.es'
   ];
 
   if (!dominiosPermitidos.includes(dominio)) {
-    errors.push('El dominio debe ser uno de: outlook.com, hotmail.com, gmail.com, icloud.com, ceu.es');
+    errors.push('El dominio debe ser uno de: outlook.com, hotmail.com, gmail.com, icloud.com, ceu.es, usp.ceu.es');
   }
 
   return { isValid: errors.length === 0, errors };
