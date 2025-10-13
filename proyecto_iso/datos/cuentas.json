@@ -1,87 +1,22 @@
 [
   {
-    "nombreUsuario": "sdfjsdf",
-    "email": "asdfsdf@sdfkdsjf.com",
-    "password": "sdfaskf"
-  },
-  {
     "nombreUsuario": "victor",
-    "email": "victor@gmail.com",
+    "email": "victorvega@gmail.com",
     "password": "Victor#1313"
   },
   {
-    "nombreUsuario": "pedro varona",
-    "email": "pedrovarona@hothothot.com",
-    "password": "pedrovarona"
-  },
-  {
-    "nombreUsuario": "pepe",
-    "email": "pepe@gmail.com",
-    "password": "pepe"
-  },
-  {
-    "nombreUsuario": "juan",
-    "email": "juan@gmail.com",
-    "password": "juan"
-  },
-  {
-    "nombreUsuario": "lok",
-    "email": "cffgfg@fa.com",
-    "password": "fdsffwdssAd1"
-  },
-  {
-    "nombreUsuario": "fwef",
-    "email": "juanixer@gmail.com",
-    "password": "dfwdffsdsdfsdAsd12e"
-  },
-  {
-    "nombreUsuario": "lok",
-    "email": "fafw@fqe.es",
-    "password": "frerfergegrgtD11"
-  },
-  {
-    "nombreUsuario": "Alfredo",
-    "email": "alfredo.martinezescoval@usp.ceu.es",
-    "password": "Alfredo#136"
-  },
-  {
-    "nombreUsuario": "a0ghasod",
-    "email": "spdgjspd@xn--sdkmsd-wwa.sksdp",
-    "password": "sfsdfjsdoigjisdpA#123"
-  },
-  {
     "nombreUsuario": "Javier",
-    "email": "javier@gmail.com",
+    "email": "javiervega@gmail.com",
     "password": "Javier#1313"
   },
   {
     "nombreUsuario": "prueba",
-    "email": "prueba@gmail.com",
+    "email": "pruebavega@gmail.com",
     "password": "Prueba#1313"
   },
   {
-    "nombreUsuario": "hola",
-    "email": "hola@hola.com",
-    "password": "Holaquetal#13"
-  },
-  {
-    "nombreUsuario": "Pedro",
-    "email": "pericoperez2712@gmail.com",
-    "password": "Perico1234"
-  },
-  {
-    "nombreUsuario": "PedRO",
-    "email": "prueba3.0@gmail.com",
-    "password": "Prueba3.0"
-  },
-  {
-    "nombreUsuario": "123",
-    "email": "123@123.com",
-    "password": "123123123Aa"
-  },
-  {
-    "nombreUsuario": "dfa",
-    "email": "fa@afc.com",
-    "password": "dawdweadwAds1"
+    "nombreUsuario": "juanixer",
+    "email": "juanixer@gmail.com",
+    "password": "Alfredowapo1"
   }
 ]
