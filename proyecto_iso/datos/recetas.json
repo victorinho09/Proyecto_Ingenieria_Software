@@ -76,5 +76,18 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "victorvega@gmail.com"
+  },
+  {
+    "nombreReceta": "Paella",
+    "descripcion": "Paella",
+    "ingredientes": ". arroz\n. gambas",
+    "pasosAseguir": "1. cocer agua\n2. echar arroz\n3. esperar",
+    "duracion": 120,
+    "fotoReceta": "/static/uploads/recetas/20251013_122656_alfredo_martinezescoval_421dc176.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   }
 ]

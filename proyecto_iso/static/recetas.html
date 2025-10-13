@@ -264,11 +264,11 @@
         data-bs-keyboard="false"
         tabindex="-1"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="crearRecetaModalLabel">
-                Crear Nueva Receta de comida
+                Crear Nueva Receta de Comida
               </h5>
               <button
                 type="button"
@@ -284,21 +284,42 @@
                 style="display: none"
               ></div>
               <!-- Texto de aviso -->
-              <p class="text-danger mb-1" style="font-size: 0.9rem">
-                * obligatorio
+              <p class="text-danger mb-3" style="font-size: 0.9rem">
+                * campos obligatorios
               </p>
 
               <form id="crearRecetaForm" action="/crear-receta" method="POST">
-                <div class="mb-3">
-                  <label for="nombreReceta" class="form-label">Nombre *</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="nombreReceta"
-                    name="nombreReceta"
-                    placeholder="Escribe el nombre de la receta..."
-                    required
-                  />
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="nombreReceta" class="form-label"
+                        >Nombre *</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="nombreReceta"
+                        name="nombreReceta"
+                        placeholder="Nombre de la receta..."
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="duracion" class="form-label"
+                        >Duración (minutos) *</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="duracion"
+                        name="duracion"
+                        placeholder="Tiempo de preparación..."
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="mb-3">
@@ -310,7 +331,8 @@
                     class="form-control"
                     id="descripcion"
                     name="descripcion"
-                    placeholder="Escribe una breve descripción de la receta..."
+                    rows="3"
+                    placeholder="Describe tu receta..."
                     required
                   ></textarea>
                 </div>
@@ -324,32 +346,10 @@
                     class="form-control"
                     id="ingredientes"
                     name="ingredientes"
-                    placeholder="Escribe los ingredientes..."
+                    rows="3"
+                    placeholder="Escribe los ingredientes necesarios..."
                     required
                   ></textarea>
-                </div>
-
-                <div class="mb-3">
-                  <label for="alergenos" class="form-label">Alérgenos</label>
-                  <textarea
-                    type="text"
-                    class="form-control"
-                    id="alergenos"
-                    name="alergenos"
-                    placeholder="Escribe posibles alérgenos..."
-                  ></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="paisOrigen" class="form-label"
-                    >País de Origen</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="paisOrigen"
-                    name="paisOrigen"
-                    placeholder="Escribe el país de origen de la receta..."
-                  />
                 </div>
 
                 <div class="mb-3">
@@ -361,41 +361,78 @@
                     class="form-control"
                     id="pasosAseguir"
                     name="pasosAseguir"
-                    placeholder="Escribe los pasos a seguir para preparar la receta..."
+                    rows="3"
+                    placeholder="Describe los pasos de preparación..."
                     required
                   ></textarea>
                 </div>
 
-                <div class="mb-3">
-                  <label for="turnoComida" class="form-label"
-                    >Turno de comida</label
-                  >
-                  <select
-                    class="form-select"
-                    name="turnoComida"
-                    id="turnoComida"
-                  >
-                    <option value="" selected>Selecciona una opción</option>
-                    <option value="desayuno">Desayuno</option>
-                    <option value="aperitivo">Aperitivo</option>
-                    <option value="comida">Comida</option>
-                    <option value="merienda">Merienda</option>
-                    <option value="cena">Cena</option>
-                  </select>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="turnoComida" class="form-label"
+                        >Turno de comida</label
+                      >
+                      <select
+                        class="form-select"
+                        name="turnoComida"
+                        id="turnoComida"
+                      >
+                        <option value="" selected>Selecciona una opción</option>
+                        <option value="desayuno">Desayuno</option>
+                        <option value="aperitivo">Aperitivo</option>
+                        <option value="comida">Comida</option>
+                        <option value="merienda">Merienda</option>
+                        <option value="cena">Cena</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="dificultad" class="form-label"
+                        >Dificultad</label
+                      >
+                      <select
+                        class="form-select"
+                        name="dificultad"
+                        id="dificultad"
+                      >
+                        <option value="" selected>Selecciona una opción</option>
+                        <option value="Facil">Fácil</option>
+                        <option value="Media">Media</option>
+                        <option value="Dificil">Difícil</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="mb-3">
-                  <label for="duracion" class="form-label"
-                    >Duración (en minutos) *</label
-                  >
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="duracion"
-                    name="duracion"
-                    placeholder="Escribe la duración para preparar la receta..."
-                    required
-                  />
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="paisOrigen" class="form-label"
+                        >País de Origen</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="paisOrigen"
+                        name="paisOrigen"
+                        placeholder="País de origen..."
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="alergenos" class="form-label">Alérgenos</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="alergenos"
+                        name="alergenos"
+                        placeholder="Posibles alérgenos..."
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="mb-3">
@@ -423,7 +460,7 @@
                 </div>
               </form>
             </div>
-            <div class="modal-footer" id="modalFooter">
+            <div class="modal-footer">
               <button
                 type="button"
                 class="btn btn-secondary"
