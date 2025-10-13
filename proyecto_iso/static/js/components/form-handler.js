@@ -71,6 +71,16 @@ export async function manejarEnvioFormulario(event) {
       mostrarMensaje("Por favor, completa todos los campos.", "error");
       return; // CRÍTICO: Salir aquí para no continuar con el procesamiento
     }
+
+    // Validar formato de email según reglas del proyecto
+    const emailValidation = validarEmailConErrores(data.email);
+    if (!emailValidation.isValid) {
+      // Mostrar errores sin exponer detalles sensibles en login: mostrar un mensaje conciso
+      // Pero se exige que el formulario no se envíe y se muestre aviso
+      const mensaje = "Email inválido: " + emailValidation.errors.join("; ");
+      mostrarMensaje(mensaje, "error");
+      return;
+    }
   } else if (formId === "cerrarSesionForm") {
     // CERRAR SESIÓN: No necesita validación
     // Se procesa directamente

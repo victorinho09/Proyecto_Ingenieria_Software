@@ -4,7 +4,7 @@
  */
 
 import { ENDPOINTS } from "./constants.js";
-import { validarPassword } from "../utils/validators.js";
+import { validarPassword, validarEmail } from "../utils/validators.js";
 
 export const CONFIGURACION_FORMULARIOS = {
   crearCuentaForm: {
@@ -12,7 +12,7 @@ export const CONFIGURACION_FORMULARIOS = {
     modal: "crearCuentaModal",
     campos: ["nombreUsuario", "emailCrearCuenta", "passwordCrearCuenta"],
     validaciones: {
-      email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      email: validarEmail,
       password: validarPassword,
     },
   },
@@ -21,7 +21,9 @@ export const CONFIGURACION_FORMULARIOS = {
     endpoint: ENDPOINTS.INICIAR_SESION,
     modal: "iniciarSesionModal",
     campos: ["emailIniciarSesion", "passwordIniciarSesion"],
-    validaciones: {}, // Sin validaciones por seguridad - solo validar si la cuenta existe
+    validaciones: {
+      email: validarEmail,
+    }, // Validar email según reglas exigidas
   },
 
   cerrarSesionForm: {
@@ -36,7 +38,7 @@ export const CONFIGURACION_FORMULARIOS = {
     modal: null, // Formulario sin modal
     campos: ["nombreUsuario", "emailCrearCuenta", "passwordCrearCuenta"],
     validaciones: {
-      email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      email: validarEmail,
       password: validarPassword,
     },
   },
