@@ -10,7 +10,8 @@
     "paisOrigen": "asdf",
     "turnoComida": "aperitivo",
     "dificultad": "Media",
-    "usuario": "javiervega@gmail.com"
+    "usuario": "javiervega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Garbanzos con tomate",
@@ -23,7 +24,8 @@
     "paisOrigen": "España",
     "turnoComida": "comida",
     "dificultad": "Facil",
-    "usuario": "victorvega@gmail.com"
+    "usuario": "victorvega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "receta2",
@@ -36,7 +38,8 @@
     "paisOrigen": "",
     "turnoComida": "",
     "dificultad": "",
-    "usuario": "javiervega@gmail.com"
+    "usuario": "javiervega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Receta3",
@@ -49,7 +52,8 @@
     "paisOrigen": "",
     "turnoComida": "",
     "dificultad": "",
-    "usuario": "javiervega@gmail.com"
+    "usuario": "javiervega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Receta 4",
@@ -62,7 +66,8 @@
     "paisOrigen": "",
     "turnoComida": "",
     "dificultad": "",
-    "usuario": "javiervega@gmail.com"
+    "usuario": "javiervega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "sdfws",
@@ -75,7 +80,8 @@
     "paisOrigen": "",
     "turnoComida": "",
     "dificultad": "",
-    "usuario": "victorvega@gmail.com"
+    "usuario": "victorvega@gmail.com",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Ensalada",
@@ -88,7 +94,8 @@
     "paisOrigen": "España",
     "turnoComida": "comida",
     "dificultad": "Facil",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Paella de pollo",
@@ -101,6 +108,21 @@
     "paisOrigen": "España",
     "turnoComida": "comida",
     "dificultad": "Dificil",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "ensalada cesar",
+    "descripcion": "ensalada",
+    "ingredientes": "lechuga",
+    "pasosAseguir": "hacer ensalada",
+    "duracion": 12,
+    "fotoReceta": "/static/uploads/recetas/20251014_104002_alfredo_martinezescoval_968e4ef0.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
   }
 ]

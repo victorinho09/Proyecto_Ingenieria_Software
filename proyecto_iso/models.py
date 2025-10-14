@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class Cuenta(BaseModel):
     nombreUsuario: str
@@ -20,3 +21,4 @@ class Receta(BaseModel):
     duracion: int
     dificultad: str
     fotoReceta: str  # Campo para imagen en Base64 o URL, obligatorio
+    usuariosGuardado: List[str] = []  # Lista de emails de usuarios que han guardado la receta

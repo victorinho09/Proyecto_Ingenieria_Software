@@ -10,6 +10,9 @@ export const ENDPOINTS = {
   INICIAR_SESION: "/iniciar-sesion",
   CERRAR_SESION: "/cerrar-sesion",
   CREAR_RECETA: "/crear-receta",
+  GUARDAR_RECETA: "/guardar-receta",
+  DESGUARDAR_RECETA: "/desguardar-receta",
+  OBTENER_RECETAS_GUARDADAS: "/obtener-recetas-guardadas",
 };
 
 export const HTTP_CONFIG = {

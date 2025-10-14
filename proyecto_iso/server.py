@@ -20,7 +20,8 @@ from models import Cuenta, LoginData, Receta
 from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
-    procesar_imagen_receta
+    procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
+    obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -616,6 +617,189 @@ async def obtener_mis_recetas(request: Request) -> JSONResponse:
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en obtener_mis_recetas: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+# ==================== ENDPOINTS DE RECETAS GUARDADAS ====================
+
+@app.post("/guardar-receta")
+async def guardar_receta(request: Request) -> JSONResponse:
+    """
+    Endpoint para guardar una receta en la lista personal del usuario.
+    Solo accesible para usuarios autenticados.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies y datos
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para guardar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener datos del cuerpo de la petición
+        body = await request.json()
+        nombre_receta = body.get("nombreReceta")
+        
+        if not nombre_receta:
+            return crear_respuesta_error(
+                "El nombre de la receta es obligatorio",
+                "NOMBRE_RECETA_REQUERIDO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"🔖 [GUARDAR RECETA] Usuario {email_usuario} guardando receta '{nombre_receta}'")
+        
+        # Guardar la receta para el usuario
+        if guardar_receta_usuario(nombre_receta, email_usuario):
+            return crear_respuesta_exito(
+                f"Receta '{nombre_receta}' guardada correctamente",
+                {"nombreReceta": nombre_receta, "guardada": True}
+            )
+        else:
+            return crear_respuesta_error(
+                "No se pudo guardar la receta",
+                "ERROR_GUARDAR_RECETA",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en guardar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.post("/desguardar-receta")
+async def desguardar_receta(request: Request) -> JSONResponse:
+    """
+    Endpoint para desguardar una receta de la lista personal del usuario.
+    Solo accesible para usuarios autenticados.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies y datos
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para desguardar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener datos del cuerpo de la petición
+        body = await request.json()
+        nombre_receta = body.get("nombreReceta")
+        
+        if not nombre_receta:
+            return crear_respuesta_error(
+                "El nombre de la receta es obligatorio",
+                "NOMBRE_RECETA_REQUERIDO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"🗑️ [DESGUARDAR RECETA] Usuario {email_usuario} desguardando receta '{nombre_receta}'")
+        
+        # Desguardar la receta para el usuario
+        if desguardar_receta_usuario(nombre_receta, email_usuario):
+            return crear_respuesta_exito(
+                f"Receta '{nombre_receta}' desguardada correctamente",
+                {"nombreReceta": nombre_receta, "guardada": False}
+            )
+        else:
+            return crear_respuesta_error(
+                "No se pudo desguardar la receta",
+                "ERROR_DESGUARDAR_RECETA",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en desguardar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.get("/obtener-recetas-guardadas")
+async def obtener_recetas_guardadas(request: Request) -> JSONResponse:
+    """
+    Endpoint para obtener todas las recetas guardadas por el usuario autenticado.
+    Solo accesible para usuarios autenticados.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies
+
+    Returns:
+        JSONResponse: Respuesta con las recetas guardadas del usuario
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver tus recetas guardadas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener recetas guardadas del usuario
+        recetas_guardadas = obtener_recetas_guardadas_usuario(email_usuario)
+        
+        return crear_respuesta_exito(
+            f"Recetas guardadas obtenidas correctamente",
+            {
+                "recetas": recetas_guardadas,
+                "total": len(recetas_guardadas),
+                "usuario": email_usuario
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_recetas_guardadas: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

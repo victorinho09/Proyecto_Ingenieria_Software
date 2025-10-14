@@ -487,3 +487,135 @@ def procesar_imagen_receta(receta_data: Dict[str, Any], email_usuario: str) -> D
         print(f"{LOG_ERROR} Error inesperado al procesar imagen de receta: {e}")
         receta_data["fotoReceta"] = ""
         return receta_data
+
+
+# ==================== FUNCIONES DE GESTIÓN DE RECETAS GUARDADAS ====================
+
+def guardar_receta_usuario(nombre_receta: str, email_usuario: str) -> bool:
+    """
+    Guarda una receta para un usuario específico.
+    
+    Args:
+        nombre_receta (str): Nombre de la receta a guardar
+        email_usuario (str): Email del usuario que guarda la receta
+        
+    Returns:
+        bool: True si se guardó correctamente, False en caso contrario
+    """
+    try:
+        recetas = cargar_recetas()
+        receta_encontrada = False
+        
+        for receta in recetas:
+            if receta["nombreReceta"] == nombre_receta:
+                receta_encontrada = True
+                # Verificar si el usuario ya guardó esta receta
+                if "usuariosGuardado" not in receta:
+                    receta["usuariosGuardado"] = []
+                
+                if email_usuario not in receta["usuariosGuardado"]:
+                    receta["usuariosGuardado"].append(email_usuario)
+                    guardar_recetas(recetas)
+                    print(f"{LOG_SUCCESS} Usuario {email_usuario} guardó la receta '{nombre_receta}'")
+                    return True
+                else:
+                    print(f"{LOG_INFO} Usuario {email_usuario} ya tenía guardada la receta '{nombre_receta}'")
+                    return True
+        
+        if not receta_encontrada:
+            print(f"{LOG_ERROR} No se encontró la receta '{nombre_receta}'")
+            return False
+            
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al guardar receta para usuario: {e}")
+        return False
+
+
+def desguardar_receta_usuario(nombre_receta: str, email_usuario: str) -> bool:
+    """
+    Desguarda una receta para un usuario específico.
+    
+    Args:
+        nombre_receta (str): Nombre de la receta a desguardar
+        email_usuario (str): Email del usuario que desguarda la receta
+        
+    Returns:
+        bool: True si se desguardó correctamente, False en caso contrario
+    """
+    try:
+        recetas = cargar_recetas()
+        receta_encontrada = False
+        
+        for receta in recetas:
+            if receta["nombreReceta"] == nombre_receta:
+                receta_encontrada = True
+                # Verificar si el usuario tenía guardada esta receta
+                if "usuariosGuardado" in receta and email_usuario in receta["usuariosGuardado"]:
+                    receta["usuariosGuardado"].remove(email_usuario)
+                    guardar_recetas(recetas)
+                    print(f"{LOG_SUCCESS} Usuario {email_usuario} desguardó la receta '{nombre_receta}'")
+                    return True
+                else:
+                    print(f"{LOG_INFO} Usuario {email_usuario} no tenía guardada la receta '{nombre_receta}'")
+                    return True
+        
+        if not receta_encontrada:
+            print(f"{LOG_ERROR} No se encontró la receta '{nombre_receta}'")
+            return False
+            
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al desguardar receta para usuario: {e}")
+        return False
+
+
+def obtener_recetas_guardadas_usuario(email_usuario: str) -> List[Dict[str, Any]]:
+    """
+    Obtiene todas las recetas guardadas por un usuario específico.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        List[Dict[str, Any]]: Lista de recetas guardadas por el usuario
+    """
+    try:
+        recetas = cargar_recetas()
+        recetas_guardadas = []
+        
+        for receta in recetas:
+            if "usuariosGuardado" in receta and email_usuario in receta["usuariosGuardado"]:
+                recetas_guardadas.append(receta)
+        
+        print(f"{LOG_INFO} Usuario {email_usuario} tiene {len(recetas_guardadas)} recetas guardadas")
+        return recetas_guardadas
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener recetas guardadas para usuario: {e}")
+        return []
+
+
+def es_receta_guardada_por_usuario(nombre_receta: str, email_usuario: str) -> bool:
+    """
+    Verifica si una receta específica está guardada por un usuario.
+    
+    Args:
+        nombre_receta (str): Nombre de la receta
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        bool: True si la receta está guardada por el usuario, False en caso contrario
+    """
+    try:
+        recetas = cargar_recetas()
+        
+        for receta in recetas:
+            if (receta["nombreReceta"] == nombre_receta and 
+                "usuariosGuardado" in receta and 
+                email_usuario in receta["usuariosGuardado"]):
+                return True
+        
+        return False
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al verificar si receta está guardada: {e}")
+        return False

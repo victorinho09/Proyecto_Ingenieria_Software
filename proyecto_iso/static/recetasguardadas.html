@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <title>Proyecto Ingeniería del Software - ISO 2025/2026</title>
+    <title>Recetas Guardadas - Proyecto Ingeniería del Software</title>
     <meta
       name="description"
-      content="Proyecto web para la asignatura de Ingeniería del Software - Universidad 2025/2026"
+      content="Tus recetas guardadas - Proyecto web para la asignatura de Ingeniería del Software - Universidad 2025/2026"
     />
     <meta
       name="keywords"
-      content="ingeniería software, proyecto web, fastapi, html, css, javascript"
+      content="ingeniería software, proyecto web, fastapi, html, css, javascript, recetas guardadas"
     />
     <meta name="author" content="Victor Vega Martinez" />
 
@@ -67,7 +67,7 @@
               >
                 <li><a class="nav-link" href="/mis-recetas">Mis Recetas</a></li>
                 <li>
-                  <a class="nav-link" href="/recetas-guardadas"
+                  <a class="nav-link active" href="/recetas-guardadas"
                     >Recetas Guardadas</a
                   >
                 </li>
@@ -101,9 +101,59 @@
       </div>
     </nav>
 
-    <div>
-      <h2>Recetas Guardadas</h2>
-    </div>
+    <!-- Contenido principal -->
+    <main class="container-fluid py-4 flex-grow-1">
+      <!-- Encabezado -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 class="display-6 fw-bold text-primary mb-2">
+                <i class="bi bi-bookmark-heart-fill"></i> Mis Recetas Guardadas
+              </h1>
+              <p class="text-muted mb-0">
+                Explora las recetas que has guardado para más tarde
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje de estado -->
+      <div id="mensajeEstado" class="row mb-4" style="display: none">
+        <div class="col-12">
+          <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i>
+            <span id="textoMensajeEstado">Cargando recetas guardadas...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenedor de recetas -->
+      <div class="row" id="contenedorRecetas">
+        <!-- Las recetas se cargarán dinámicamente aquí -->
+      </div>
+
+      <!-- Mensaje cuando no hay recetas -->
+      <div id="mensajeSinRecetas" class="row" style="display: none">
+        <div class="col-12">
+          <div class="text-center py-5">
+            <i class="bi bi-bookmark text-muted" style="font-size: 4rem"></i>
+            <h3 class="text-muted mt-3">No tienes recetas guardadas</h3>
+            <p class="text-muted mb-4">
+              Explora la sección de
+              <a href="/recetas" class="text-decoration-none"
+                >todas las recetas</a
+              >
+              y guarda las que más te gusten
+            </p>
+            <a href="/recetas" class="btn btn-primary btn-lg">
+              <i class="bi bi-search"></i> Explorar Recetas
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- Footer -->
     <footer class="bg-light border-top mt-auto">
@@ -118,40 +168,31 @@
       </div>
     </footer>
 
-    <!-- Modal de Cerrar Sesión -->
+    <!-- Modal de confirmación de cerrar sesión -->
     <div
       class="modal fade"
       id="cerrarSesionModal"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
       tabindex="-1"
+      aria-labelledby="cerrarSesionModalLabel"
+      aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="cerrarSesionModalLabel">
-              Cerrar Sesión
+              <i class="bi bi-box-arrow-in-left text-warning"></i> Cerrar Sesión
             </h5>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
+              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
-            <!-- Contenedor para mensajes -->
-            <div
-              id="mensajeContainer"
-              class="alert"
-              style="display: none"
-            ></div>
-            <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
-              <div id="mensajeCerrarSesion" class="alert alert-warning">
-                ¿Estás seguro de querer cerrar sesión?
-              </div>
-            </form>
+            <p class="mb-0">¿Estás seguro de que deseas cerrar sesión?</p>
           </div>
-          <div class="modal-footer" id="modalFooter">
+          <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary"
@@ -159,37 +200,237 @@
             >
               Cancelar
             </button>
-            <button
-              type="submit"
-              form="cerrarSesionForm"
-              class="btn btn-primary"
-            >
-              Cerrar Sesión
-            </button>
+            <form id="cerrarSesionForm">
+              <button type="submit" class="btn btn-warning">
+                <i class="bi bi-box-arrow-in-left"></i> Cerrar Sesión
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Bootstrap JavaScript -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script para dropdowns en hover -->
-    <script>
-      document
-        .querySelectorAll(".nav-item.dropdown")
-        .forEach(function (dropdown) {
-          const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-          const dd = new bootstrap.Dropdown(toggle, {
-            popperConfig: { strategy: "fixed" },
-          });
+    <!-- Scripts de la aplicación -->
+    <script type="module" src="/static/js/main.js"></script>
+    <script type="module">
+      // Script específico para recetas guardadas
+      import {
+        cargarRecetasGuardadas,
+        desguardarReceta,
+      } from "/static/js/services/api-service.js";
+      import { mostrarMensaje } from "/static/js/components/message-handler.js";
 
-          dropdown.addEventListener("mouseenter", () => dd.show());
-          dropdown.addEventListener("mouseleave", () => dd.hide());
+      // Cargar recetas guardadas al cargar la página
+      document.addEventListener("DOMContentLoaded", async function () {
+        await cargarYMostrarRecetasGuardadas();
+      });
+
+      async function cargarYMostrarRecetasGuardadas() {
+        const mensajeEstado = document.getElementById("mensajeEstado");
+        const contenedorRecetas = document.getElementById("contenedorRecetas");
+        const mensajeSinRecetas = document.getElementById("mensajeSinRecetas");
+
+        try {
+          // Mostrar mensaje de carga
+          mensajeEstado.style.display = "block";
+          document.getElementById("textoMensajeEstado").textContent =
+            "Cargando tus recetas guardadas...";
+
+          // Cargar recetas guardadas
+          const resultado = await cargarRecetasGuardadas();
+
+          // Ocultar mensaje de estado
+          mensajeEstado.style.display = "none";
+
+          if (resultado.success && resultado.data.recetas) {
+            const recetas = resultado.data.recetas;
+
+            if (recetas.length === 0) {
+              // No hay recetas guardadas
+              mensajeSinRecetas.style.display = "block";
+              contenedorRecetas.innerHTML = "";
+            } else {
+              // Mostrar recetas
+              mensajeSinRecetas.style.display = "none";
+              mostrarRecetasEnCards(recetas);
+            }
+          } else {
+            throw new Error(
+              resultado.data?.mensaje || "Error al cargar recetas guardadas"
+            );
+          }
+        } catch (error) {
+          console.error("Error al cargar recetas guardadas:", error);
+          mensajeEstado.style.display = "none";
+          mostrarMensaje(
+            `Error al cargar recetas guardadas: ${error.message}`,
+            "error"
+          );
+
+          // Mostrar mensaje de error
+          contenedorRecetas.innerHTML = `
+            <div class="col-12">
+              <div class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                Error al cargar las recetas guardadas. Por favor, intenta de nuevo más tarde.
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      function mostrarRecetasEnCards(recetas) {
+        const contenedorRecetas = document.getElementById("contenedorRecetas");
+
+        if (recetas.length === 0) {
+          contenedorRecetas.innerHTML = "";
+          return;
+        }
+
+        // Generar HTML para las cards de recetas
+        const recetasHTML = recetas
+          .map(
+            (receta) => `
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+              <div class="card-img-container" style="height: 200px; overflow: hidden;">
+                ${
+                  receta.fotoReceta && receta.fotoReceta.trim() !== ""
+                    ? `<img src="${receta.fotoReceta}" class="img-fluid rounded-top w-100 h-100" style="object-fit: cover;" alt="${receta.nombreReceta}" loading="lazy">`
+                    : `<div class="bg-light d-flex align-items-center justify-content-center h-100 rounded-top">
+                         <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                       </div>`
+                }
+              </div>
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h5 class="card-title text-primary fw-bold mb-0" style="font-size: 1.1rem;">
+                    ${receta.nombreReceta}
+                  </h5>
+                  <button 
+                    class="btn btn-outline-danger btn-sm ms-2 desguardar-btn" 
+                    data-nombre-receta="${receta.nombreReceta}"
+                    title="Desguardar receta"
+                  >
+                    <i class="bi bi-bookmark-dash"></i>
+                  </button>
+                </div>
+                
+                <p class="card-text text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                  ${receta.descripcion}
+                </p>
+                
+                <div class="mt-auto">
+                  <div class="row g-2 mb-3">
+                    <div class="col-6">
+                      <div class="text-center p-2 bg-light rounded">
+                        <i class="bi bi-clock text-primary"></i>
+                        <div class="small fw-bold">${receta.duracion} min</div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="text-center p-2 bg-light rounded">
+                        <i class="bi bi-star text-warning"></i>
+                        <div class="small fw-bold">${
+                          receta.dificultad || "N/A"
+                        }</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                      <i class="bi bi-person-circle"></i> ${receta.usuario}
+                    </small>
+                    <button class="btn btn-primary btn-sm ver-receta-btn" data-receta='${JSON.stringify(
+                      receta
+                    )}'>
+                      <i class="bi bi-eye"></i> Ver
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        contenedorRecetas.innerHTML = recetasHTML;
+
+        // Agregar event listeners para los botones
+        agregarEventListeners();
+      }
+
+      function agregarEventListeners() {
+        // Botones de desguardar
+        document.querySelectorAll(".desguardar-btn").forEach((btn) => {
+          btn.addEventListener("click", async function () {
+            const nombreReceta = this.dataset.nombreReceta;
+            await desguardarRecetaLocal(nombreReceta);
+          });
         });
+
+        // Botones de ver receta (reutilizar lógica existente)
+        document.querySelectorAll(".ver-receta-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const receta = JSON.parse(this.dataset.receta);
+            // Aquí se podría mostrar un modal con los detalles de la receta
+            // Por ahora, solo mostrar un mensaje
+            mostrarMensaje(`Viendo receta: ${receta.nombreReceta}`, "info");
+          });
+        });
+      }
+
+      async function desguardarRecetaLocal(nombreReceta) {
+        try {
+          const resultado = await desguardarReceta(nombreReceta);
+
+          if (resultado.success) {
+            mostrarMensaje(
+              `Receta "${nombreReceta}" desguardada correctamente`,
+              "success"
+            );
+            // Recargar las recetas guardadas
+            await cargarYMostrarRecetasGuardadas();
+          } else {
+            throw new Error(
+              resultado.data?.mensaje || "Error al desguardar receta"
+            );
+          }
+        } catch (error) {
+          console.error("Error al desguardar receta:", error);
+          mostrarMensaje(
+            `Error al desguardar receta: ${error.message}`,
+            "error"
+          );
+        }
+      }
+
+      // Hacer función global para uso en otros lugares
+      window.cargarYMostrarRecetasGuardadas = cargarYMostrarRecetasGuardadas;
     </script>
 
-    <!-- JavaScript de la aplicación -->
-    <script type="module" src="/static/js/main.js"></script>
+    <style>
+      .hover-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+
+      .hover-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+      }
+
+      .card-img-container img {
+        transition: transform 0.3s ease;
+      }
+
+      .hover-card:hover .card-img-container img {
+        transform: scale(1.05);
+      }
+    </style>
   </body>
 </html>
