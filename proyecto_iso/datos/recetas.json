@@ -163,5 +163,44 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "sdfosd",
+    "descripcion": "osdijf",
+    "ingredientes": "osdjgp",
+    "pasosAseguir": "sopgfj",
+    "duracion": 1143,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "iosfjp",
+    "descripcion": "132sgspgj",
+    "ingredientes": "srpigj",
+    "pasosAseguir": "pjgdf",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "psifjidp",
+    "descripcion": "msfdpfdoim",
+    "ingredientes": "spdok",
+    "pasosAseguir": "spdgok",
+    "duracion": 134,
+    "fotoReceta": "/static/uploads/recetas/20251015_121708_alfredo_martinezescoval_b276628f.jpg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   }
 ]

@@ -33,5 +33,10 @@
     "nombreUsuario": "pedro",
     "email": "pedro.varonaparra@usp.ceu.es",
     "password": "Pedro12345"
+  },
+  {
+    "nombreUsuario": "prueba",
+    "email": "prueba4.0@gmail.com",
+    "password": "Prueba1234"
   }
 ]
