@@ -28,5 +28,10 @@
     "nombreUsuario": "prueba",
     "email": "victorpablo@gmail.com",
     "password": "Pruebaa#1313"
+  },
+  {
+    "nombreUsuario": "pedro",
+    "email": "pedro.varonaparra@usp.ceu.es",
+    "password": "Pedro12345"
   }
 ]

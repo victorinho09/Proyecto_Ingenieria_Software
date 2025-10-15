@@ -124,5 +124,18 @@
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
     "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "Prueba 1",
+    "descripcion": "121",
+    "ingredientes": "12121",
+    "pasosAseguir": "1212",
+    "duracion": 1212,
+    "fotoReceta": "/static/uploads/recetas/20251015_113846_pedro_varonaparra_9bc12957.png",
+    "alergenos": "12121",
+    "paisOrigen": "2121",
+    "turnoComida": "cena",
+    "dificultad": "Facil",
+    "usuario": "pedro.varonaparra@usp.ceu.es"
   }
 ]
