@@ -137,5 +137,31 @@
     "turnoComida": "cena",
     "dificultad": "Facil",
     "usuario": "pedro.varonaparra@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "Prueba",
+    "descripcion": "prueba mas de una palabra",
+    "ingredientes": "prueba",
+    "pasosAseguir": "prueba",
+    "duracion": 120,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "prueba2",
+    "descripcion": "prueba2 de ver si con mas de una cuantas palabras me muestra toda la descripcion o realmente solo me muestra una cantidad x de palabras y se ponen despues puntos suspensivos.\nsofuhgddddddddddddddddddddddso jgsaorg ijoafijg dogjf dopigj dpsjgp gfjspdfg jdp gjsdp gjdpsg jdpifg jdpg jdspg jdp jgpidf jgpdif gjpd jgpd fgjspf gjsfog jdpg jsdpgjsd pgjd pgj dspfjg spjgñsf jgsdp gjspjghdfpgj spgdjfopg.",
+    "ingredientes": "prueba2",
+    "pasosAseguir": "prueba2",
+    "duracion": 120,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   }
 ]

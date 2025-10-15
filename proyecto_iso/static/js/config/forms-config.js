@@ -64,7 +64,6 @@ export const CONFIGURACION_FORMULARIOS = {
       "ingredientes",
       "pasosAseguir",
       "duracion",
-      "fotoReceta",
     ],
     validaciones: {},
   },
