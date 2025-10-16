@@ -168,31 +168,40 @@
       </div>
     </footer>
 
-    <!-- Modal de confirmación de cerrar sesión -->
+    <!-- Modal de Cerrar Sesión -->
     <div
       class="modal fade"
       id="cerrarSesionModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
       tabindex="-1"
-      aria-labelledby="cerrarSesionModalLabel"
-      aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="cerrarSesionModalLabel">
-              <i class="bi bi-box-arrow-in-left text-warning"></i> Cerrar Sesión
+              Cerrar Sesión
             </h5>
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
-            <p class="mb-0">¿Estás seguro de que deseas cerrar sesión?</p>
+            <!-- Contenedor para mensajes -->
+            <div
+              id="mensajeContainer"
+              class="alert"
+              style="display: none"
+            ></div>
+            <form id="cerrarSesionForm" action="/cerrar-sesion" method="POST">
+              <div id="mensajeCerrarSesion" class="alert alert-warning">
+                ¿Estás seguro de querer cerrar sesión?
+              </div>
+            </form>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer" id="modalFooter">
             <button
               type="button"
               class="btn btn-secondary"
@@ -200,11 +209,13 @@
             >
               Cancelar
             </button>
-            <form id="cerrarSesionForm">
-              <button type="submit" class="btn btn-warning">
-                <i class="bi bi-box-arrow-in-left"></i> Cerrar Sesión
-              </button>
-            </form>
+            <button
+              type="submit"
+              form="cerrarSesionForm"
+              class="btn btn-primary"
+            >
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </div>
