@@ -1,0 +1,266 @@
+/* =========================================
+   Saborea · Tema "Creamy Food Pop"
+   Colorido, profesional y juvenil (food vibes)
+   ========================================= */
+
+:root{
+  /* Paleta */
+  --saborea-cream:   #FFF3E1;  /* fondo crema cálido */
+  --saborea-cream-2: #FFF9F1;  /* crema más clara para tarjetas */
+  --saborea-mango:   #FF9E2C;  /* primario */
+  --saborea-pistach: #5FBF71;  /* success */
+  --saborea-turmeric:#F2C14E;  /* warning */
+  --saborea-chili:   #D03A27;  /* danger */
+  --saborea-berry:   #4F6D95;  /* info (arándano suave) */
+  --saborea-choco:   #3A2F2A;  /* texto principal */
+
+  /* Map a Bootstrap */
+  --bs-primary: var(--saborea-mango);
+  --bs-primary-rgb: 255, 158, 44;
+
+  --bs-success: var(--saborea-pistach);
+  --bs-success-rgb: 95, 191, 113;
+
+  --bs-warning: var(--saborea-turmeric);
+  --bs-warning-rgb: 242, 193, 78;
+
+  --bs-danger: var(--saborea-chili);
+  --bs-danger-rgb: 208, 58, 39;
+
+  --bs-info: var(--saborea-berry);
+  --bs-info-rgb: 79, 109, 149;
+
+  --bs-body-bg: var(--saborea-cream);
+  --bs-body-color: var(--saborea-choco);
+
+  /* Estética */
+  --saborea-card-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  --saborea-card-shadow-hover: 0 14px 28px rgba(0,0,0,0.14);
+  --saborea-radius: 14px;
+  --saborea-radius-lg: 18px;
+  --saborea-focus: 0 0 0 .25rem rgba(255,158,44,.28);
+}
+
+/* ===== Base con fondo crema dinámico ===== */
+html, body{
+  background: radial-gradient(1200px 800px at -10% -10%, #FFEAD0 0%, transparent 60%),
+              radial-gradient(900px 700px at 110% 0%, #FFE6C4 0%, transparent 60%),
+              var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+/* Separadores suaves estilo “mantel” */
+.section-divider{
+  height: 10px;
+  background:
+    radial-gradient(circle at 6px 6px, rgba(0,0,0,0.06) 3px, transparent 4px) repeat-x;
+  background-size: 18px 10px;
+  opacity: .35;
+}
+
+/* ===== Navbar con degradado mango ===== */
+.navbar.bg-primary{
+  background: linear-gradient(90deg, color-mix(in oklab, var(--bs-primary) 92%, #fff) 0%, var(--bs-primary) 100%) !important;
+}
+
+/* >>> FIX VISIBILIDAD LINKS NAVBAR <<< */
+.navbar.navbar-dark .navbar-nav .nav-link{
+  /* por defecto Bootstrap los deja muy translúcidos; los hacemos legibles */
+  color: rgba(255,255,255,.95) !important;
+}
+.navbar.navbar-dark .navbar-nav .nav-link.active,
+.navbar.navbar-dark .navbar-nav .nav-link.show{
+  color: #fff !important;             /* "Menú semanal" activo en blanco pleno */
+  font-weight: 700;                    /* un poquito más de énfasis */
+}
+.navbar.navbar-dark .navbar-nav .nav-link:hover,
+.navbar.navbar-dark .navbar-nav .nav-link:focus{
+  color: #fff !important;
+  opacity: 1 !important;               /* quitamos el aclarado */
+  text-decoration: none;
+}
+
+/* Estilo general de links nav */
+.navbar .nav-link{
+  font-weight: 600;
+}
+
+/* ===== Dropdowns con velo cremoso ===== */
+.dropdown-menu{
+  --bs-dropdown-bg: color-mix(in oklab, var(--bs-primary) 10%, #fff);
+  --bs-dropdown-border-color: transparent;
+  --bs-dropdown-link-active-bg: color-mix(in oklab, var(--bs-primary) 18%, #fff);
+  border-radius: var(--saborea-radius);
+  box-shadow: var(--saborea-card-shadow);
+}
+
+/* ===== Botones chispeantes pero elegantes ===== */
+.btn{
+  border-radius: 999px;
+  font-weight: 600;
+}
+.btn-primary{
+  box-shadow: 0 6px 14px rgba(255,158,44,.25);
+}
+.btn-outline-primary{
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+}
+.btn-outline-primary:hover{
+  background: var(--bs-primary);
+  color: #fff;
+}
+
+/* Estados de foco coherentes */
+.btn:focus, .form-control:focus, .form-select:focus, .page-link:focus{
+  box-shadow: var(--saborea-focus);
+  border-color: var(--bs-primary);
+}
+
+/* ===== Badges “food chip” (opcional) ===== */
+.badge-food{
+  display:inline-flex; align-items:center; gap:.4rem;
+  border-radius:999px; padding:.35rem .7rem; font-weight:600;
+  background: color-mix(in oklab, var(--bs-primary) 18%, #fff);
+  color:#5A3A12;
+}
+.badge-food::before{
+  content:"●"; font-size:.7em; opacity:.7;
+}
+
+/* ===== Tarjetas cremosas ===== */
+.card{
+  border: 0;
+  border-radius: var(--saborea-radius-lg);
+  box-shadow: var(--saborea-card-shadow);
+  background-color: var(--saborea-cream-2);
+}
+.card .card-title{
+  letter-spacing: .2px;
+}
+.hover-card:hover{
+  transform: translateY(-2px);
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: var(--saborea-card-shadow-hover);
+}
+
+/* Imágenes con esquinas superiores redondeadas */
+.card-img-top,
+.card-img-container{
+  border-top-left-radius: var(--saborea-radius-lg);
+  border-top-right-radius: var(--saborea-radius-lg);
+  overflow: hidden;
+}
+
+/* ===== Modales suaves ===== */
+.modal-content{
+  border: 0;
+  border-radius: var(--saborea-radius-lg);
+  box-shadow: var(--saborea-card-shadow-hover);
+  background-color: var(--saborea-cream-2);
+}
+
+/* ===== Formularios con pistas de color ===== */
+.form-control, .form-select{
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid color-mix(in oklab, var(--bs-primary) 16%, #DDD);
+}
+.form-control::placeholder{
+  color: #9B8D82;
+}
+
+/* ===== Alerts con warning dorado suave ===== */
+.alert-warning{
+  background-color: color-mix(in oklab, var(--bs-warning) 22%, #fff);
+  border: 0;
+  color: #5A3A12;
+}
+
+/* ===== Píldoras/metrics ===== */
+.bg-light.rounded{
+  background-color: color-mix(in oklab, var(--bs-primary) 12%, #fff) !important;
+}
+
+/* ===== Footer crema ===== */
+footer.bg-light{
+  background: color-mix(in oklab, var(--saborea-cream) 94%, #fff);
+  border-top: 1px dashed color-mix(in oklab, var(--bs-primary) 25%, #EED);
+}
+
+/* ===== Accesibilidad ===== */
+a:focus-visible, button:focus-visible{
+  outline: none;
+  box-shadow: var(--saborea-focus);
+}
+
+/* ===== Utilidades de color ===== */
+.text-mango{ color: var(--saborea-mango) !important; }
+.text-pistach{ color: var(--saborea-pistach) !important; }
+.text-berry{ color: var(--saborea-berry) !important; }
+
+.bg-cream{ background-color: var(--saborea-cream) !important; }
+.bg-cream-2{ background-color: var(--saborea-cream-2) !important; }
+
+.bg-primary.bg-opacity-10{
+  background-color: color-mix(in oklab, var(--bs-primary) 14%, #fff) !important;
+}
+.text-primary{
+  color: var(--bs-primary) !important;
+}
+
+/* ====== Overrides duros para botones (forzar paleta) ====== */
+:root{
+  --saborea-mango:   #FF9E2C;
+  --saborea-pistach: #5FBF71;
+  --saborea-turmeric:#F2C14E;
+  --saborea-chili:   #D03A27;
+}
+
+/* btn-primary: fondo mango + texto blanco */
+.btn-primary{
+  background-color: var(--saborea-mango) !important;
+  border-color: var(--saborea-mango) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:disabled,
+.btn-primary.disabled{
+  background-color: color-mix(in oklab, var(--saborea-mango) 86%, #000) !important;
+  border-color: color-mix(in oklab, var(--saborea-mango) 86%, #000) !important;
+  color: #fff !important;
+}
+
+/* btn-outline-primary */
+.btn-outline-primary{
+  color: var(--saborea-mango) !important;
+  border-color: var(--saborea-mango) !important;
+  background-color: transparent !important;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active{
+  background-color: var(--saborea-mango) !important;
+  border-color: var(--saborea-mango) !important;
+  color: #fff !important;
+}
+
+/* Botones submit de formularios */
+button[type="submit"].btn{
+  background-color: var(--saborea-mango) !important;
+  border-color: var(--saborea-mango) !important;
+  color: #fff !important;
+}
+
+/* Enlaces tipo botón */
+.btn-link{
+  color: var(--saborea-mango) !important;
+  text-decoration: none;
+}
+.btn-link:hover{
+  color: color-mix(in oklab, var(--saborea-mango) 86%, #000) !important;
+  text-decoration: underline;
+}
