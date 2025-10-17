@@ -95,6 +95,33 @@ html, body{
   box-shadow: var(--saborea-card-shadow);
 }
 
+/* Estilos para el dropdown-toggle */
+.dropdown-toggle-split {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.dropdown-toggle-split:hover,
+.dropdown-toggle-split:focus {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.dropdown-toggle-split::after {
+  border: none !important;
+}
+
+/* Remover el cuadrado de hover del dropdown */
+.navbar-dark .navbar-nav .dropdown-toggle-split:hover,
+.navbar-dark .navbar-nav .dropdown-toggle-split:focus {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
 /* ===== Botones chispeantes pero elegantes ===== */
 .btn{
   border-radius: 999px;
