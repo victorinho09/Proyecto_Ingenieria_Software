@@ -2,8 +2,9 @@ import os
 import json
 import base64
 import uuid
+import urllib.parse
 from datetime import datetime
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any, Tuple, Union
 from constants import *
 import re
 
@@ -310,6 +311,96 @@ def obtener_recetas_usuario(email_usuario: str) -> List[Dict[str, Any]]:
     except Exception as e:
         print(f"{LOG_ERROR} Error al obtener recetas del usuario: {e}")
         return []
+
+
+def obtener_recetas_usuario_con_ids(email_usuario: str) -> List[Dict[str, Any]]:
+    """
+    Obtiene todas las recetas de un usuario específico con IDs únicos agregados.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        List[Dict[str, Any]]: Lista de recetas del usuario con IDs únicos
+    """
+    try:
+        # Obtener recetas del usuario usando la función original
+        recetas_usuario = obtener_recetas_usuario(email_usuario)
+        
+        # Agregar ID único a cada receta
+        for receta in recetas_usuario:
+            receta["id"] = generar_id_receta(receta.get("nombreReceta", ""))
+        
+        return recetas_usuario
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener recetas del usuario con IDs: {e}")
+        return []
+
+
+def obtener_receta_por_id(receta_id: str, email_usuario: str) -> Union[Dict[str, Any], None]:
+    """
+    Obtiene una receta específica por su ID (combinación de nombre y usuario).
+    
+    Args:
+        receta_id (str): ID de la receta (nombre de la receta codificado)
+        email_usuario (str): Email del usuario que solicita la receta
+        
+    Returns:
+        Union[Dict[str, Any], None]: Datos completos de la receta o None si no se encuentra
+    """
+    try:
+        # Decodificar el ID para obtener el nombre de la receta
+        try:
+            nombre_receta = urllib.parse.unquote(base64.b64decode(receta_id).decode('utf-8'))
+        except:
+            # Si no se puede decodificar, usar el ID directamente
+            nombre_receta = receta_id
+        
+        # Cargar todas las recetas
+        todas_las_recetas = cargar_recetas()
+        
+        # Buscar la receta específica
+        for receta in todas_las_recetas:
+            if (receta.get("nombreReceta", "").lower() == nombre_receta.lower() and 
+                receta.get("usuario", "").lower() == email_usuario.lower()):
+                
+                # Agregar un ID único para la respuesta
+                receta_completa = receta.copy()
+                receta_completa["id"] = generar_id_receta(receta["nombreReceta"])
+                
+                # No necesitamos procesar ingredientes ni pasos, los devolvemos como están
+                # porque el frontend ya los maneja correctamente como strings
+                
+                print(f"{LOG_INFO} Receta encontrada: {nombre_receta} para usuario {email_usuario}")
+                return receta_completa
+        
+        print(f"{LOG_WARNING} Receta no encontrada: {nombre_receta} para usuario {email_usuario}")
+        return None
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener receta por ID: {e}")
+        return None
+
+
+def generar_id_receta(nombre_receta: str) -> str:
+    """
+    Genera un ID único para una receta basado en su nombre.
+    
+    Args:
+        nombre_receta (str): Nombre de la receta
+        
+    Returns:
+        str: ID único codificado en base64
+    """
+    try:
+        # Codificar el nombre en base64 para crear un ID único
+        nombre_encoded = base64.b64encode(nombre_receta.encode('utf-8')).decode('utf-8')
+        return urllib.parse.quote(nombre_encoded)
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al generar ID de receta: {e}")
+        return nombre_receta.replace(' ', '_')
 
 
 # ==================== FUNCIONES DE UTILIDAD PARA IMÁGENES ====================

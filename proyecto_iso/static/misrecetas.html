@@ -446,6 +446,192 @@
       </div>
     </div>
 
+    <!-- Modal de Detalle de Receta -->
+    <div
+      class="modal fade"
+      id="detalleRecetaModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detalleRecetaModalLabel">
+              <i class="bi bi-book text-primary me-2"></i>
+              <span id="tituloRecetaDetalle">Cargando...</span>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Loading spinner -->
+            <div id="loadingDetalleReceta" class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando detalles de la receta...</span>
+              </div>
+              <p class="mt-2 text-muted">Cargando información completa...</p>
+            </div>
+            
+            <!-- Contenido de la receta -->
+            <div id="contenidoDetalleReceta" style="display: none;">
+              <div class="row">
+                <!-- Columna izquierda: Imagen y datos básicos -->
+                <div class="col-lg-5">
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div id="imagenRecetaDetalle" class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                      <!-- La imagen se cargará aquí -->
+                    </div>
+                    <div class="card-body">
+                      <div class="row g-3">
+                        <div class="col-6">
+                          <div class="bg-primary bg-opacity-10 rounded p-3 text-center">
+                            <i class="bi bi-clock text-primary fs-4"></i>
+                            <div class="mt-2">
+                              <small class="text-muted d-block">Duración</small>
+                              <strong id="duracionRecetaDetalle">-</strong>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="bg-warning bg-opacity-10 rounded p-3 text-center">
+                            <i class="bi bi-star text-warning fs-4"></i>
+                            <div class="mt-2">
+                              <small class="text-muted d-block">Dificultad</small>
+                              <strong id="dificultadRecetaDetalle">-</strong>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="bg-success bg-opacity-10 rounded p-3 text-center">
+                            <i class="bi bi-geo-alt text-success fs-4"></i>
+                            <div class="mt-2">
+                              <small class="text-muted d-block">País origen</small>
+                              <strong id="paisOrigenRecetaDetalle">-</strong>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="bg-info bg-opacity-10 rounded p-3 text-center">
+                            <i class="bi bi-clock-history text-info fs-4"></i>
+                            <div class="mt-2">
+                              <small class="text-muted d-block">Turno comida</small>
+                              <strong id="turnoComidaRecetaDetalle">-</strong>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Columna derecha: Descripción, ingredientes e instrucciones -->
+                <div class="col-lg-7">
+                  <!-- Descripción -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-file-text text-primary me-2"></i>
+                        Descripción
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <p id="descripcionRecetaDetalle" class="mb-0">-</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Ingredientes -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-success bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-list-check text-success me-2"></i>
+                        Ingredientes
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div id="ingredientesRecetaDetalle">
+                        <p class="text-muted mb-0">No se han especificado ingredientes.</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Instrucciones -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-warning bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-list-ol text-warning me-2"></i>
+                        Pasos a seguir
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div id="instruccionesRecetaDetalle">
+                        <p class="text-muted mb-0">No se han especificado pasos a seguir.</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Alérgenos -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-danger bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                        Alérgenos
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <div id="alergenosRecetaDetalle">
+                        <p class="text-muted mb-0">No se han especificado alérgenos.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Error state -->
+            <div id="errorDetalleReceta" style="display: none;" class="text-center py-5">
+              <div class="text-danger">
+                <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Error al cargar la receta</h5>
+                <p id="mensajeErrorDetalle">Ha ocurrido un error inesperado</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="bi bi-x-circle me-1"></i>
+              Cerrar
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              id="editarRecetaBtn"
+              style="display: none;"
+            >
+              <i class="bi bi-pencil me-1"></i>
+              Editar Receta
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="eliminarRecetaBtn"
+              style="display: none;"
+            >
+              <i class="bi bi-trash me-1"></i>
+              Eliminar Receta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -481,7 +667,11 @@
       function crearCardReceta(receta) {
         return `
           <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow-sm border-0 h-100 receta-card" 
+                 data-receta-id="${receta.id || receta._id || ''}" 
+                 style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                 onmouseenter="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.15)'"
+                 onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
               <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                 ${
                   receta.fotoReceta && receta.fotoReceta.trim() !== ""
@@ -500,15 +690,192 @@
                 </p>
                 
                 <div class="mt-auto">
-                  <div class="d-flex align-items-center text-muted small">
-                    <i class="bi bi-clock me-1"></i>
-                    <span>${formatearDuracion(receta.duracion)}</span>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center text-muted small">
+                      <i class="bi bi-clock me-1"></i>
+                      <span>${formatearDuracion(receta.duracion)}</span>
+                    </div>
+                    <small class="text-primary fw-bold">Ver más →</small>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         `;
+      }
+
+      // Función para agregar event listeners a las tarjetas de recetas
+      function agregarEventListenersRecetas() {
+        document.querySelectorAll('.receta-card').forEach(card => {
+          card.addEventListener('click', function() {
+            const recetaId = this.getAttribute('data-receta-id');
+            if (recetaId) {
+              abrirModalDetalleReceta(recetaId);
+            }
+          });
+        });
+      }
+
+      // Función para abrir el modal de detalle de receta
+      async function abrirModalDetalleReceta(recetaId) {
+        const modal = new bootstrap.Modal(document.getElementById('detalleRecetaModal'));
+        
+        // Mostrar modal con loading
+        mostrarLoadingModal();
+        modal.show();
+        
+        try {
+          const response = await fetch(`/api/receta/${recetaId}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Cache-Control": "no-cache",
+            },
+          });
+
+          const resultado = await response.json();
+          
+          if (resultado.exito && resultado.receta) {
+            mostrarDetalleReceta(resultado.receta);
+          } else {
+            mostrarErrorModal(resultado.mensaje || "No se pudo cargar la receta");
+          }
+        } catch (error) {
+          console.error("Error al cargar detalle de receta:", error);
+          mostrarErrorModal("Error de conexión. No se pudo cargar la receta.");
+        }
+      }
+
+      // Función para mostrar el loading en el modal
+      function mostrarLoadingModal() {
+        document.getElementById('loadingDetalleReceta').style.display = 'block';
+        document.getElementById('contenidoDetalleReceta').style.display = 'none';
+        document.getElementById('errorDetalleReceta').style.display = 'none';
+        document.getElementById('tituloRecetaDetalle').textContent = 'Cargando...';
+      }
+
+      // Función para mostrar error en el modal
+      function mostrarErrorModal(mensaje) {
+        document.getElementById('loadingDetalleReceta').style.display = 'none';
+        document.getElementById('contenidoDetalleReceta').style.display = 'none';
+        document.getElementById('errorDetalleReceta').style.display = 'block';
+        document.getElementById('mensajeErrorDetalle').textContent = mensaje;
+        document.getElementById('tituloRecetaDetalle').textContent = 'Error';
+      }
+
+      // Función para mostrar el detalle de la receta en el modal
+      function mostrarDetalleReceta(receta) {
+        // Ocultar loading y error, mostrar contenido
+        document.getElementById('loadingDetalleReceta').style.display = 'none';
+        document.getElementById('errorDetalleReceta').style.display = 'none';
+        document.getElementById('contenidoDetalleReceta').style.display = 'block';
+
+        // Llenar datos básicos
+        document.getElementById('tituloRecetaDetalle').textContent = receta.nombreReceta || 'Sin nombre';
+        document.getElementById('descripcionRecetaDetalle').textContent = receta.descripcion || 'Sin descripción';
+        document.getElementById('duracionRecetaDetalle').textContent = formatearDuracion(receta.duracion || 0);
+        document.getElementById('dificultadRecetaDetalle').textContent = receta.dificultad || 'No especificada';
+        document.getElementById('paisOrigenRecetaDetalle').textContent = receta.paisOrigen || 'No especificado';
+        
+        // Formatear turno de comida
+        const turnoComida = receta.turnoComida || 'No especificado';
+        document.getElementById('turnoComidaRecetaDetalle').textContent = 
+          turnoComida.charAt(0).toUpperCase() + turnoComida.slice(1).toLowerCase();
+
+        // Mostrar imagen
+        const contenedorImagen = document.getElementById('imagenRecetaDetalle');
+        if (receta.fotoReceta && receta.fotoReceta.trim() !== "") {
+          contenedorImagen.innerHTML = `
+            <img src="${receta.fotoReceta}" 
+                 class="img-fluid rounded w-100 h-100" 
+                 style="object-fit: cover;" 
+                 alt="${receta.nombreReceta}" 
+                 loading="lazy">
+          `;
+        } else {
+          contenedorImagen.innerHTML = `
+            <div class="d-flex flex-column align-items-center justify-content-center text-muted h-100">
+              <i class="bi bi-image" style="font-size: 4rem;"></i>
+              <small class="mt-2">Sin imagen</small>
+            </div>
+          `;
+        }
+
+        // Mostrar ingredientes
+        const contenedorIngredientes = document.getElementById('ingredientesRecetaDetalle');
+        if (receta.ingredientes && receta.ingredientes.trim() !== '') {
+          // Los ingredientes vienen como string separado por comas
+          const ingredientesLista = receta.ingredientes.split(',').map(ing => ing.trim()).filter(ing => ing);
+          if (ingredientesLista.length > 0) {
+            const ingredientesHTML = ingredientesLista.map((ingrediente, index) => {
+              return `
+                <div class="d-flex align-items-center mb-2">
+                  <span class="badge bg-success bg-opacity-10 text-success me-2">${index + 1}</span>
+                  <span class="fw-medium">${ingrediente}</span>
+                </div>
+              `;
+            }).join('');
+            contenedorIngredientes.innerHTML = ingredientesHTML;
+          } else {
+            contenedorIngredientes.innerHTML = '<p class="text-muted mb-0">No se han especificado ingredientes.</p>';
+          }
+        } else {
+          contenedorIngredientes.innerHTML = '<p class="text-muted mb-0">No se han especificado ingredientes.</p>';
+        }
+
+        // Mostrar pasos a seguir
+        const contenedorInstrucciones = document.getElementById('instruccionesRecetaDetalle');
+        if (receta.pasosAseguir && receta.pasosAseguir.trim() !== '') {
+          console.log('Pasos originales:', receta.pasosAseguir);
+          
+          // Primero intentar separar por saltos de línea
+          let pasos = receta.pasosAseguir.split(/[\n\r]+/).map(p => p.trim()).filter(p => p);
+          
+          console.log('Pasos separados por \\n:', pasos);
+          
+          // Si solo hay un paso, intentar separar por puntos (pero no el punto final)
+          if (pasos.length <= 1) {
+            const textoSinPuntoFinal = receta.pasosAseguir.replace(/\.$/, '');
+            pasos = textoSinPuntoFinal.split('.').map(p => p.trim()).filter(p => p);
+            console.log('Pasos separados por puntos:', pasos);
+          }
+          
+          // Si hay múltiples pasos, mostrarlos numerados
+          if (pasos.length > 1) {
+            const pasosHTML = pasos.map((paso, index) => {
+              return `
+                <div class="d-flex mb-3">
+                  <span class="badge bg-warning bg-opacity-10 text-warning me-3 mt-1" style="min-width: 24px;">${index + 1}</span>
+                  <p class="mb-0">${paso}</p>
+                </div>
+              `;
+            }).join('');
+            
+            contenedorInstrucciones.innerHTML = pasosHTML;
+          } else {
+            // Si es un solo paso, mostrarlo sin numeración
+            const pasosFormateados = receta.pasosAseguir.replace(/\n/g, '<br>');
+            contenedorInstrucciones.innerHTML = `<p class="mb-0">${pasosFormateados}</p>`;
+          }
+        } else {
+          contenedorInstrucciones.innerHTML = '<p class="text-muted mb-0">No se han especificado pasos a seguir.</p>';
+        }
+
+        // Mostrar alérgenos - SIMPLE: solo mostrar el texto
+        const contenedorAlergenos = document.getElementById('alergenosRecetaDetalle');
+        
+        if (receta.alergenos && receta.alergenos.trim() !== '') {
+          // Mostrar el texto completo de alérgenos tal como está
+          contenedorAlergenos.innerHTML = `<p class="text-danger mb-0"><strong>${receta.alergenos}</strong></p>`;
+        } else {
+          contenedorAlergenos.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>Sin alérgenos conocidos</span>';
+        }
+
+        // Mostrar botones de acción (editar/eliminar) si es necesario
+        // Por ahora los dejamos ocultos, se pueden implementar después
+        document.getElementById('editarRecetaBtn').style.display = 'none';
+        document.getElementById('eliminarRecetaBtn').style.display = 'none';
       }
 
       // Función para cargar las recetas
@@ -546,6 +913,9 @@
               totalRecetas.textContent = `${recetas.length} receta${
                 recetas.length !== 1 ? "s" : ""
               }`;
+              
+              // Agregar event listeners a las tarjetas de recetas
+              agregarEventListenersRecetas();
             }
           } else {
             contenedor.innerHTML = `

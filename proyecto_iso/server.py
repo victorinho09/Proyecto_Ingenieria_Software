@@ -21,7 +21,8 @@ from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
-    obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario
+    obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
+    obtener_recetas_usuario_con_ids
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -603,8 +604,8 @@ async def obtener_mis_recetas(request: Request) -> JSONResponse:
                 HTTP_BAD_REQUEST
             )
         
-        # Obtener recetas del usuario
-        recetas_usuario = obtener_recetas_usuario(email_usuario)
+        # Obtener recetas del usuario con IDs únicos
+        recetas_usuario = obtener_recetas_usuario_con_ids(email_usuario)
         
         return crear_respuesta_exito(
             f"Recetas obtenidas correctamente",
@@ -617,6 +618,63 @@ async def obtener_mis_recetas(request: Request) -> JSONResponse:
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en obtener_mis_recetas: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.get("/api/receta/{receta_id}")
+async def obtener_detalle_receta(receta_id: str, request: Request) -> JSONResponse:
+    """
+    Obtiene los detalles completos de una receta específica del usuario autenticado.
+    
+    Args:
+        receta_id (str): ID único de la receta
+        request (Request): Objeto Request de FastAPI con cookies de sesión
+        
+    Returns:
+        JSONResponse: Respuesta con los datos completos de la receta o error
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver los detalles de las recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener receta específica
+        receta = obtener_receta_por_id(receta_id, email_usuario)
+        
+        if receta is None:
+            return crear_respuesta_error(
+                "Receta no encontrada o no tienes permiso para verla",
+                "RECETA_NO_ENCONTRADA",
+                HTTP_NOT_FOUND
+            )
+        
+        return crear_respuesta_exito(
+            f"Detalles de receta obtenidos correctamente",
+            {
+                "receta": receta,
+                "usuario": email_usuario
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_detalle_receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

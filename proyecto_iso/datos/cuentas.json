@@ -38,5 +38,10 @@
     "nombreUsuario": "prueba",
     "email": "prueba4.0@gmail.com",
     "password": "Prueba1234"
+  },
+  {
+    "nombreUsuario": "Alex",
+    "email": "alexbarcelo@gmail.com",
+    "password": "Alex1234"
   }
 ]
