@@ -603,29 +603,35 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
+              class="btn btn-success"
+              id="publicarRecetaBtn"
             >
-              <i class="bi bi-x-circle me-1"></i>
-              Cerrar
+              <i class="bi bi-share me-1"></i>
+              Publicar
             </button>
             <button
               type="button"
               class="btn btn-warning"
               id="editarRecetaBtn"
-              style="display: none;"
             >
               <i class="bi bi-pencil me-1"></i>
-              Editar Receta
+              Editar
             </button>
             <button
               type="button"
               class="btn btn-danger"
               id="eliminarRecetaBtn"
-              style="display: none;"
             >
               <i class="bi bi-trash me-1"></i>
-              Eliminar Receta
+              Eliminar
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="bi bi-x-circle me-1"></i>
+              Cerrar
             </button>
           </div>
         </div>
@@ -872,10 +878,23 @@
           contenedorAlergenos.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>Sin alérgenos conocidos</span>';
         }
 
-        // Mostrar botones de acción (editar/eliminar) si es necesario
-        // Por ahora los dejamos ocultos, se pueden implementar después
-        document.getElementById('editarRecetaBtn').style.display = 'none';
-        document.getElementById('eliminarRecetaBtn').style.display = 'none';
+        // Mostrar botones de acción - ahora visibles pero sin funcionalidad
+        document.getElementById('publicarRecetaBtn').style.display = 'inline-block';
+        document.getElementById('editarRecetaBtn').style.display = 'inline-block';
+        document.getElementById('eliminarRecetaBtn').style.display = 'inline-block';
+        
+        // Agregar event listeners básicos (sin funcionalidad por ahora)
+        document.getElementById('publicarRecetaBtn').onclick = function() {
+          alert('Funcionalidad de publicar receta - Próximamente');
+        };
+        
+        document.getElementById('editarRecetaBtn').onclick = function() {
+          alert('Funcionalidad de editar receta - Próximamente');
+        };
+        
+        document.getElementById('eliminarRecetaBtn').onclick = function() {
+          alert('Funcionalidad de eliminar receta - Próximamente');
+        };
       }
 
       // Función para cargar las recetas
