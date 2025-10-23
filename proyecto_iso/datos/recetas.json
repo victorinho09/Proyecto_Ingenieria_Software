@@ -228,5 +228,18 @@
     "turnoComida": "aperitivo",
     "dificultad": "Dificil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "jdsjfjd",
+    "descripcion": "1212",
+    "ingredientes": "121",
+    "pasosAseguir": "12121",
+    "duracion": 121,
+    "fotoReceta": "/static/uploads/recetas/20251023_101837_pedro_varonaparra_bedadc9d.jpg",
+    "alergenos": "121",
+    "paisOrigen": "121",
+    "turnoComida": "aperitivo",
+    "dificultad": "Media",
+    "usuario": "pedro.varonaparra@usp.ceu.es"
   }
 ]

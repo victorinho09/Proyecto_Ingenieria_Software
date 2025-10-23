@@ -59,7 +59,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="/">Inicio</a>
+              <a class="nav-link" href="/">Inicio</a>
             </li>
 
             <li class="nav-item dropdown d-flex align-items-center">
@@ -92,9 +92,10 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="/comunidad">Comunidad</a>
+              <a class="nav-link active" href="/comunidad">Comunidad</a>
             </li>
           </ul>
+
           <span class="navbar-text text-light me-3">
             <a
               class="bi bi-person-circle nav-link"
@@ -116,93 +117,23 @@
         </div>
       </div>
     </nav>
-    <!-- Contenido principal -->
 
-    <main class="flex-grow-1">
-      <div class="container py-5">
-        <!-- Hero Section -->
-        <div class="row justify-content-center text-center mb-5">
-          <div class="col-lg-8">
+    <div>
+      <h2>Comunidad</h2>
+    </div>
 
-            <img src="/static/saborea4.0.png" class="img-fluid mb-4" style="max-height: 200px;">
-
-            <p class="lead text-muted mb-4">
-              Bienvenido a Saborea, donde podrás encontrar
-              y compartir tus recetas favoritas. También podrás crear nuevas
-              recetas y generar un menú semanal con ellas.
-            </p>
-
-            <a href="/recetas" class="btn btn-outline-primary btn-lg">
-              <i class="bi bi-book-half"></i> Ver Recetas
-            </a>
+    <!-- Footer -->
+    <footer class="bg-light border-top mt-auto">
+      <div class="container py-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <img src="/static/cocinero.png" alt="Logo" style="height: 16px;" class="me-2">
+            <span class="text-muted small">Saborea</span>
           </div>
-        </div>
-
-        <!-- Características principales -->
-        <div class="row g-4 mb-5 justify-content-center">
-          <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body text-center p-4">
-                <div
-                  class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                  style="width: 60px; height: 60px"
-                >
-                  <i class="bi bi-book-half text-primary fs-3"></i>
-                </div>
-                <h5 class="card-title fw-bold">Gestiona tus Recetas</h5>
-                <p class="card-text text-muted">
-                  Crea, organiza y comparte tus recetas favoritas de manera
-                  fácil e intuitiva.
-                </p>
-                <a href="/recetas" class="btn btn-outline-primary">
-                  <i class="bi bi-arrow-right"></i> Explorar Recetas
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body text-center p-4">
-                <div
-                  class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                  style="width: 60px; height: 60px"
-                >
-                  <i class="bi bi-calendar-week text-success fs-3"></i>
-                </div>
-                <h5 class="card-title fw-bold">Menú Semanal</h5>
-                <p class="card-text text-muted">
-                  Planifica tus comidas semanales de forma organizada y
-                  eficiente.
-                </p>
-                <a href="/menu-semanal" class="btn btn-outline-success">
-                  <i class="bi bi-arrow-right"></i> Planificar Menú
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body text-center p-4">
-                <div
-                  class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                  style="width: 60px; height: 60px"
-                >
-                  <i class="bi bi-people text-warning fs-3"></i>
-                </div>
-                <h5 class="card-title fw-bold">Comunidad</h5>
-                <p class="card-text text-muted">
-                  Conecta con otros amantes de la cocina y comparte experiencias
-                  culinarias.
-                </p>
-                <button class="btn btn-outline-warning" disabled>
-                  <i class="bi bi-arrow-right"></i> Próximamente
-                </button>
-              </div>
-            </div>
-          </div>
+          <div class="text-muted small">© 2025 • ISO 2025/2026</div>
         </div>
       </div>
-    </main>
+    </footer>
 
     <!-- Modal de Cerrar Sesión -->
     <div
@@ -256,19 +187,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-light border-top mt-auto">
-      <div class="container py-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <img src="/static/cocinero.png" alt="Logo" style="height: 16px;" class="me-2">
-            <span class="text-muted small">Saborea</span>
-          </div>
-          <div class="text-muted small">© 2025 • ISO 2025/2026</div>
-        </div>
-      </div>
-    </footer>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -340,6 +340,22 @@ def get_menu_semanal(request: Request):
     
     return servir_pagina_html(RUTA_MENU_SEMANAL)
 
+@app.get("/comunidad", response_class=HTMLResponse)
+def get_comunidad(request: Request):
+    """
+    Endpoint para servir la página de comunidad.
+    Solo accesible para usuarios autenticados.
+    
+    Returns:
+        FileResponse: Página HTML de recetas o redirección si no está autenticado
+    """
+    # Verificar autenticación
+    auth_check = requiere_autenticacion(request)
+    if auth_check:
+        return auth_check
+    
+    return servir_pagina_html(RUTA_COMUNIDAD)
+
 # ==================== ENDPOINTS DE AUTENTICACIÓN ====================
 
 @app.post("/iniciar-sesion")
