@@ -22,7 +22,7 @@ from utils import (
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
-    obtener_recetas_usuario_con_ids
+    obtener_recetas_usuario_con_ids, cargar_recetas
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -641,10 +641,74 @@ async def obtener_mis_recetas(request: Request) -> JSONResponse:
         )
 
 
+@app.get("/api/recetas-comunidad")
+async def obtener_recetas_comunidad(request: Request) -> JSONResponse:
+    """
+    Endpoint API para obtener todas las recetas de otros usuarios (comunidad).
+    No incluye las recetas del usuario autenticado.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies
+        
+    Returns:
+        JSONResponse: Lista de recetas de la comunidad (excluyendo las del usuario)
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver las recetas de la comunidad",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Cargar todas las recetas del sistema
+        todas_recetas = cargar_recetas()
+        
+        # Filtrar las recetas: solo incluir las de otros usuarios
+        recetas_comunidad = []
+        for idx, receta in enumerate(todas_recetas):
+            # Solo incluir recetas de otros usuarios
+            if receta.get("usuario", "") != email_usuario:
+                receta_con_id = receta.copy()
+                receta_con_id["id"] = f"receta-{idx}"
+                recetas_comunidad.append(receta_con_id)
+        
+        return crear_respuesta_exito(
+            f"Recetas de la comunidad obtenidas correctamente",
+            {
+                "recetas": recetas_comunidad,
+                "total": len(recetas_comunidad),
+                "usuario": email_usuario
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_recetas_comunidad: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
 @app.get("/api/receta/{receta_id}")
 async def obtener_detalle_receta(receta_id: str, request: Request) -> JSONResponse:
     """
-    Obtiene los detalles completos de una receta específica del usuario autenticado.
+    Obtiene los detalles completos de una receta específica.
+    Permite ver tanto recetas propias como de otros usuarios.
+    Acepta dos formatos de ID:
+    - "receta-{idx}": índice directo en el array de recetas
+    - Base64 encoded: nombre de receta codificado en base64
     
     Args:
         receta_id (str): ID único de la receta
@@ -671,12 +735,42 @@ async def obtener_detalle_receta(receta_id: str, request: Request) -> JSONRespon
                 HTTP_BAD_REQUEST
             )
         
-        # Obtener receta específica
-        receta = obtener_receta_por_id(receta_id, email_usuario)
+        # Cargar todas las recetas
+        todas_recetas = cargar_recetas()
         
-        if receta is None:
+        receta_encontrada = None
+        
+        # Intentar primero con el formato "receta-{idx}"
+        if receta_id.startswith("receta-"):
+            try:
+                idx = int(receta_id.replace("receta-", ""))
+                if 0 <= idx < len(todas_recetas):
+                    receta_encontrada = todas_recetas[idx].copy()
+                    receta_encontrada["id"] = receta_id
+            except ValueError:
+                pass
+        
+        # Si no se encontró, intentar decodificar base64
+        if receta_encontrada is None:
+            try:
+                import urllib.parse
+                import base64
+                # Decodificar el ID para obtener el nombre de la receta
+                nombre_receta = base64.b64decode(urllib.parse.unquote(receta_id)).decode('utf-8')
+                
+                # Buscar la receta por nombre
+                for idx, receta in enumerate(todas_recetas):
+                    if receta.get("nombreReceta", "") == nombre_receta:
+                        receta_encontrada = receta.copy()
+                        receta_encontrada["id"] = receta_id
+                        break
+            except Exception:
+                pass
+        
+        # Si no se encontró la receta con ninguno de los dos métodos
+        if receta_encontrada is None:
             return crear_respuesta_error(
-                "Receta no encontrada o no tienes permiso para verla",
+                "Receta no encontrada",
                 "RECETA_NO_ENCONTRADA",
                 HTTP_NOT_FOUND
             )
@@ -684,7 +778,7 @@ async def obtener_detalle_receta(receta_id: str, request: Request) -> JSONRespon
         return crear_respuesta_exito(
             f"Detalles de receta obtenidos correctamente",
             {
-                "receta": receta,
+                "receta": receta_encontrada,
                 "usuario": email_usuario
             }
         )

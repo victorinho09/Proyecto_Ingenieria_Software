@@ -245,7 +245,10 @@ def preparar_datos_receta(receta_data: Dict[str, Any], email_usuario: str) -> Di
         "dificultad": receta_data.get("dificultad", ""),
         
         # Campo adicional: usuario que creó la receta
-        "usuario": email_usuario
+        "usuario": email_usuario,
+        
+        # Campo para usuarios que han guardado la receta
+        "usuariosGuardado": receta_data.get("usuariosGuardado", [])
     }
     
     return receta_completa

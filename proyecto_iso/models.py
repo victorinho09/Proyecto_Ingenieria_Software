@@ -20,5 +20,5 @@ class Receta(BaseModel):
     turnoComida: str
     duracion: int
     dificultad: str
-    fotoReceta: str  # Campo para imagen en Base64 o URL, obligatorio
+    fotoReceta: str  # Campo para imagen en Base64 o URL
     usuariosGuardado: List[str] = []  # Lista de emails de usuarios que han guardado la receta

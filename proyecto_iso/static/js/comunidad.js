@@ -84,31 +84,22 @@ function mostrarDetalleReceta(receta) {
     document.getElementById('alergenosRecetaDetalle')
   );
 
-  // Mostrar botones de acción - ahora visibles pero sin funcionalidad
-  document.getElementById('publicarRecetaBtn').style.display = 'inline-block';
-  document.getElementById('editarRecetaBtn').style.display = 'inline-block';
-  document.getElementById('eliminarRecetaBtn').style.display = 'inline-block';
-  
-  // Agregar event listeners básicos (sin funcionalidad por ahora)
-  document.getElementById('publicarRecetaBtn').onclick = function() {
-    alert('Funcionalidad de publicar receta - Próximamente');
-  };
-  
-  document.getElementById('editarRecetaBtn').onclick = function() {
-    alert('Funcionalidad de editar receta - Próximamente');
-  };
-  
-  document.getElementById('eliminarRecetaBtn').onclick = function() {
-    alert('Funcionalidad de eliminar receta - Próximamente');
-  };
+  // Configurar botón de guardar (sin funcionalidad por ahora)
+  const btnGuardar = document.getElementById('guardarRecetaBtn');
+  if (btnGuardar) {
+    btnGuardar.onclick = function() {
+      console.log('Guardar receta:', receta.nombreReceta);
+      // TODO: Implementar funcionalidad de guardar receta
+    };
+  }
 }
 
 /**
- * Carga y muestra las recetas de la comunidad
+ * Carga y muestra las recetas de la comunidad (todas excepto las del usuario actual)
  */
 async function cargarRecetasComunidad() {
   try {
-    const response = await fetch("/api/mis-recetas", {
+    const response = await fetch("/api/recetas-comunidad", {
       method: "GET",
       credentials: "include",
       headers: {
