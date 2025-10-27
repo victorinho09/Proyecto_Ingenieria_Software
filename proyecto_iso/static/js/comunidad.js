@@ -97,17 +97,20 @@ async function configurarBotonGuardar(receta) {
   if (!btnGuardar) return;
 
   // Verificar si la receta ya está guardada
-  const estaGuardada = await verificarRecetaGuardada(receta.nombreReceta);
+  let estaGuardada = await verificarRecetaGuardada(receta.nombreReceta);
   
   actualizarEstadoBotonGuardar(btnGuardar, estaGuardada);
   
   // Configurar el evento click
   btnGuardar.onclick = async function() {
     if (estaGuardada) {
-      console.log('Desguardar receta:', receta.nombreReceta);
-      // TODO: Implementar funcionalidad de desguardar receta
+      // Desguardar la receta
+      await desguardarReceta(receta.nombreReceta, btnGuardar);
+      estaGuardada = false;
     } else {
+      // Guardar la receta
       await guardarReceta(receta.nombreReceta, btnGuardar);
+      estaGuardada = true;
     }
   };
 }
@@ -169,12 +172,6 @@ async function guardarReceta(nombreReceta, boton) {
       
       // Mostrar mensaje de éxito
       console.log(`✅ Receta "${nombreReceta}" guardada correctamente`);
-      
-      // Reconfigurar el onclick para desguardar
-      boton.onclick = function() {
-        console.log('Desguardar receta:', nombreReceta);
-        // TODO: Implementar funcionalidad de desguardar receta
-      };
     } else {
       alert(resultado.mensaje || "No se pudo guardar la receta");
       boton.disabled = false;
@@ -182,6 +179,45 @@ async function guardarReceta(nombreReceta, boton) {
   } catch (error) {
     console.error("Error al guardar receta:", error);
     alert("Error al guardar la receta");
+    boton.disabled = false;
+  }
+}
+
+/**
+ * Desguarda una receta para el usuario actual
+ * @param {string} nombreReceta - Nombre de la receta a desguardar
+ * @param {HTMLElement} boton - Elemento del botón para actualizar su estado
+ */
+async function desguardarReceta(nombreReceta, boton) {
+  try {
+    // Deshabilitar el botón mientras se procesa
+    boton.disabled = true;
+    
+    const response = await fetch("/desguardar-receta", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ nombreReceta: nombreReceta }),
+    });
+
+    const resultado = await response.json();
+
+    if (resultado.exito) {
+      // Actualizar el estado del botón a "no guardada"
+      actualizarEstadoBotonGuardar(boton, false);
+      
+      // Mostrar mensaje de éxito
+      console.log(`🗑️ Receta "${nombreReceta}" desguardada correctamente`);
+    } else {
+      alert(resultado.mensaje || "No se pudo desguardar la receta");
+      boton.disabled = false;
+    }
+  } catch (error) {
+    console.error("Error al desguardar receta:", error);
+    alert("Error al desguardar la receta");
     boton.disabled = false;
   }
 }
