@@ -84,13 +84,124 @@ function mostrarDetalleReceta(receta) {
     document.getElementById('alergenosRecetaDetalle')
   );
 
-  // Configurar botón de guardar (sin funcionalidad por ahora)
+  // Configurar botón de guardar
+  configurarBotonGuardar(receta);
+}
+
+/**
+ * Configura el botón de guardar/desguardar receta
+ * @param {Object} receta - Objeto con los datos de la receta
+ */
+async function configurarBotonGuardar(receta) {
   const btnGuardar = document.getElementById('guardarRecetaBtn');
-  if (btnGuardar) {
-    btnGuardar.onclick = function() {
-      console.log('Guardar receta:', receta.nombreReceta);
-      // TODO: Implementar funcionalidad de guardar receta
-    };
+  if (!btnGuardar) return;
+
+  // Verificar si la receta ya está guardada
+  const estaGuardada = await verificarRecetaGuardada(receta.nombreReceta);
+  
+  actualizarEstadoBotonGuardar(btnGuardar, estaGuardada);
+  
+  // Configurar el evento click
+  btnGuardar.onclick = async function() {
+    if (estaGuardada) {
+      console.log('Desguardar receta:', receta.nombreReceta);
+      // TODO: Implementar funcionalidad de desguardar receta
+    } else {
+      await guardarReceta(receta.nombreReceta, btnGuardar);
+    }
+  };
+}
+
+/**
+ * Verifica si una receta ya está guardada por el usuario
+ * @param {string} nombreReceta - Nombre de la receta
+ * @returns {Promise<boolean>} - true si está guardada, false si no
+ */
+async function verificarRecetaGuardada(nombreReceta) {
+  try {
+    const response = await fetch("/obtener-recetas-guardadas", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Cache-Control": "no-cache",
+      },
+    });
+
+    const resultado = await response.json();
+    
+    if (resultado.exito && resultado.recetas) {
+      return resultado.recetas.some(r => r.nombreReceta === nombreReceta);
+    }
+    
+    return false;
+  } catch (error) {
+    console.error("Error al verificar receta guardada:", error);
+    return false;
+  }
+}
+
+/**
+ * Guarda una receta para el usuario actual
+ * @param {string} nombreReceta - Nombre de la receta a guardar
+ * @param {HTMLElement} boton - Elemento del botón para actualizar su estado
+ */
+async function guardarReceta(nombreReceta, boton) {
+  try {
+    // Deshabilitar el botón mientras se procesa
+    boton.disabled = true;
+    
+    const response = await fetch("/guardar-receta", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ nombreReceta: nombreReceta }),
+    });
+
+    const resultado = await response.json();
+
+    if (resultado.exito) {
+      // Actualizar el estado del botón a "guardada"
+      actualizarEstadoBotonGuardar(boton, true);
+      
+      // Mostrar mensaje de éxito
+      console.log(`✅ Receta "${nombreReceta}" guardada correctamente`);
+      
+      // Reconfigurar el onclick para desguardar
+      boton.onclick = function() {
+        console.log('Desguardar receta:', nombreReceta);
+        // TODO: Implementar funcionalidad de desguardar receta
+      };
+    } else {
+      alert(resultado.mensaje || "No se pudo guardar la receta");
+      boton.disabled = false;
+    }
+  } catch (error) {
+    console.error("Error al guardar receta:", error);
+    alert("Error al guardar la receta");
+    boton.disabled = false;
+  }
+}
+
+/**
+ * Actualiza el aspecto del botón según el estado de guardado
+ * @param {HTMLElement} boton - Elemento del botón
+ * @param {boolean} estaGuardada - true si la receta está guardada
+ */
+function actualizarEstadoBotonGuardar(boton, estaGuardada) {
+  if (estaGuardada) {
+    // Estado: Ya guardada
+    boton.innerHTML = '<i class="bi bi-bookmark-check-fill"></i> Guardada';
+    boton.className = 'btn btn-success';
+    boton.disabled = false;
+  } else {
+    // Estado: No guardada
+    boton.innerHTML = '<i class="bi bi-bookmark-plus"></i> Guardar';
+    boton.className = 'btn btn-warning';
+    boton.disabled = false;
   }
 }
 

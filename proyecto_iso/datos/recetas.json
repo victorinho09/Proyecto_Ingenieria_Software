@@ -11,7 +11,9 @@
     "turnoComida": "aperitivo",
     "dificultad": "Media",
     "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ]
   },
   {
     "nombreReceta": "Garbanzos con tomate",

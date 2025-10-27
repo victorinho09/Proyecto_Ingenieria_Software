@@ -775,11 +775,16 @@ async def obtener_detalle_receta(receta_id: str, request: Request) -> JSONRespon
                 HTTP_NOT_FOUND
             )
         
+        # Verificar si el usuario tiene esta receta guardada
+        nombre_receta = receta_encontrada.get("nombreReceta", "")
+        receta_guardada = es_receta_guardada_por_usuario(nombre_receta, email_usuario)
+        
         return crear_respuesta_exito(
             f"Detalles de receta obtenidos correctamente",
             {
                 "receta": receta_encontrada,
-                "usuario": email_usuario
+                "usuario": email_usuario,
+                "guardada": receta_guardada
             }
         )
         
@@ -957,11 +962,21 @@ async def obtener_recetas_guardadas(request: Request) -> JSONResponse:
         # Obtener recetas guardadas del usuario
         recetas_guardadas = obtener_recetas_guardadas_usuario(email_usuario)
         
+        # Filtrar para excluir las recetas del propio usuario
+        recetas_guardadas_otros = [
+            receta for receta in recetas_guardadas 
+            if receta.get("usuario", "") != email_usuario
+        ]
+        
+        # Agregar IDs a las recetas
+        for idx, receta in enumerate(recetas_guardadas_otros):
+            receta["id"] = f"receta-guardada-{idx}"
+        
         return crear_respuesta_exito(
             f"Recetas guardadas obtenidas correctamente",
             {
-                "recetas": recetas_guardadas,
-                "total": len(recetas_guardadas),
+                "recetas": recetas_guardadas_otros,
+                "total": len(recetas_guardadas_otros),
                 "usuario": email_usuario
             }
         )
