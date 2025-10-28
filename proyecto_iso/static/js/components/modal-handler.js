@@ -45,7 +45,22 @@ export function cerrarModal(modalId) {
 export function cerrarTodosLosModales() {
   const modales = document.querySelectorAll(".modal");
   modales.forEach((modal) => {
+    // Intentar cerrar mediante la instancia de Bootstrap si está presente
+    try {
+      const bsInstance = bootstrap.Modal.getInstance(modal);
+      if (bsInstance) {
+        bsInstance.hide();
+      }
+    } catch (e) {
+      // Silenciar si bootstrap no está presente
+    }
+
+    // Asegurar que el modal quede oculto y limpiar clases/atributos que puedan quedar
     modal.style.display = "none";
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    modal.removeAttribute("aria-modal");
+    modal.style.paddingRight = "";
 
     // Limpiar formulario del modal si existe
     const form = modal.querySelector("form");
@@ -54,7 +69,13 @@ export function cerrarTodosLosModales() {
     }
   });
 
+  // Eliminar cualquier backdrop que quede en el DOM (backdrops de Bootstrap)
+  const backdrops = document.querySelectorAll('.modal-backdrop');
+  backdrops.forEach((bd) => bd.remove());
+
+  // Restaurar clases/estilos en body que Bootstrap pudiera haber agregado
   document.body.style.overflow = ""; // Restaurar scroll del body
+  document.body.classList.remove('modal-open');
 }
 
 /**
@@ -91,6 +112,15 @@ export function closeAndClean(modal) {
  * Inicializa los event listeners para los modales
  */
 export function inicializarModales() {
+  // Flag para saber si el pointer/mousedown comenzó dentro del contenido del modal
+  let pointerDownStartedInsideModalContent = false;
+
+  // Escuchar pointerdown (incluye mouse/touch) para detectar dónde empezó la interacción
+  document.addEventListener('pointerdown', (ev) => {
+    // Si el target está dentro de .modal-content consideramos que empezó dentro
+    pointerDownStartedInsideModalContent = !!ev.target.closest('.modal-content, .modal-dialog');
+  }, { capture: true });
+
   // Manejar clicks en botones de abrir modal
   document.addEventListener("click", (event) => {
     const botonAbrir = event.target.closest("[data-modal-target]");
@@ -123,22 +153,32 @@ export function inicializarModales() {
   document.addEventListener("click", (event) => {
     // Si se hace click directamente en el elemento que coincide con .modal (overlay)
     if (event.target.classList && event.target.classList.contains("modal")) {
-      // Si el modal usa backdrop 'static', bootstrap evita cerrarlo; forzamos cierre y limpieza
-      const modal = event.target;
-      closeAndClean(modal);
+      // Solo cerrar si la interacción NO empezó dentro del contenido del modal.
+      // Evita que arrastrar/selectar dentro del modal y soltar fuera cierre el modal.
+      if (!pointerDownStartedInsideModalContent) {
+        const modal = event.target;
+        closeAndClean(modal);
+      }
+      // reset flag
+      pointerDownStartedInsideModalContent = false;
     }
 
     // Detectar clicks sobre backdrops creados por bootstrap (elementos con clase .modal-backdrop)
     if (event.target.classList && event.target.classList.contains('modal-backdrop')) {
-      // Buscar el modal actualmente visible (si existe)
-      const modalVisible = document.querySelector('.modal[style*="display: block"], .modal.show');
-      if (modalVisible) {
-        closeAndClean(modalVisible);
-      } else {
-        // Si no hay modal visible, simplemente eliminar el backdrop y restaurar body
-        event.target.remove();
-        document.body.style.overflow = "";
+      // Solo cerrar/eliminar si la interacción NO empezó dentro del contenido del modal.
+      if (!pointerDownStartedInsideModalContent) {
+        const modalVisible = document.querySelector('.modal[style*=\"display: block\"], .modal.show');
+        if (modalVisible) {
+          closeAndClean(modalVisible);
+        } else {
+          // Si no hay modal visible, simplemente eliminar el backdrop y restaurar body
+          event.target.remove();
+          document.body.style.overflow = "";
+          document.body.classList.remove('modal-open');
+        }
       }
+      // reset flag
+      pointerDownStartedInsideModalContent = false;
     }
   });
 
