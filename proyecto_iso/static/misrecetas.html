@@ -463,7 +463,7 @@
           <div class="modal-header">
             <h5 class="modal-title" id="confirmarPublicarModalLabel">
               <i class="bi bi-upload text-primary me-2"></i>
-              Publicar: <span id="nombreRecetaConfirmarTitulo" class="fw-bold"></span>
+              <span id="nombreRecetaConfirmarTitulo" class="fw-bold"></span>
             </h5>
             <button
               type="button"
@@ -472,10 +472,10 @@
             ></button>
           </div>
           <div class="modal-body">
-            <p class="mb-3 text-center">
-              <strong>¿Estás seguro de querer publicar esta receta?</strong>
-            </p>
-            <p class="mb-0 text-muted text-center">
+            <div class="alert alert-warning">
+              ¿Estás seguro de querer publicar esta receta?
+            </div>
+            <p class="mb-0 text-muted">
               Al publicar tu receta será visible para todos los usuarios en la comunidad.
             </p>
           </div>
@@ -791,25 +791,34 @@
         // Actualizar el nombre de la receta en el título del modal
         document.getElementById('nombreRecetaConfirmarTitulo').textContent = receta.nombreReceta;
         
-        // Mostrar el modal con configuración para aparecer por encima de todo
         const modalElement = document.getElementById('confirmarPublicarModal');
-        const modal = new bootstrap.Modal(modalElement);
         
-        // Asegurar que el modal y su backdrop aparezcan por encima de todo
-        modalElement.addEventListener('shown.bs.modal', function() {
-          // Configurar z-index del modal de confirmación
-          modalElement.style.zIndex = '1060';
-          
-          // Encontrar y configurar el backdrop del modal de confirmación
-          const backdrops = document.querySelectorAll('.modal-backdrop');
-          if (backdrops.length > 1) {
-            const confirmBackdrop = backdrops[backdrops.length - 1]; // El último backdrop es del modal de confirmación
-            confirmBackdrop.style.zIndex = '1059'; // Por encima del modal de detalle pero debajo del modal de confirmación
-            confirmBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)'; // Asegurar que sea visible
-          }
+        // Configurar z-index ANTES de mostrar el modal para evitar transiciones raras
+        modalElement.style.zIndex = '1060';
+        
+        // Crear y mostrar backdrop personalizado primero
+        const customBackdrop = document.createElement('div');
+        customBackdrop.className = 'modal-backdrop fade';
+        customBackdrop.style.zIndex = '1059';
+        customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        customBackdrop.id = 'custom-publicar-backdrop';
+        document.body.appendChild(customBackdrop);
+        
+        // Animar la aparición del backdrop
+        setTimeout(() => {
+          customBackdrop.classList.add('show');
+        }, 10);
+        
+        // Crear el modal y configurarlo para que no cree su propio backdrop
+        const modal = new bootstrap.Modal(modalElement, {
+          backdrop: false,  // No crear backdrop automático
+          keyboard: false
         });
         
-        modal.show();
+        // Mostrar el modal después de que aparezca el backdrop
+        setTimeout(() => {
+          modal.show();
+        }, 150);
         
         // Configurar el botón de confirmación
         const btnConfirmar = document.getElementById('confirmarPublicarBtn');
@@ -828,22 +837,13 @@
           publicarReceta(recetaId, botonPublicar);
         };
         
-        // Manejar el evento de cierre del modal para limpiar backdrops
-        modalElement.addEventListener('hidden.bs.modal', function handleModalHidden() {
-          // Eliminar backdrops residuales después de cerrar el modal de confirmación
-          setTimeout(() => {
-            const allBackdrops = document.querySelectorAll('.modal-backdrop');
-            // Si hay más de un backdrop, eliminar los extras
-            if (allBackdrops.length > 1) {
-              // Eliminar todos los backdrops excepto el primero (del modal principal)
-              for (let i = 1; i < allBackdrops.length; i++) {
-                allBackdrops[i].remove();
-              }
-            }
-          }, 10);
-          
-          // Remover este event listener para evitar duplicados
-          modalElement.removeEventListener('hidden.bs.modal', handleModalHidden);
+        // Limpiar el backdrop personalizado cuando se cierre el modal
+        modalElement.addEventListener('hidden.bs.modal', function cleanupBackdrop() {
+          const customBd = document.getElementById('custom-publicar-backdrop');
+          if (customBd) {
+            customBd.remove();
+          }
+          modalElement.removeEventListener('hidden.bs.modal', cleanupBackdrop);
         });
       }
 
@@ -1084,11 +1084,48 @@
         if (emailUsuario && receta.usuario && emailUsuario === receta.usuario) {
           btnEliminar.style.display = 'inline-block';
           btnEliminar.onclick = function() {
-            // Abrir modal de confirmación
-            const confirmarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            // Actualizar el nombre de la receta en el modal
+            document.getElementById('nombreRecetaEliminarTitulo').textContent = receta.nombreReceta;
+            
+            const modalElement = document.getElementById('confirmarEliminarModal');
             const confirmarBtn = document.getElementById('confirmarEliminarBtn');
             confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
-            confirmarModal.show();
+            
+            // Configurar z-index ANTES de mostrar el modal para evitar transiciones raras
+            modalElement.style.zIndex = '1060';
+            
+            // Crear y mostrar backdrop personalizado primero
+            const customBackdrop = document.createElement('div');
+            customBackdrop.className = 'modal-backdrop fade';
+            customBackdrop.style.zIndex = '1059';
+            customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            customBackdrop.id = 'custom-eliminar-backdrop';
+            document.body.appendChild(customBackdrop);
+            
+            // Animar la aparición del backdrop
+            setTimeout(() => {
+              customBackdrop.classList.add('show');
+            }, 10);
+            
+            // Crear el modal y configurarlo para que no cree su propio backdrop
+            const confirmarModal = new bootstrap.Modal(modalElement, {
+              backdrop: false,  // No crear backdrop automático
+              keyboard: false
+            });
+            
+            // Mostrar el modal después de que aparezca el backdrop
+            setTimeout(() => {
+              confirmarModal.show();
+            }, 150);
+            
+            // Limpiar el backdrop personalizado cuando se cierre el modal
+            modalElement.addEventListener('hidden.bs.modal', function cleanupBackdrop() {
+              const customBd = document.getElementById('custom-eliminar-backdrop');
+              if (customBd) {
+                customBd.remove();
+              }
+              modalElement.removeEventListener('hidden.bs.modal', cleanupBackdrop);
+            });
           };
         } else {
           btnEliminar.style.display = 'none';
@@ -1195,18 +1232,32 @@
 
     <!-- Modal de confirmación de eliminación -->
     <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Confirmar eliminación</h5>
+            <h5 class="modal-title">
+              <i class="bi bi-trash text-danger me-2"></i>
+              <span id="nombreRecetaEliminarTitulo" class="fw-bold"></span>
+            </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
-            <p>¿Estás seguro de que quieres eliminar esta receta? Esta acción no se puede deshacer y la receta desaparecerá para todos los usuarios.</p>
+            <div class="alert alert-warning">
+              ¿Estás seguro de querer eliminar esta receta?
+            </div>
+            <p class="mb-0 text-muted">
+              Esta acción no se puede deshacer y la receta desaparecerá para todos los usuarios.
+            </p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" id="confirmarEliminarBtn">Eliminar receta</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-circle me-1"></i>
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-danger" id="confirmarEliminarBtn">
+              <i class="bi bi-trash me-1"></i>
+              Eliminar receta
+            </button>
           </div>
         </div>
       </div>
