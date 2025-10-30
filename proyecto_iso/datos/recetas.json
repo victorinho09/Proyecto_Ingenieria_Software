@@ -230,5 +230,19 @@
     "dificultad": "",
     "usuario": "juanixer@gmail.com",
     "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "1",
+    "descripcion": "ef",
+    "ingredientes": "dff",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "df",
+    "turnoComida": "",
+    "duracion": 23,
+    "dificultad": "",
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "usuario": "juanixer@gmail.com"
   }
 ]

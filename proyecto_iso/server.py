@@ -531,11 +531,11 @@ async def obtener_estado_usuario_api(request: Request, response: Response) -> JS
 @app.post("/crear-receta")
 async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
     """
-    Endpoint para crear una nueva receta de cocina.
+    Endpoint para crear o editar una receta de cocina.
     Solo accesible para usuarios autenticados.
     
     Args:
-        receta: Datos de la receta a crear (nombre, descripción, ingredientes, etc.)
+        receta: Datos de la receta a crear o editar
         request: Objeto Request de FastAPI para obtener cookies
 
     Returns:
@@ -559,29 +559,83 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
                 HTTP_BAD_REQUEST
             )
         
-        print(f"🍳 [CREAR RECETA] Usuario {email_usuario} creando receta '{receta.nombreReceta}'")
-        
-        # Convertir modelo Pydantic a diccionario para facilitar el manejo
+        # Convertir modelo Pydantic a diccionario
         receta_data = receta.model_dump()
+        
+        # Determinar si es modo edición
+        es_edicion = receta_data.get("modoEdicion", "false").lower() == "true"
+        nombre_original = receta_data.get("nombreRecetaOriginal", "")
+        
+        # Eliminar campos de control antes de procesar
+        receta_data.pop("modoEdicion", None)
+        receta_data.pop("nombreRecetaOriginal", None)
         
         # Procesar imagen Base64 si existe
         receta_data = procesar_imagen_receta(receta_data, email_usuario)
         
-        # Guardar la receta con el email del usuario
-        if guardar_nueva_receta(receta_data, email_usuario):
-            return crear_respuesta_exito(
-                MENSAJE_RECETA_CREADA,
-                {
-                    "receta_creada": receta.nombreReceta,
-                    "usuario": email_usuario
-                }
-            )
+        if es_edicion and nombre_original:
+            # MODO EDICIÓN: Actualizar receta existente
+            print(f"✏️ [EDITAR RECETA] Usuario {email_usuario} editando receta '{nombre_original}' → '{receta.nombreReceta}'")
+            
+            # Cargar todas las recetas
+            todas_recetas = cargar_recetas()
+            
+            # Buscar la receta original del usuario
+            receta_encontrada = False
+            for i, receta_existente in enumerate(todas_recetas):
+                if (receta_existente.get("nombreReceta") == nombre_original and 
+                    receta_existente.get("usuario", "").lower() == email_usuario.lower()):
+                    
+                    # Mantener los usuarios que guardaron la receta
+                    receta_data["usuariosGuardado"] = receta_existente.get("usuariosGuardado", [])
+                    
+                    # Actualizar la receta manteniendo el usuario
+                    receta_data["usuario"] = email_usuario
+                    todas_recetas[i] = receta_data
+                    receta_encontrada = True
+                    break
+            
+            if not receta_encontrada:
+                return crear_respuesta_error(
+                    "No se encontró la receta a editar",
+                    "RECETA_NO_ENCONTRADA",
+                    HTTP_BAD_REQUEST
+                )
+            
+            # Guardar todas las recetas con la modificación
+            if guardar_recetas(todas_recetas):
+                return crear_respuesta_exito(
+                    "Receta actualizada correctamente",
+                    {
+                        "receta_actualizada": receta.nombreReceta,
+                        "usuario": email_usuario
+                    }
+                )
+            else:
+                return crear_respuesta_error(
+                    "Error al actualizar la receta",
+                    "ERROR_GUARDADO",
+                    HTTP_INTERNAL_SERVER_ERROR
+                )
         else:
-            return crear_respuesta_error(
-                "Error al guardar la receta",
-                "ERROR_GUARDADO",
-                HTTP_INTERNAL_SERVER_ERROR
-            )
+            # MODO CREACIÓN: Nueva receta
+            print(f"🍳 [CREAR RECETA] Usuario {email_usuario} creando receta '{receta.nombreReceta}'")
+            
+            # Guardar la receta con el email del usuario
+            if guardar_nueva_receta(receta_data, email_usuario):
+                return crear_respuesta_exito(
+                    MENSAJE_RECETA_CREADA,
+                    {
+                        "receta_creada": receta.nombreReceta,
+                        "usuario": email_usuario
+                    }
+                )
+            else:
+                return crear_respuesta_error(
+                    "Error al guardar la receta",
+                    "ERROR_GUARDADO",
+                    HTTP_INTERNAL_SERVER_ERROR
+                )
         
     except Exception as e:        
         print(f"{LOG_ERROR} Error inesperado en crear_receta: {e}")
