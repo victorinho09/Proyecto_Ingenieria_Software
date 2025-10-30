@@ -201,5 +201,34 @@
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
     "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "sdfsd",
+    "descripcion": "fd",
+    "ingredientes": "df",
+    "pasosAseguir": "ef",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "juanixer@gmail.com",
+    "usuariosGuardado": [],
+    "publicada": true
+  },
+  {
+    "nombreReceta": "rwe",
+    "descripcion": "wewer",
+    "ingredientes": "wer",
+    "pasosAseguir": "2323",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "juanixer@gmail.com",
+    "usuariosGuardado": []
   }
 ]

@@ -1076,7 +1076,16 @@
         };
         
         document.getElementById('editarRecetaBtn').onclick = function() {
-          alert('Funcionalidad de editar receta - Próximamente');
+          // Cerrar el modal de detalle
+          const modalDetalle = bootstrap.Modal.getInstance(document.getElementById('detalleRecetaModal'));
+          if (modalDetalle) {
+            modalDetalle.hide();
+          }
+          
+          // Esperar a que se cierre el modal de detalle antes de abrir el de edición
+          setTimeout(() => {
+            abrirModalEdicion(receta);
+          }, 300);
         };
         
         // Configurar botón eliminar: solo visible si el usuario autenticado es el autor
@@ -1202,6 +1211,177 @@
 
       // Cargar recetas al cargar la página
       document.addEventListener("DOMContentLoaded", cargarMisRecetas);
+
+      // Función para abrir el modal en modo edición
+      function abrirModalEdicion(receta) {
+        // Obtener elementos del modal
+        const modalElement = document.getElementById('crearRecetaModal');
+        const modalTitle = document.getElementById('crearRecetaModalLabel');
+        const modalBody = modalElement.querySelector('.modal-body');
+        const form = document.getElementById('crearRecetaForm');
+        
+        // Cambiar el título del modal
+        modalTitle.textContent = 'Editar Receta';
+        
+        // Añadir un banner de aviso de modo edición
+        let bannerEdicion = document.getElementById('bannerModoEdicion');
+        if (!bannerEdicion) {
+          bannerEdicion = document.createElement('div');
+          bannerEdicion.id = 'bannerModoEdicion';
+          bannerEdicion.className = 'alert alert-warning mb-3';
+          bannerEdicion.innerHTML = '<i class="bi bi-pencil-square me-2"></i><strong>Modo edición:</strong> Estás editando una receta existente. Los campos obligatorios (*) no pueden quedar vacíos.';
+          modalBody.insertBefore(bannerEdicion, modalBody.firstChild);
+        }
+        
+        // Rellenar el formulario con los datos de la receta
+        document.getElementById('nombreReceta').value = receta.nombreReceta || '';
+        document.getElementById('duracion').value = receta.duracion || '';
+        document.getElementById('descripcion').value = receta.descripcion || '';
+        document.getElementById('ingredientes').value = receta.ingredientes || '';
+        document.getElementById('pasosAseguir').value = receta.pasosAseguir || '';
+        document.getElementById('turnoComida').value = receta.turnoComida || '';
+        document.getElementById('dificultad').value = receta.dificultad || '';
+        document.getElementById('paisOrigen').value = receta.paisOrigen || '';
+        document.getElementById('alergenos').value = receta.alergenos || '';
+        
+        // Cambiar los botones del modal footer
+        const modalFooter = modalElement.querySelector('.modal-footer');
+        modalFooter.innerHTML = `
+          <button type="button" class="btn btn-secondary" id="btnCancelarEdicion" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" id="btnGuardarCambios">
+            <i class="bi bi-check-circle"></i> Guardar cambios
+          </button>
+        `;
+        
+        // Función para validar campos obligatorios
+        function validarCamposObligatorios() {
+          const camposObligatorios = [
+            { id: 'nombreReceta', nombre: 'Nombre' },
+            { id: 'duracion', nombre: 'Duración' },
+            { id: 'descripcion', nombre: 'Descripción' },
+            { id: 'ingredientes', nombre: 'Ingredientes' },
+            { id: 'pasosAseguir', nombre: 'Pasos a seguir' }
+          ];
+          
+          const camposVacios = [];
+          
+          camposObligatorios.forEach(campo => {
+            const elemento = document.getElementById(campo.id);
+            if (!elemento.value || elemento.value.trim() === '') {
+              camposVacios.push(campo.nombre);
+              elemento.classList.add('is-invalid');
+            } else {
+              elemento.classList.remove('is-invalid');
+            }
+          });
+          
+          return camposVacios;
+        }
+        
+        // Añadir evento al botón de guardar cambios
+        const btnGuardar = document.getElementById('btnGuardarCambios');
+        btnGuardar.addEventListener('click', function() {
+          const camposVacios = validarCamposObligatorios();
+          
+          if (camposVacios.length > 0) {
+            // Eliminar mensaje de advertencia anterior si existe
+            const advertenciaPrevia = document.getElementById('advertenciaValidacion');
+            if (advertenciaPrevia) advertenciaPrevia.remove();
+            
+            // Crear mensaje de advertencia
+            const advertencia = document.createElement('div');
+            advertencia.id = 'advertenciaValidacion';
+            advertencia.className = 'alert alert-danger alert-dismissible fade show mb-3';
+            advertencia.innerHTML = `
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <strong>Campos obligatorios vacíos:</strong>
+              <ul class="mb-0 mt-2">
+                ${camposVacios.map(campo => `<li>${campo}</li>`).join('')}
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insertar después del banner de modo edición
+            const banner = document.getElementById('bannerModoEdicion');
+            if (banner) {
+              banner.parentNode.insertBefore(advertencia, banner.nextSibling);
+            } else {
+              modalBody.insertBefore(advertencia, modalBody.firstChild);
+            }
+            
+            // Scroll al inicio del modal para ver la advertencia
+            modalBody.scrollTop = 0;
+          } else {
+            // Eliminar mensaje de advertencia si existe
+            const advertenciaPrevia = document.getElementById('advertenciaValidacion');
+            if (advertenciaPrevia) advertenciaPrevia.remove();
+            
+            // Por ahora no hace nada (sin funcionalidad de guardado implementada)
+            // TODO: Implementar funcionalidad de guardado
+          }
+        });
+        
+        // Limpiar validación cuando el usuario escribe
+        const camposObligatorios = ['nombreReceta', 'duracion', 'descripcion', 'ingredientes', 'pasosAseguir'];
+        camposObligatorios.forEach(campoId => {
+          const campo = document.getElementById(campoId);
+          campo.addEventListener('input', function() {
+            if (this.value && this.value.trim() !== '') {
+              this.classList.remove('is-invalid');
+              
+              // Verificar si todos los campos están completos
+              const todosCompletos = camposObligatorios.every(id => {
+                const el = document.getElementById(id);
+                return el.value && el.value.trim() !== '';
+              });
+              
+              // Si todos están completos, eliminar la advertencia
+              if (todosCompletos) {
+                const advertencia = document.getElementById('advertenciaValidacion');
+                if (advertencia) advertencia.remove();
+              }
+            }
+          });
+        });
+        
+        // Mostrar el modal
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        
+        // Cuando se cierre el modal, restaurar el estado original
+        modalElement.addEventListener('hidden.bs.modal', function restaurarModal() {
+          // Restaurar título
+          modalTitle.textContent = 'Crear Nueva Receta de Comida';
+          
+          // Eliminar banner y advertencia
+          const banner = document.getElementById('bannerModoEdicion');
+          if (banner) banner.remove();
+          
+          const advertencia = document.getElementById('advertenciaValidacion');
+          if (advertencia) advertencia.remove();
+          
+          // Limpiar formulario y validaciones
+          form.reset();
+          camposObligatorios.forEach(campoId => {
+            document.getElementById(campoId).classList.remove('is-invalid');
+          });
+          
+          // Restaurar botones originales
+          modalFooter.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button type="submit" form="crearRecetaForm" class="btn btn-primary">
+              <i class="bi bi-check-circle"></i> Crear Receta
+            </button>
+          `;
+          
+          // Remover este listener para que no se ejecute múltiples veces
+          modalElement.removeEventListener('hidden.bs.modal', restaurarModal);
+        }, { once: true });
+      }
 
       // Recargar recetas cuando se crea una nueva (escuchar el evento de éxito del modal)
       document.addEventListener("DOMContentLoaded", function () {
