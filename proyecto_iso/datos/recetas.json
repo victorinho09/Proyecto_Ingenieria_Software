@@ -25,8 +25,7 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": [],
-    "publicada": true
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "receta2",
@@ -82,8 +81,7 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": [],
-    "publicada": true
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Ensalada",
@@ -112,7 +110,8 @@
     "turnoComida": "comida",
     "dificultad": "Dificil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "usuariosGuardado": [],
+    "publicada": true
   },
   {
     "nombreReceta": "ensalada cesar",
@@ -126,7 +125,8 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "usuariosGuardado": [],
+    "publicada": true
   },
   {
     "nombreReceta": "Prueba 1",

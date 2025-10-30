@@ -457,7 +457,6 @@
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabindex="-1"
-      style="z-index: 1060;"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -766,27 +765,9 @@
             // Mostrar mensaje de éxito
             console.log(`✅ Receta publicada en la comunidad correctamente`);
             
-            // Opcional: Mostrar un toast o notificación
-            if (typeof bootstrap !== 'undefined') {
-              const toastEl = document.createElement('div');
-              toastEl.className = 'toast align-items-center text-bg-success border-0 position-fixed';
-              toastEl.style.cssText = 'bottom: 20px; right: 20px; z-index: 1055;';
-              toastEl.innerHTML = `
-                <div class="d-flex">
-                  <div class="toast-body">
-                    <i class="bi bi-check-circle me-2"></i>¡Receta publicada en la comunidad!
-                  </div>
-                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-              `;
-              document.body.appendChild(toastEl);
-              const toast = new bootstrap.Toast(toastEl);
-              toast.show();
-              
-              // Eliminar el toast después de que se oculte
-              toastEl.addEventListener('hidden.bs.toast', () => {
-                document.body.removeChild(toastEl);
-              });
+            // Mostrar mensaje de éxito consistente con el resto de la aplicación
+            if (typeof window.mostrarMensaje === 'function') {
+              window.mostrarMensaje('¡Receta publicada en la comunidad!', 'success');
             }
           } else {
             alert(resultado.mensaje || "No se pudo publicar la receta");
@@ -810,17 +791,21 @@
         // Actualizar el nombre de la receta en el título del modal
         document.getElementById('nombreRecetaConfirmarTitulo').textContent = receta.nombreReceta;
         
-        // Mostrar el modal
+        // Mostrar el modal con configuración para aparecer por encima de todo
         const modalElement = document.getElementById('confirmarPublicarModal');
         const modal = new bootstrap.Modal(modalElement);
         
-        // Asegurar que el modal aparezca por encima del modal de detalle
+        // Asegurar que el modal y su backdrop aparezcan por encima de todo
         modalElement.addEventListener('shown.bs.modal', function() {
+          // Configurar z-index del modal de confirmación
           modalElement.style.zIndex = '1060';
-          // También ajustar el backdrop si existe
-          const backdrop = document.querySelector('.modal-backdrop');
-          if (backdrop) {
-            backdrop.style.zIndex = '1059';
+          
+          // Encontrar y configurar el backdrop del modal de confirmación
+          const backdrops = document.querySelectorAll('.modal-backdrop');
+          if (backdrops.length > 1) {
+            const confirmBackdrop = backdrops[backdrops.length - 1]; // El último backdrop es del modal de confirmación
+            confirmBackdrop.style.zIndex = '1059'; // Por encima del modal de detalle pero debajo del modal de confirmación
+            confirmBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)'; // Asegurar que sea visible
           }
         });
         
@@ -833,15 +818,33 @@
         const nuevoBtn = btnConfirmar.cloneNode(true);
         btnConfirmar.parentNode.replaceChild(nuevoBtn, btnConfirmar);
         
-        // Agregar nuevo event listener
+        // Agregar nuevo event listener para confirmar
         nuevoBtn.onclick = function() {
-          // Cerrar el modal
+          // Cerrar el modal de confirmación completamente
           modal.hide();
           
           // Proceder con la publicación
           const recetaId = receta.id || receta._id || receta.nombreReceta;
           publicarReceta(recetaId, botonPublicar);
         };
+        
+        // Manejar el evento de cierre del modal para limpiar backdrops
+        modalElement.addEventListener('hidden.bs.modal', function handleModalHidden() {
+          // Eliminar backdrops residuales después de cerrar el modal de confirmación
+          setTimeout(() => {
+            const allBackdrops = document.querySelectorAll('.modal-backdrop');
+            // Si hay más de un backdrop, eliminar los extras
+            if (allBackdrops.length > 1) {
+              // Eliminar todos los backdrops excepto el primero (del modal principal)
+              for (let i = 1; i < allBackdrops.length; i++) {
+                allBackdrops[i].remove();
+              }
+            }
+          }, 10);
+          
+          // Remover este event listener para evitar duplicados
+          modalElement.removeEventListener('hidden.bs.modal', handleModalHidden);
+        });
       }
 
       // Función para crear una card de receta
@@ -1161,6 +1164,14 @@
           });
         }
       });
+    </script>
+
+    <!-- Import del message handler -->
+    <script type="module">
+      import { mostrarMensaje } from '/static/js/components/message-handler.js';
+      
+      // Hacer disponible globalmente para el código legacy
+      window.mostrarMensaje = mostrarMensaje;
     </script>
 
     <!-- JavaScript de la aplicación -->
