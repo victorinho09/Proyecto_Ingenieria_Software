@@ -968,9 +968,16 @@ async def obtener_recetas_guardadas(request: Request) -> JSONResponse:
             if receta.get("usuario", "") != email_usuario
         ]
         
-        # Agregar IDs a las recetas
-        for idx, receta in enumerate(recetas_guardadas_otros):
-            receta["id"] = f"receta-guardada-{idx}"
+        # Cargar todas las recetas para obtener el índice real
+        todas_recetas = cargar_recetas()
+        
+        # Agregar IDs a las recetas usando el índice del array completo
+        for receta in recetas_guardadas_otros:
+            # Buscar el índice real de esta receta en el array completo
+            for idx, receta_completa in enumerate(todas_recetas):
+                if receta_completa.get("nombreReceta") == receta.get("nombreReceta"):
+                    receta["id"] = f"receta-{idx}"
+                    break
         
         return crear_respuesta_exito(
             f"Recetas guardadas obtenidas correctamente",

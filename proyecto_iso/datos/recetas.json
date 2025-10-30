@@ -53,7 +53,9 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ]
   },
   {
     "nombreReceta": "Receta 4",
