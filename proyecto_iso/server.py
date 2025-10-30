@@ -22,7 +22,7 @@ from utils import (
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
-    obtener_recetas_usuario_con_ids, cargar_recetas
+    obtener_recetas_usuario_con_ids, cargar_recetas, publicar_receta_usuario
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -644,14 +644,14 @@ async def obtener_mis_recetas(request: Request) -> JSONResponse:
 @app.get("/api/recetas-comunidad")
 async def obtener_recetas_comunidad(request: Request) -> JSONResponse:
     """
-    Endpoint API para obtener todas las recetas de otros usuarios (comunidad).
-    No incluye las recetas del usuario autenticado.
+    Endpoint API para obtener todas las recetas publicadas de otros usuarios (comunidad).
+    Solo incluye recetas marcadas como publicadas y excluye las del usuario autenticado.
     
     Args:
         request: Objeto Request de FastAPI para obtener cookies
         
     Returns:
-        JSONResponse: Lista de recetas de la comunidad (excluyendo las del usuario)
+        JSONResponse: Lista de recetas publicadas de la comunidad (excluyendo las del usuario)
     """
     try:
         # Verificar autenticación
@@ -674,11 +674,12 @@ async def obtener_recetas_comunidad(request: Request) -> JSONResponse:
         # Cargar todas las recetas del sistema
         todas_recetas = cargar_recetas()
         
-        # Filtrar las recetas: solo incluir las de otros usuarios
+        # Filtrar las recetas: solo incluir las publicadas de otros usuarios
         recetas_comunidad = []
         for idx, receta in enumerate(todas_recetas):
-            # Solo incluir recetas de otros usuarios
-            if receta.get("usuario", "") != email_usuario:
+            # Solo incluir recetas publicadas de otros usuarios
+            if (receta.get("usuario", "") != email_usuario and 
+                receta.get("publicada", False) == True):
                 receta_con_id = receta.copy()
                 receta_con_id["id"] = f"receta-{idx}"
                 recetas_comunidad.append(receta_con_id)
@@ -922,6 +923,71 @@ async def desguardar_receta(request: Request) -> JSONResponse:
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en desguardar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.post("/publicar-receta")
+async def publicar_receta(request: Request) -> JSONResponse:
+    """
+    Endpoint para publicar una receta en la comunidad.
+    Solo el autor de la receta puede publicarla.
+    
+    Args:
+        request: Objeto Request de FastAPI para obtener cookies y datos
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para publicar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario desde la cookie
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener datos del cuerpo de la petición
+        body = await request.json()
+        receta_id = body.get("recetaId")
+        
+        if not receta_id:
+            return crear_respuesta_error(
+                "El ID de la receta es obligatorio",
+                "ID_RECETA_REQUERIDO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"📢 [PUBLICAR RECETA] Usuario {email_usuario} publicando receta ID '{receta_id}'")
+        
+        # Publicar la receta
+        if publicar_receta_usuario(receta_id, email_usuario):
+            return crear_respuesta_exito(
+                "Receta publicada en la comunidad correctamente",
+                {"recetaId": receta_id, "publicada": True}
+            )
+        else:
+            return crear_respuesta_error(
+                "No se pudo publicar la receta. Verifica que seas el autor de la receta.",
+                "ERROR_PUBLICAR_RECETA",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en publicar_receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

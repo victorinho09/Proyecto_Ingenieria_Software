@@ -84,6 +84,32 @@ export async function desguardarReceta(nombreReceta) {
 }
 
 /**
+ * Publica una receta en la comunidad
+ * @param {string} recetaId - ID de la receta a publicar
+ * @returns {Promise<Object>} - Respuesta del servidor
+ */
+export async function publicarReceta(recetaId) {
+  try {
+    const response = await fetch(ENDPOINTS.PUBLICAR_RECETA, {
+      method: "POST",
+      headers: HTTP_CONFIG.HEADERS,
+      credentials: HTTP_CONFIG.CREDENTIALS,
+      body: JSON.stringify({ recetaId }),
+    });
+
+    const data = await response.json();
+
+    return { success: response.ok, data };
+  } catch (error) {
+    console.error("Error al publicar receta:", error);
+    return {
+      success: false,
+      data: { mensaje: "Error de conexión. Por favor, inténtalo de nuevo." },
+    };
+  }
+}
+
+/**
  * Obtiene todas las recetas guardadas por el usuario
  * @returns {Promise<Object>} - Respuesta del servidor con las recetas guardadas
  */

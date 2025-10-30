@@ -450,6 +450,58 @@
       </div>
     </div>
 
+    <!-- Modal de Confirmación para Publicar Receta -->
+    <div
+      class="modal fade"
+      id="confirmarPublicarModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      style="z-index: 1060;"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmarPublicarModalLabel">
+              <i class="bi bi-upload text-primary me-2"></i>
+              Publicar: <span id="nombreRecetaConfirmarTitulo" class="fw-bold"></span>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-3 text-center">
+              <strong>¿Estás seguro de querer publicar esta receta?</strong>
+            </p>
+            <p class="mb-0 text-muted text-center">
+              Al publicar tu receta será visible para todos los usuarios en la comunidad.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="bi bi-x-circle me-1"></i>
+              Cancelar
+            </button>
+            <button
+              type="button"
+              id="confirmarPublicarBtn"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-check-circle me-1"></i>
+              Confirmar Publicación
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal de Detalle de Receta -->
     <div
       class="modal fade"
@@ -673,6 +725,125 @@
         }
       }
 
+      // Función para actualizar el estado visual del botón publicar
+      function actualizarEstadoBotonPublicar(boton, estaPublicada) {
+        if (estaPublicada) {
+          // Estado: Ya publicada
+          boton.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Publicada';
+          boton.className = 'btn btn-success';
+          boton.disabled = true;
+        } else {
+          // Estado: No publicada
+          boton.innerHTML = '<i class="bi bi-upload me-1"></i>Publicar';
+          boton.className = 'btn btn-primary';
+          boton.disabled = false;
+        }
+      }
+
+      // Función para publicar una receta
+      async function publicarReceta(recetaId, boton) {
+        try {
+          // Deshabilitar el botón mientras se procesa
+          boton.disabled = true;
+          boton.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Publicando...';
+          
+          const response = await fetch("/publicar-receta", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({ recetaId: recetaId }),
+          });
+
+          const resultado = await response.json();
+
+          if (resultado.exito) {
+            // Actualizar el estado del botón a "publicada"
+            actualizarEstadoBotonPublicar(boton, true);
+            
+            // Mostrar mensaje de éxito
+            console.log(`✅ Receta publicada en la comunidad correctamente`);
+            
+            // Opcional: Mostrar un toast o notificación
+            if (typeof bootstrap !== 'undefined') {
+              const toastEl = document.createElement('div');
+              toastEl.className = 'toast align-items-center text-bg-success border-0 position-fixed';
+              toastEl.style.cssText = 'bottom: 20px; right: 20px; z-index: 1055;';
+              toastEl.innerHTML = `
+                <div class="d-flex">
+                  <div class="toast-body">
+                    <i class="bi bi-check-circle me-2"></i>¡Receta publicada en la comunidad!
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+              `;
+              document.body.appendChild(toastEl);
+              const toast = new bootstrap.Toast(toastEl);
+              toast.show();
+              
+              // Eliminar el toast después de que se oculte
+              toastEl.addEventListener('hidden.bs.toast', () => {
+                document.body.removeChild(toastEl);
+              });
+            }
+          } else {
+            alert(resultado.mensaje || "No se pudo publicar la receta");
+            // Restaurar estado original
+            boton.innerHTML = '<i class="bi bi-upload me-1"></i>Publicar';
+            boton.className = 'btn btn-primary';
+            boton.disabled = false;
+          }
+        } catch (error) {
+          console.error("Error al publicar receta:", error);
+          alert("Error al publicar la receta");
+          // Restaurar estado original
+          boton.innerHTML = '<i class="bi bi-upload me-1"></i>Publicar';
+          boton.className = 'btn btn-primary';
+          boton.disabled = false;
+        }
+      }
+
+      // Función para mostrar el modal de confirmación de publicar
+      function mostrarModalConfirmarPublicar(receta, botonPublicar) {
+        // Actualizar el nombre de la receta en el título del modal
+        document.getElementById('nombreRecetaConfirmarTitulo').textContent = receta.nombreReceta;
+        
+        // Mostrar el modal
+        const modalElement = document.getElementById('confirmarPublicarModal');
+        const modal = new bootstrap.Modal(modalElement);
+        
+        // Asegurar que el modal aparezca por encima del modal de detalle
+        modalElement.addEventListener('shown.bs.modal', function() {
+          modalElement.style.zIndex = '1060';
+          // También ajustar el backdrop si existe
+          const backdrop = document.querySelector('.modal-backdrop');
+          if (backdrop) {
+            backdrop.style.zIndex = '1059';
+          }
+        });
+        
+        modal.show();
+        
+        // Configurar el botón de confirmación
+        const btnConfirmar = document.getElementById('confirmarPublicarBtn');
+        
+        // Limpiar event listeners previos
+        const nuevoBtn = btnConfirmar.cloneNode(true);
+        btnConfirmar.parentNode.replaceChild(nuevoBtn, btnConfirmar);
+        
+        // Agregar nuevo event listener
+        nuevoBtn.onclick = function() {
+          // Cerrar el modal
+          modal.hide();
+          
+          // Proceder con la publicación
+          const recetaId = receta.id || receta._id || receta.nombreReceta;
+          publicarReceta(recetaId, botonPublicar);
+        };
+      }
+
       // Función para crear una card de receta
       function crearCardReceta(receta) {
         return `
@@ -887,9 +1058,17 @@
         document.getElementById('editarRecetaBtn').style.display = 'inline-block';
         document.getElementById('eliminarRecetaBtn').style.display = 'inline-block';
         
-        // Agregar event listeners básicos (sin funcionalidad por ahora)
-        document.getElementById('publicarRecetaBtn').onclick = function() {
-          alert('Funcionalidad de publicar receta - Próximamente');
+        // Configurar el botón de publicar
+        const btnPublicar = document.getElementById('publicarRecetaBtn');
+        
+        // Verificar si la receta ya está publicada y actualizar el estado del botón
+        actualizarEstadoBotonPublicar(btnPublicar, receta.publicada || false);
+        
+        // Agregar event listener para publicar
+        btnPublicar.onclick = function() {
+          if (!receta.publicada) {
+            mostrarModalConfirmarPublicar(receta, btnPublicar);
+          }
         };
         
         document.getElementById('editarRecetaBtn').onclick = function() {

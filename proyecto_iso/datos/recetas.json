@@ -25,7 +25,8 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": []
+    "usuariosGuardado": [],
+    "publicada": true
   },
   {
     "nombreReceta": "receta2",
@@ -53,9 +54,7 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": [
-      "victorvega@gmail.com"
-    ]
+    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Receta 4",
@@ -83,7 +82,8 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": []
+    "usuariosGuardado": [],
+    "publicada": true
   },
   {
     "nombreReceta": "Ensalada",
@@ -97,7 +97,8 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "usuariosGuardado": [],
+    "publicada": true
   },
   {
     "nombreReceta": "Paella de pollo",

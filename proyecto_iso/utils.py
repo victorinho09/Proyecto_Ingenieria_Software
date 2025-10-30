@@ -713,3 +713,68 @@ def es_receta_guardada_por_usuario(nombre_receta: str, email_usuario: str) -> bo
     except Exception as e:
         print(f"{LOG_ERROR} Error al verificar si receta está guardada: {e}")
         return False
+
+
+def publicar_receta_usuario(receta_id: str, email_usuario: str) -> bool:
+    """
+    Publica una receta en la comunidad. Marca una receta del usuario como publicada.
+    
+    Args:
+        receta_id (str): ID de la receta a publicar (puede ser ID, _id o nombreReceta)
+        email_usuario (str): Email del usuario que intenta publicar la receta
+        
+    Returns:
+        bool: True si se publicó correctamente, False en caso contrario
+    """
+    try:
+        recetas = cargar_recetas()
+        receta_encontrada = False
+        
+        for receta in recetas:
+            # Buscar receta por ID generado, nombre, o si el ID decodificado coincide
+            receta_match = False
+            
+            # Intentar diferentes formas de identificar la receta
+            if (receta.get("id") == receta_id or 
+                receta.get("_id") == receta_id or 
+                receta.get("nombreReceta") == receta_id):
+                receta_match = True
+            else:
+                # Intentar decodificar el receta_id si es un ID generado
+                try:
+                    # Decodificar URL
+                    receta_id_decoded = urllib.parse.unquote(receta_id)
+                    # Decodificar base64
+                    nombre_decoded = base64.b64decode(receta_id_decoded.encode('utf-8')).decode('utf-8')
+                    if receta.get("nombreReceta") == nombre_decoded:
+                        receta_match = True
+                except:
+                    pass
+            
+            if receta_match:
+                receta_encontrada = True
+                
+                # Debug: Imprimir información de la receta encontrada
+                print(f"{LOG_INFO} Receta encontrada: '{receta.get('nombreReceta')}' de usuario '{receta.get('usuario')}'")
+                print(f"{LOG_INFO} Usuario solicitante: '{email_usuario}'")
+                
+                # Verificar que el usuario es el autor de la receta
+                if receta.get("usuario") != email_usuario:
+                    print(f"{LOG_ERROR} Usuario {email_usuario} no es el autor de la receta '{receta.get('nombreReceta')}' (autor: {receta.get('usuario')})")
+                    return False
+                
+                # Marcar la receta como publicada
+                receta["publicada"] = True
+                
+                # Guardar cambios
+                guardar_recetas(recetas)
+                print(f"{LOG_SUCCESS} Receta '{receta.get('nombreReceta')}' publicada en la comunidad por {email_usuario}")
+                return True
+        
+        if not receta_encontrada:
+            print(f"{LOG_ERROR} No se encontró la receta con ID '{receta_id}'")
+            return False
+            
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al publicar receta: {e}")
+        return False

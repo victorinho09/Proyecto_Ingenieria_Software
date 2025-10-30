@@ -12,6 +12,7 @@ export const ENDPOINTS = {
   CREAR_RECETA: "/crear-receta",
   GUARDAR_RECETA: "/guardar-receta",
   DESGUARDAR_RECETA: "/desguardar-receta",
+  PUBLICAR_RECETA: "/publicar-receta",
   OBTENER_RECETAS_GUARDADAS: "/obtener-recetas-guardadas",
 };
 
