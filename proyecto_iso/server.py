@@ -22,7 +22,7 @@ from utils import (
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
-    obtener_recetas_usuario_con_ids, cargar_recetas, publicar_receta_usuario
+    obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario
 )
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
@@ -923,6 +923,82 @@ async def desguardar_receta(request: Request) -> JSONResponse:
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en desguardar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.post("/eliminar-receta")
+async def eliminar_receta(request: Request) -> JSONResponse:
+    """
+    Elimina una receta del sistema. Solo el autor de la receta puede eliminarla.
+    Al eliminarla, la receta desaparece de la lista global, de la comunidad y de las listas guardadas de otros usuarios.
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para eliminar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+
+        # Obtener email del usuario
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+
+        body = await request.json()
+        nombre_receta = body.get("nombreReceta") or body.get("recetaId")
+
+        if not nombre_receta:
+            return crear_respuesta_error(
+                "El nombre o ID de la receta es obligatorio",
+                "NOMBRE_RECETA_REQUERIDO",
+                HTTP_BAD_REQUEST
+            )
+
+        print(f"🗑️ [ELIMINAR RECETA] Usuario {email_usuario} solicitando eliminar '{nombre_receta}'")
+
+        # Cargar todas las recetas
+        recetas = cargar_recetas()
+
+        # Buscar receta por nombre exacto y autor
+        receta_encontrada = False
+        for idx, receta in enumerate(recetas):
+            if receta.get("nombreReceta") == nombre_receta and receta.get("usuario") == email_usuario:
+                receta_encontrada = True
+                # Eliminar la receta
+                recetas.pop(idx)
+                # Guardar cambios
+                if guardar_recetas(recetas):
+                    print(f"✅ Receta '{nombre_receta}' eliminada por {email_usuario}")
+                    return crear_respuesta_exito(
+                        f"Receta '{nombre_receta}' eliminada correctamente",
+                        {"nombreReceta": nombre_receta}
+                    )
+                else:
+                    return crear_respuesta_error(
+                        "Error al guardar cambios tras eliminar la receta",
+                        "ERROR_GUARDAR",
+                        HTTP_INTERNAL_SERVER_ERROR
+                    )
+
+        if not receta_encontrada:
+            return crear_respuesta_error(
+                "Receta no encontrada o no tienes permisos para eliminarla",
+                "RECETA_NO_ENCONTRADA_O_SIN_PERMISOS",
+                HTTP_NOT_FOUND
+            )
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en eliminar_receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

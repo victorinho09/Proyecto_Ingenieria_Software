@@ -921,7 +921,8 @@
           const resultado = await response.json();
           
           if (resultado.exito && resultado.receta) {
-            mostrarDetalleReceta(resultado.receta);
+            // Pasar el email del usuario autenticado para controlar permisos sobre eliminar
+            mostrarDetalleReceta(resultado.receta, resultado.usuario);
           } else {
             mostrarErrorModal(resultado.mensaje || "No se pudo cargar la receta");
           }
@@ -949,7 +950,7 @@
       }
 
       // Función para mostrar el detalle de la receta en el modal
-      function mostrarDetalleReceta(receta) {
+  function mostrarDetalleReceta(receta, emailUsuario) {
         // Ocultar loading y error, mostrar contenido
         document.getElementById('loadingDetalleReceta').style.display = 'none';
         document.getElementById('errorDetalleReceta').style.display = 'none';
@@ -1078,9 +1079,20 @@
           alert('Funcionalidad de editar receta - Próximamente');
         };
         
-        document.getElementById('eliminarRecetaBtn').onclick = function() {
-          alert('Funcionalidad de eliminar receta - Próximamente');
-        };
+        // Configurar botón eliminar: solo visible si el usuario autenticado es el autor
+        const btnEliminar = document.getElementById('eliminarRecetaBtn');
+        if (emailUsuario && receta.usuario && emailUsuario === receta.usuario) {
+          btnEliminar.style.display = 'inline-block';
+          btnEliminar.onclick = function() {
+            // Abrir modal de confirmación
+            const confirmarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            const confirmarBtn = document.getElementById('confirmarEliminarBtn');
+            confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
+            confirmarModal.show();
+          };
+        } else {
+          btnEliminar.style.display = 'none';
+        }
       }
 
       // Función para cargar las recetas
@@ -1172,6 +1184,88 @@
       
       // Hacer disponible globalmente para el código legacy
       window.mostrarMensaje = mostrarMensaje;
+    </script>
+
+    <!-- Importar la función eliminarReceta y exponerla globalmente -->
+    <script type="module">
+      import { eliminarReceta } from '/static/js/services/api-service.js';
+      // Exponer en window para que el script no-module lo pueda usar si se prefiere
+      window.eliminarReceta = eliminarReceta;
+    </script>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar esta receta? Esta acción no se puede deshacer y la receta desaparecerá para todos los usuarios.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirmarEliminarBtn">Eliminar receta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Manejar la confirmación de eliminación
+      document.addEventListener('DOMContentLoaded', function() {
+        const confirmarBtn = document.getElementById('confirmarEliminarBtn');
+        if (!confirmarBtn) return;
+
+        confirmarBtn.addEventListener('click', async function() {
+          const nombreReceta = this.getAttribute('data-nombre-receta');
+          if (!nombreReceta) return;
+          this.disabled = true;
+
+          try {
+            // Usar la función importada si está disponible, si no usar fetch directo
+            let resultado;
+            if (window.eliminarReceta && typeof window.eliminarReceta === 'function') {
+              resultado = await window.eliminarReceta(nombreReceta);
+            } else {
+              const resp = await fetch('/eliminar-receta', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ nombreReceta })
+              });
+              resultado = await resp.json();
+              resultado = { success: resp.ok, data: resultado };
+            }
+
+            // Cerrar modales
+            try { bootstrap.Modal.getInstance(document.getElementById('detalleRecetaModal')).hide(); } catch (e) {}
+            try { bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal')).hide(); } catch (e) {}
+
+            if (resultado && resultado.success) {
+              if (typeof window.mostrarMensaje === 'function') {
+                window.mostrarMensaje(`Receta "${nombreReceta}" eliminada correctamente`, 'success');
+              } else {
+                alert(`Receta "${nombreReceta}" eliminada correctamente`);
+              }
+
+              // Recargar la lista de mis recetas
+              setTimeout(() => {
+                if (typeof cargarMisRecetas === 'function') cargarMisRecetas();
+              }, 200);
+            } else {
+              const msg = resultado?.data?.mensaje || 'No se pudo eliminar la receta';
+              if (typeof window.mostrarMensaje === 'function') window.mostrarMensaje(msg, 'error'); else alert(msg);
+              this.disabled = false;
+            }
+          } catch (err) {
+            console.error('Error al eliminar receta:', err);
+            if (typeof window.mostrarMensaje === 'function') window.mostrarMensaje('Error al eliminar la receta', 'error'); else alert('Error al eliminar la receta');
+            this.disabled = false;
+          }
+        });
+      });
     </script>
 
     <!-- JavaScript de la aplicación -->

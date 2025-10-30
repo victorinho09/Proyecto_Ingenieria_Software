@@ -395,6 +395,15 @@
           <div class="modal-footer">
             <button
               type="button"
+              class="btn btn-danger me-auto"
+              id="eliminarRecetaBtn"
+              style="display: none;"
+            >
+              <i class="bi bi-trash me-1"></i>
+              Eliminar
+            </button>
+            <button
+              type="button"
               class="btn btn-warning"
               id="guardarRecetaBtn"
             >
@@ -409,6 +418,25 @@
               <i class="bi bi-x-circle me-1"></i>
               Cerrar
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="confirmarEliminarModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Estás seguro de que quieres eliminar esta receta? Esta acción no se puede deshacer y la receta desaparecerá para todos los usuarios.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirmarEliminarBtn">Eliminar receta</button>
           </div>
         </div>
       </div>
@@ -439,6 +467,7 @@
       import {
         cargarRecetasGuardadas,
         desguardarReceta,
+        eliminarReceta,
       } from "/static/js/services/api-service.js";
       import { mostrarMensaje } from "/static/js/components/message-handler.js";
       import {
@@ -474,7 +503,8 @@
           const resultado = await obtenerDetalleReceta(recetaId);
           
           if (resultado.exito && resultado.receta) {
-            mostrarDetalleReceta(resultado.receta);
+            // Pasar también el email del usuario actual (resultado.usuario) para controlar permisos
+            mostrarDetalleReceta(resultado.receta, resultado.usuario);
           } else {
             mostrarErrorModal(resultado.mensaje || "No se pudo cargar la receta");
           }
@@ -487,7 +517,7 @@
        * Muestra el detalle completo de una receta en el modal
        * @param {Object} receta - Objeto con los datos de la receta
        */
-      function mostrarDetalleReceta(receta) {
+      function mostrarDetalleReceta(receta, emailUsuario) {
         // Ocultar loading y error, mostrar contenido
         document.getElementById('loadingDetalleReceta').style.display = 'none';
         document.getElementById('errorDetalleReceta').style.display = 'none';
@@ -532,7 +562,72 @@
 
         // Configurar botón de desguardar (siempre estará guardada en esta página)
         configurarBotonDesguardar(receta);
+
+        // Configurar botón de eliminar solo si el usuario actual es el autor
+        configurarBotonEliminar(receta, emailUsuario);
       }
+
+      /**
+       * Configura el botón de eliminar receta (mostrar/ocultar y evento)
+       * @param {Object} receta
+       * @param {string} emailUsuario - email del usuario autenticado
+       */
+      function configurarBotonEliminar(receta, emailUsuario) {
+        const btnEliminar = document.getElementById('eliminarRecetaBtn');
+        if (!btnEliminar) return;
+
+        // Mostrar el botón solo si el usuario autenticado es el autor de la receta
+        if (emailUsuario && receta.usuario && emailUsuario === receta.usuario) {
+          btnEliminar.style.display = 'inline-block';
+          btnEliminar.disabled = false;
+
+          // Al pulsar el botón, abrir modal de confirmación
+          btnEliminar.onclick = function() {
+            const confirmarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            // Guardar el nombre de la receta a eliminar en un atributo data
+            const confirmarBtn = document.getElementById('confirmarEliminarBtn');
+            confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
+            confirmarModal.show();
+          };
+        } else {
+          btnEliminar.style.display = 'none';
+        }
+      }
+
+      // Manejar confirmación del modal de eliminación
+      document.addEventListener('DOMContentLoaded', function() {
+        const confirmarBtn = document.getElementById('confirmarEliminarBtn');
+        if (confirmarBtn) {
+          confirmarBtn.addEventListener('click', async function() {
+            const nombreReceta = this.getAttribute('data-nombre-receta');
+            // Deshabilitar mientras se procesa
+            this.disabled = true;
+            try {
+              // Llamar al endpoint de eliminación
+              const resultado = await eliminarReceta(nombreReceta);
+
+              // Cerrar modal de detalle y confirmación
+              const detalleModalEl = document.getElementById('detalleRecetaModal');
+              try { bootstrap.Modal.getInstance(detalleModalEl).hide(); } catch (e) {}
+              const confirmarModalEl = document.getElementById('confirmarEliminarModal');
+              try { bootstrap.Modal.getInstance(confirmarModalEl).hide(); } catch (e) {}
+
+              if (resultado && resultado.success) {
+                mostrarMensaje(`Receta "${nombreReceta}" eliminada correctamente`, 'success');
+                // Recargar lista de recetas guardadas
+                await cargarYMostrarRecetasGuardadas();
+              } else {
+                mostrarMensaje(resultado.data?.mensaje || 'No se pudo eliminar la receta', 'error');
+                this.disabled = false;
+              }
+            } catch (err) {
+              console.error('Error al eliminar receta:', err);
+              mostrarMensaje('Error al eliminar la receta', 'error');
+              this.disabled = false;
+            }
+          });
+        }
+      });
 
       /**
        * Configura el botón de desguardar receta

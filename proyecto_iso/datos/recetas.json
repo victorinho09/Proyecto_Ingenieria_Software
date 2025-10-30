@@ -125,22 +125,10 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "pedro.varonaparra@usp.ceu.es"
+    ],
     "publicada": true
-  },
-  {
-    "nombreReceta": "Prueba 1",
-    "descripcion": "121",
-    "ingredientes": "12121",
-    "pasosAseguir": "1212",
-    "duracion": 1212,
-    "fotoReceta": "/static/uploads/recetas/20251015_113846_pedro_varonaparra_9bc12957.png",
-    "alergenos": "12121",
-    "paisOrigen": "2121",
-    "turnoComida": "cena",
-    "dificultad": "Facil",
-    "usuario": "pedro.varonaparra@usp.ceu.es",
-    "usuariosGuardado": []
   },
   {
     "nombreReceta": "Prueba",
@@ -238,20 +226,6 @@
     "turnoComida": "aperitivo",
     "dificultad": "Dificil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "jdsjfjd",
-    "descripcion": "1212",
-    "ingredientes": "121",
-    "pasosAseguir": "12121",
-    "duracion": 121,
-    "fotoReceta": "/static/uploads/recetas/20251023_101837_pedro_varonaparra_bedadc9d.jpg",
-    "alergenos": "121",
-    "paisOrigen": "121",
-    "turnoComida": "aperitivo",
-    "dificultad": "Media",
-    "usuario": "pedro.varonaparra@usp.ceu.es",
     "usuariosGuardado": []
   }
 ]

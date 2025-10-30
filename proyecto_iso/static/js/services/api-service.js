@@ -84,6 +84,31 @@ export async function desguardarReceta(nombreReceta) {
 }
 
 /**
+ * Elimina (borra) una receta del sistema (solo el autor puede hacerlo)
+ * @param {string} nombreReceta - Nombre de la receta a eliminar
+ * @returns {Promise<Object>} - Respuesta del servidor
+ */
+export async function eliminarReceta(nombreReceta) {
+  try {
+    const response = await fetch(ENDPOINTS.ELIMINAR_RECETA, {
+      method: "POST",
+      headers: HTTP_CONFIG.HEADERS,
+      credentials: HTTP_CONFIG.CREDENTIALS,
+      body: JSON.stringify({ nombreReceta }),
+    });
+
+    const data = await response.json();
+    return { success: response.ok, data };
+  } catch (error) {
+    console.error("Error al eliminar receta:", error);
+    return {
+      success: false,
+      data: { mensaje: "Error de conexión. Por favor, inténtalo de nuevo." },
+    };
+  }
+}
+
+/**
  * Publica una receta en la comunidad
  * @param {string} recetaId - ID de la receta a publicar
  * @returns {Promise<Object>} - Respuesta del servidor

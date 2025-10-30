@@ -14,6 +14,7 @@ export const ENDPOINTS = {
   DESGUARDAR_RECETA: "/desguardar-receta",
   PUBLICAR_RECETA: "/publicar-receta",
   OBTENER_RECETAS_GUARDADAS: "/obtener-recetas-guardadas",
+  ELIMINAR_RECETA: "/eliminar-receta",
 };
 
 export const HTTP_CONFIG = {
