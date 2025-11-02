@@ -73,44 +73,10 @@ export function validarEmailConErrores(email) {
 
   const valor = email.trim();
 
-  // Comprobar presencia y cantidad de '@'
-  const atMatches = valor.match(/@/g) || [];
-  if (atMatches.length === 0) {
+  // Validación básica: solo verificar que contiene @
+  if (!valor.includes('@')) {
     errors.push("El email debe contener una '@'");
     return { isValid: false, errors };
-  }
-
-  if (atMatches.length > 1) {
-    errors.push("El email solo debe contener un solo '@'");
-    return { isValid: false, errors };
-  }
-
-  const partes = valor.split('@');
-  const local = partes[0] || '';
-  const dominio = (partes[1] || '').toLowerCase();
-
-  // 1) Longitud mínima de la parte local
-  if (local.length < 8) {
-    errors.push('La parte local debe tener al menos 8 caracteres');
-  }
-
-  // 2) Caracteres permitidos en la parte local: letras, números y puntos
-  if (!/^[A-Za-z0-9.]+$/.test(local)) {
-    errors.push('La parte local solo puede contener letras, números y puntos');
-  }
-
-  // 3) Dominio permitido (lista explícita)
-  const dominiosPermitidos = [
-    'outlook.com',
-    'hotmail.com',
-    'gmail.com',
-    'icloud.com',
-    'ceu.es',
-    'usp.ceu.es'
-  ];
-
-  if (!dominiosPermitidos.includes(dominio)) {
-    errors.push('El dominio debe ser uno de: outlook.com, hotmail.com, gmail.com, icloud.com, ceu.es, usp.ceu.es');
   }
 
   return { isValid: errors.length === 0, errors };

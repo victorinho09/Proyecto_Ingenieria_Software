@@ -465,6 +465,13 @@ async def crear_cuenta(cuenta: Cuenta) -> JSONResponse:
                 MENSAJE_ERROR_EMAIL_DUPLICADO,
                 "EMAIL_DUPLICADO"
             )
+            
+        # Validar el email usando la API
+        from email_validator_service import verificar_email_api
+        is_valid_email, mensaje_validacion = await verificar_email_api(cuenta.email)
+        if not is_valid_email:
+            return crear_respuesta_error(mensaje_validacion, "EMAIL_INVALIDO")
+        
         
         # Preparar datos de la cuenta
         cuenta_data = {
