@@ -172,6 +172,40 @@ def guardar_nueva_cuenta(cuenta_data: Dict[str, Any]) -> bool:
         return False
 
 
+def obtener_cuenta_por_email(email: str) -> Optional[Dict[str, Any]]:
+    """
+    Obtiene la cuenta (diccionario) correspondiente al email dado.
+    Returns None si no existe.
+    """
+    cuentas = cargar_cuentas()
+    for cuenta in cuentas:
+        if cuenta.get('email', '').lower() == email.lower():
+            return cuenta
+    return None
+
+
+def actualizar_cuenta(email: str, cambios: Dict[str, Any]) -> bool:
+    """
+    Actualiza los campos de una cuenta identificada por email.
+    Devuelve True si se actualizó correctamente.
+    """
+    try:
+        cuentas = cargar_cuentas()
+        actualizado = False
+        for i, cuenta in enumerate(cuentas):
+            if cuenta.get('email', '').lower() == email.lower():
+                cuentas[i] = {**cuenta, **cambios}
+                actualizado = True
+                break
+
+        if actualizado:
+            return guardar_cuentas(cuentas)
+        return False
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al actualizar cuenta: {e}")
+        return False
+
+
 # ==================== FUNCIONES DE UTILIDAD PARA RECETAS ====================
 
 def cargar_recetas() -> List[Dict[str, Any]]:

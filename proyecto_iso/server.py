@@ -10,7 +10,10 @@ Características principales:
 """
 
 from typing import Union
+import os
+import uuid
 from fastapi import FastAPI, Request, Response
+from fastapi import UploadFile, File
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -24,6 +27,7 @@ from utils import (
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario
 )
+from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
 # ==================== CONFIGURACIÓN DE LA APLICACIÓN ====================
 
@@ -525,6 +529,154 @@ async def obtener_estado_usuario_api(request: Request, response: Response) -> JS
         establecer_estado_usuario(json_response, ESTADO_INVITADO)
     
     return json_response
+
+
+@app.get("/api/perfil")
+async def obtener_perfil_api(request: Request) -> JSONResponse:
+    """
+    Devuelve información resumida del perfil del usuario autenticado:
+    - email
+    - nombreUsuario
+    - fotoPerfil (URL si existe)
+    - total de recetas propias
+    - total de recetas publicadas
+    - total de recetas guardadas
+    - total de recetas marcadas como hechas por el usuario (usuariosHecho)
+    """
+    try:
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver el perfil",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+
+        email = obtener_email_usuario(request)
+        if not email:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+
+        # Obtener cuenta para nombre de usuario y foto
+        cuenta = obtener_cuenta_por_email(email)
+        nombre_usuario = cuenta.get('nombreUsuario') if cuenta else None
+        foto_perfil = cuenta.get('fotoPerfil') if cuenta else None
+
+        # Contar recetas propias y publicadas
+        todas_recetas = cargar_recetas()
+        recetas_propias = [r for r in todas_recetas if r.get('usuario', '').lower() == email.lower()]
+        total_propias = len(recetas_propias)
+        total_publicadas = sum(1 for r in recetas_propias if r.get('publicada', False) == True)
+
+        # Recetas guardadas
+        recetas_guardadas = obtener_recetas_guardadas_usuario(email)
+        total_guardadas = len(recetas_guardadas)
+
+        # Recetas hechas: Para que coincida con el contador de "Mis Recetas",
+        # reutilizamos la misma función que el endpoint /api/mis-recetas
+        recetas_usuario_ids = obtener_recetas_usuario_con_ids(email)
+        total_hechas = len(recetas_usuario_ids)
+
+        data = {
+            "email": email,
+            "nombreUsuario": nombre_usuario,
+            "fotoPerfil": foto_perfil,
+            "totalPropias": total_propias,
+            "totalPublicadas": total_publicadas,
+            "totalGuardadas": total_guardadas,
+            "totalHechas": total_hechas
+        }
+
+        return crear_respuesta_exito("Perfil obtenido correctamente", {"perfil": data})
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_perfil_api: {e}")
+        return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
+
+
+@app.post("/api/subir-foto-perfil")
+async def subir_foto_perfil(request: Request, archivo: UploadFile = File(...)) -> JSONResponse:
+    """
+    Endpoint para subir la foto de perfil del usuario autenticado.
+    Guarda la imagen en `static/uploads/perfiles/` y actualiza la cuenta.
+    """
+    try:
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error("Debes estar registrado para subir foto", "USUARIO_NO_AUTENTICADO", HTTP_BAD_REQUEST)
+
+        email = obtener_email_usuario(request)
+        if not email:
+            return crear_respuesta_error("No se pudo identificar al usuario", "EMAIL_NO_ENCONTRADO", HTTP_BAD_REQUEST)
+
+        # Validar tipo y extensión
+        if archivo.content_type not in TIPOS_IMAGEN_PERMITIDOS:
+            return crear_respuesta_error("Tipo de imagen no permitido", "TIPO_IMAGEN_NO_PERMITIDO", HTTP_BAD_REQUEST)
+
+        # Crear directorio de perfiles usando la misma lógica que para recetas
+        perfiles_dir = os.path.join(DIRECTORIO_UPLOADS, "perfiles")
+        crear_directorio_si_no_existe(DIRECTORIO_UPLOADS)
+        crear_directorio_si_no_existe(perfiles_dir)
+
+        # Determinar extensión a partir del content_type usando helper
+        ext = obtener_extension_desde_mime(archivo.content_type or "image/png")
+
+        # Generar nombre de archivo único consistente con recetas
+        nombre_archivo = generar_nombre_archivo_unico(email, ext)
+        ruta_guardado = os.path.join(perfiles_dir, nombre_archivo)
+
+        # Guardar archivo y validar tamaño
+        contenido = await archivo.read()
+        if len(contenido) > TAMAÑO_MAXIMO_IMAGEN:
+            return crear_respuesta_error("Imagen demasiado grande", "IMAGEN_TAMANIO_EXCEDIDO", HTTP_BAD_REQUEST)
+
+        with open(ruta_guardado, 'wb') as f:
+            f.write(contenido)
+
+        # URL accesible (misma base que recetas pero carpeta 'perfiles')
+        url_publica = f"/static/uploads/perfiles/{nombre_archivo}"
+
+        # Actualizar cuenta
+        if actualizar_cuenta(email, {"fotoPerfil": url_publica}):
+            return crear_respuesta_exito("Foto de perfil subida correctamente", {"fotoPerfil": url_publica})
+        else:
+            return crear_respuesta_error("No se pudo actualizar la cuenta con la foto", "ERROR_ACTUALIZAR_CUENTA", HTTP_INTERNAL_SERVER_ERROR)
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en subir_foto_perfil: {e}")
+        return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
+
+
+@app.post('/api/actualizar-usuario')
+async def api_actualizar_usuario(request: Request) -> JSONResponse:
+    """
+    Actualiza campos de la cuenta del usuario autenticado. Actualmente soporta:
+    - nombreUsuario
+    Recibe JSON: { "nombreUsuario": "NuevoNombre" }
+    """
+    try:
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error("Debes estar registrado para actualizar tu usuario", "USUARIO_NO_AUTENTICADO", HTTP_BAD_REQUEST)
+
+        payload = await request.json()
+        nuevo_nombre = payload.get('nombreUsuario')
+        if not nuevo_nombre or not isinstance(nuevo_nombre, str):
+            return crear_respuesta_error("Nombre de usuario inválido", "NOMBRE_INVALIDO", HTTP_BAD_REQUEST)
+
+        email = obtener_email_usuario(request)
+        if not email:
+            return crear_respuesta_error("No se pudo identificar al usuario", "EMAIL_NO_ENCONTRADO", HTTP_BAD_REQUEST)
+
+        # Actualizar en el archivo de cuentas
+        if actualizar_cuenta(email, {"nombreUsuario": nuevo_nombre}):
+            return crear_respuesta_exito("Nombre de usuario actualizado", {"nombreUsuario": nuevo_nombre})
+        else:
+            return crear_respuesta_error("No se pudo actualizar la cuenta", "ERROR_ACTUALIZAR_CUENTA", HTTP_INTERNAL_SERVER_ERROR)
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en api_actualizar_usuario: {e}")
+        return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
 
 # ==================== ENDPOINTS DE FUNCIONALIDADES ESPECÍFICAS ====================
 

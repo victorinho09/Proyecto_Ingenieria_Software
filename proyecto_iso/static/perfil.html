@@ -118,9 +118,71 @@
       </div>
     </nav>
 
-    <div>
-      <h2>Mi perfil</h2>
-    </div>
+    <main class="container my-4">
+      <!-- Banner que indica modo edición (hidden por defecto) -->
+      <div id="editModeBanner" class="alert alert-warning text-center fw-bold d-none" role="status" style="margin-bottom:16px;">
+        MODO EDICIÓN ACTIVADO — Los cambios no se guardan hasta pulsar Guardar. Pulsa Esc o Cancelar para salir sin guardar.
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <div id="perfilImagenWrap" class="mb-3">
+                <img id="perfilImagen" src="/static/cocinero.png" alt="Foto de perfil" class="rounded-circle img-fluid" style="width:140px;height:140px;object-fit:cover;">
+              </div>
+              <h5 id="perfilNombre" class="card-title">Usuario</h5>
+              <p id="perfilEmail" class="text-muted small">email@ejemplo.com</p>
+
+              <div class="d-flex gap-2 justify-content-center mt-3" id="perfilActions">
+                <button id="btnEditarPerfil" class="btn btn-outline-primary btn-sm" type="button">Editar perfil</button>
+                <button id="btnGuardarPerfil" class="btn btn-primary btn-sm d-none" type="button">Guardar</button>
+                <button id="btnCancelarPerfil" class="btn btn-secondary btn-sm d-none" type="button">Cancelar</button>
+              </div>
+
+              <div id="mensajeEdicion" style="display:none" class="mt-2"></div>
+
+              <!-- Inline edit controls (hidden until edit mode) -->
+              <input id="perfilNombreInput" type="text" class="form-control mt-2" style="display:none;" required>
+              <input id="perfilFotoInputInline" type="file" accept="image/*" style="display:none; margin-top:8px;">
+
+              <div id="mensajeFoto" style="display:none" class="mt-2"></div>
+            </div>
+          </div>
+
+          <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+              <h6 class="mb-2">Valoración</h6>
+              <div id="perfilValoracion" class="text-warning">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h4 class="card-title">Recetas</h4>
+              <p class="card-text">Aquí puedes ver algunos datos tu cuenta.</p>
+
+              <div class="row text-center mt-4">
+                <div class="col-4">
+                  <div class="fw-bold" id="countPropias">0</div>
+                  <div class="small text-muted">Recetas publicadas</div>
+                </div>
+                <div class="col-4">
+                  <div class="fw-bold" id="countHechas">0</div>
+                  <div class="small text-muted">Recetas hechas</div>
+                </div>
+                <div class="col-4">
+                  <div class="fw-bold" id="countGuardadas">0</div>
+                  <div class="small text-muted">Recetas guardadas</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- Footer -->
     <footer class="bg-light border-top mt-auto">
@@ -188,6 +250,67 @@
       </div>
     </div>
 
+    <!-- Modal Cambiar Nombre de Usuario -->
+    <div class="modal fade" id="cambiarNombreModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cambio nombre usuario</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <label for="modalInputNombre" class="form-label">Nuevo nombre de usuario</label>
+            <input id="modalInputNombre" type="text" class="form-control" placeholder="Introduce el nuevo nombre de usuario" required>
+            <div id="modalMensajeNombre" style="display:none" class="mt-2"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="modalGuardarNombre" type="button" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Cambiar Foto de Perfil -->
+    <div class="modal fade" id="cambiarFotoModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cambio foto perfil</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <label for="modalInputFoto" class="form-label">Selecciona una imagen</label>
+            <input id="modalInputFoto" type="file" class="form-control" accept="image/*" required>
+            <div id="modalMensajeFoto" style="display:none" class="mt-2"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="modalGuardarFoto" type="button" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar salida sin guardar (cuando hay cambios en modo edición) -->
+    <div class="modal fade" id="confirmSalirModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Salir sin guardar</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>Estás en modo edición y hay cambios sin guardar. ¿Seguro que quieres salir y perder los cambios?</p>
+          </div>
+          <div class="modal-footer">
+            <button id="cancelSalirBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="confirmSalirBtn" type="button" class="btn btn-danger">Salir y descartar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -208,5 +331,422 @@
 
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>
+    <script type="module">
+      import { mostrarMensaje } from '/static/js/components/message-handler.js';
+      // Módulo para manejar la sección de perfil
+      async function cargarPerfil() {
+        try {
+          const res = await fetch('/api/perfil', { credentials: 'include' });
+          const json = await res.json();
+          if (!res.ok) {
+            console.error('Error al obtener perfil', json);
+            return;
+          }
+
+          const perfil = json.perfil || json.data?.perfil || json?.perfil || (json.data && json.data.perfil);
+          // Crear fallback por compatibilidad con la estructura de crear_respuesta_exito
+          const data = json.perfil ? json.perfil : (json.data && json.data.perfil ? json.data.perfil : (json.data && json.data.perfil ? json.data.perfil : json.data));
+          const perfilData = json.data?.perfil || json.perfil || (json.perfil && json.perfil) || (json.data && json.data) || perfil;
+
+          // Manejo flexible: buscar en respuesta estandar
+          const perfilObj = json.data && json.data.perfil ? json.data.perfil : (json.perfil ? json.perfil : json.data);
+
+          const p = perfilObj || perfil || perfilData || {};
+
+          document.getElementById('perfilEmail').textContent = p.email || '';
+          document.getElementById('perfilNombre').textContent = p.nombreUsuario || '';
+          if (p.fotoPerfil) {
+            document.getElementById('perfilImagen').src = p.fotoPerfil;
+          }
+
+          document.getElementById('countPropias').textContent = p.totalPublicadas ?? p.totalPropias ?? 0;
+          document.getElementById('countGuardadas').textContent = p.totalGuardadas ?? 0;
+          document.getElementById('countHechas').textContent = p.totalHechas ?? 0;
+
+          // Valoración: por ahora mostrar guion si no hay dato
+          const val = p.valoracion || null;
+          document.getElementById('perfilValoracion').textContent = val ? val.toFixed(1) : '—';
+
+        } catch (err) {
+          console.error('Error cargando perfil:', err);
+        }
+      }
+
+      async function subirFoto(archivo) {
+        const mensaje = document.getElementById('mensajeFoto');
+        mensaje.style.display = 'none';
+        try {
+          const form = new FormData();
+          form.append('archivo', archivo);
+
+          const res = await fetch('/api/subir-foto-perfil', {
+            method: 'POST',
+            credentials: 'include',
+            body: form
+          });
+          const json = await res.json();
+          if (!res.ok) {
+            mensaje.className = 'alert alert-danger small mt-2';
+            mensaje.textContent = json.mensaje || 'Error subiendo la foto';
+            mensaje.style.display = 'block';
+            return;
+          }
+
+          const fotoUrl = json.data?.fotoPerfil || json.fotoPerfil || json.data?.fotoPerfil || json.fotoPerfil;
+          if (fotoUrl) {
+            document.getElementById('perfilImagen').src = fotoUrl;
+            mensaje.className = 'alert alert-success small mt-2';
+            mensaje.textContent = 'Foto subida correctamente';
+            mensaje.style.display = 'block';
+          }
+        } catch (err) {
+          mensaje.className = 'alert alert-danger small mt-2';
+          mensaje.textContent = 'Error de conexión al subir la foto';
+          mensaje.style.display = 'block';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        cargarPerfil();
+
+        // Inline Edit Mode: single Edit button that enables editing name and photo
+        const modalFotoEl = document.getElementById('cambiarFotoModal');
+        const modalFotoInstance = new bootstrap.Modal(modalFotoEl);
+        const modalFotoInput = document.getElementById('modalInputFoto');
+        const modalFotoGuardar = document.getElementById('modalGuardarFoto');
+        const modalFotoMensaje = document.getElementById('modalMensajeFoto');
+
+        const btnEditar = document.getElementById('btnEditarPerfil');
+        const btnGuardar = document.getElementById('btnGuardarPerfil');
+        const btnCancelar = document.getElementById('btnCancelarPerfil');
+        const mensajeEdicion = document.getElementById('mensajeEdicion');
+
+  const perfilNombreEl = document.getElementById('perfilNombre');
+  const perfilNombreInput = document.getElementById('perfilNombreInput');
+        const perfilImagenEl = document.getElementById('perfilImagen');
+        const perfilFotoInputInline = document.getElementById('perfilFotoInputInline');
+  let escListener = null;
+
+        function enterEditMode() {
+          // show inputs, swap buttons
+          perfilNombreInput.value = perfilNombreEl.textContent.trim();
+          perfilNombreEl.style.display = 'none';
+          perfilNombreInput.style.display = 'block';
+          perfilFotoInputInline.value = '';
+          perfilFotoInputInline.style.display = 'block';
+          btnEditar.classList.add('d-none');
+          btnGuardar.classList.remove('d-none');
+          btnCancelar.classList.remove('d-none');
+          mensajeEdicion.style.display = 'none';
+          setTimeout(() => perfilNombreInput.focus(), 100);
+          // Attach Escape key listener to cancel edit mode
+          escListener = (ev) => {
+            if (ev.key === 'Escape') {
+              ev.preventDefault();
+              mensajeEdicion.style.display = 'none';
+              try { mostrarMensaje('Edición cancelada', 'error', 2500); } catch (e) {}
+              exitEditMode(true);
+            }
+          };
+          document.addEventListener('keydown', escListener);
+          // Show visual banner indicating edit mode
+          const banner = document.getElementById('editModeBanner');
+          if (banner) {
+            banner.classList.remove('d-none');
+          }
+        }
+
+        function exitEditMode(revert = true) {
+          // hide inputs, restore view
+          perfilNombreEl.style.display = 'block';
+          perfilNombreInput.style.display = 'none';
+          perfilFotoInputInline.style.display = 'none';
+          perfilFotoInputInline.value = '';
+          btnEditar.classList.remove('d-none');
+          btnGuardar.classList.add('d-none');
+          btnCancelar.classList.add('d-none');
+          // Remove Escape key listener when leaving edit mode
+          if (escListener) {
+            document.removeEventListener('keydown', escListener);
+            escListener = null;
+          }
+          // Hide visual banner indicating edit mode
+          const banner = document.getElementById('editModeBanner');
+          if (banner) {
+            banner.classList.add('d-none');
+          }
+        }
+
+        btnEditar.addEventListener('click', () => {
+          enterEditMode();
+        });
+
+        btnCancelar.addEventListener('click', () => {
+          // discard changes
+          mensajeEdicion.style.display = 'none';
+          try { mostrarMensaje('Edición cancelada', 'error', 2500); } catch (e) {}
+          exitEditMode(true);
+        });
+
+        // Allow submitting the inline photo input with Enter
+        perfilFotoInputInline.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            btnGuardar.click();
+          }
+        });
+
+        btnGuardar.addEventListener('click', async () => {
+          // Validate name with native tooltip
+          mensajeEdicion.style.display = 'none';
+          if (!perfilNombreInput.reportValidity()) return;
+
+          const nuevoNombre = perfilNombreInput.value.trim();
+          const archivo = perfilFotoInputInline.files[0];
+
+          btnGuardar.disabled = true;
+          try {
+            // If there's a file, upload it first
+            if (archivo) {
+              const form = new FormData();
+              form.append('archivo', archivo);
+              const resFoto = await fetch('/api/subir-foto-perfil', {
+                method: 'POST',
+                credentials: 'include',
+                body: form
+              });
+              const jf = await resFoto.json();
+              if (!resFoto.ok) {
+                mensajeEdicion.className = 'alert alert-danger small mt-2';
+                mensajeEdicion.textContent = jf.mensaje || 'Error subiendo la foto';
+                mensajeEdicion.style.display = 'block';
+                btnGuardar.disabled = false;
+                return;
+              }
+            }
+
+            // Update username if changed
+            const currentName = perfilNombreEl.textContent.trim();
+            if (nuevoNombre && nuevoNombre !== currentName) {
+              const resNombre = await fetch('/api/actualizar-usuario', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombreUsuario: nuevoNombre })
+              });
+              const jn = await resNombre.json();
+              if (!resNombre.ok) {
+                mensajeEdicion.className = 'alert alert-danger small mt-2';
+                mensajeEdicion.textContent = jn.mensaje || 'Error actualizando el nombre';
+                mensajeEdicion.style.display = 'block';
+                btnGuardar.disabled = false;
+                return;
+              }
+            }
+
+            // All good: refresh profile and exit edit mode
+            await cargarPerfil();
+            // Mostrar mensaje flotante verde (consistente con crear receta / login)
+            try { mostrarMensaje('Perfil actualizado correctamente', 'success'); } catch (e) { /* fallback silent */ }
+            // Cerrar modo edición tras una pequeña pausa (sin mostrar mensaje inline)
+            setTimeout(() => {
+              exitEditMode(false);
+            }, 800);
+
+          } catch (err) {
+            mensajeEdicion.className = 'alert alert-danger small mt-2';
+            mensajeEdicion.textContent = 'Error de conexión al guardar cambios';
+            mensajeEdicion.style.display = 'block';
+          } finally {
+            btnGuardar.disabled = false;
+          }
+        });
+
+        // --- Navigation guard when in edit mode ---
+        let pendingNavigationHref = null;
+        let beforeUnloadHandler = null;
+        let linkClickHandler = null;
+        const confirmSalirEl = document.getElementById('confirmSalirModal');
+        const confirmSalirInstance = confirmSalirEl ? new bootstrap.Modal(confirmSalirEl) : null;
+        const confirmSalirBtn = document.getElementById('confirmSalirBtn');
+        const cancelSalirBtn = document.getElementById('cancelSalirBtn');
+
+        function attachNavigationGuard() {
+          // beforeunload -> native browser confirmation if user tries to close/refresh
+          beforeUnloadHandler = function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+          };
+          window.addEventListener('beforeunload', beforeUnloadHandler);
+
+          // Intercept clicks on internal links and show our modal
+          linkClickHandler = function (ev) {
+            // Only handle left-clicks without modifier keys
+            if (ev.defaultPrevented) return;
+            if (ev.button !== 0) return; // not left-click
+            if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+
+            const a = ev.target.closest && ev.target.closest('a');
+            if (!a || !a.href) return;
+            // Skip anchors that open in new tab or are javascript or same-page
+            if (a.target && a.target !== '' && a.target !== '_self') return;
+            const href = a.getAttribute('href') || a.href;
+            if (!href) return;
+            if (href.startsWith('#') || href.startsWith('javascript:')) return;
+            // If link is to same location (hash change) allow
+            const url = new URL(a.href, location.href);
+            if (url.pathname === location.pathname && url.search === location.search) return;
+
+            // If element toggles a bootstrap modal or has data-bs-toggle, don't intercept
+            if (a.hasAttribute('data-bs-toggle')) return;
+
+            // Prevent navigation and show modal
+            ev.preventDefault();
+            pendingNavigationHref = a.href;
+            if (confirmSalirInstance) confirmSalirInstance.show();
+          };
+
+          document.addEventListener('click', linkClickHandler, true);
+        }
+
+        function detachNavigationGuard() {
+          if (beforeUnloadHandler) {
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            beforeUnloadHandler = null;
+          }
+          if (linkClickHandler) {
+            document.removeEventListener('click', linkClickHandler, true);
+            linkClickHandler = null;
+          }
+          pendingNavigationHref = null;
+        }
+
+        // Wire modal buttons: confirm -> navigate, cancel -> just close modal
+        if (confirmSalirBtn) {
+          confirmSalirBtn.addEventListener('click', () => {
+            if (confirmSalirInstance) confirmSalirInstance.hide();
+            // Show red toast indicating cancellation (shorter duration)
+            try { mostrarMensaje('Edición cancelada', 'error', 2500); } catch (e) {}
+            // Ensure edit mode is closed
+            try { exitEditMode(true); } catch (e) {}
+            // Remove guard to allow navigation without being blocked by beforeunload
+            detachNavigationGuard();
+            if (pendingNavigationHref) {
+              // Give the toast a brief moment to appear before navigating
+              setTimeout(() => {
+                window.location.href = pendingNavigationHref;
+              }, 400);
+            }
+          });
+        }
+
+        if (cancelSalirBtn) {
+          cancelSalirBtn.addEventListener('click', () => {
+            pendingNavigationHref = null;
+            if (confirmSalirInstance) confirmSalirInstance.hide();
+          });
+        }
+
+        // Hook attach/detach into enter/exit edit mode
+        const origEnter = enterEditMode;
+        const origExit = exitEditMode;
+        enterEditMode = function () {
+          origEnter();
+          attachNavigationGuard();
+        };
+        exitEditMode = function (revert = true) {
+          detachNavigationGuard();
+          origExit(revert);
+        };
+
+        // Manejo del modal para cambiar nombre de usuario
+        const btnAbrir = document.getElementById('btnAbrirCambiarNombre');
+        const modalEl = document.getElementById('cambiarNombreModal');
+        const modalInstance = new bootstrap.Modal(modalEl);
+        const modalInput = document.getElementById('modalInputNombre');
+        const modalGuardar = document.getElementById('modalGuardarNombre');
+        const modalMensaje = document.getElementById('modalMensajeNombre');
+
+        if (btnAbrir) {
+          btnAbrir.addEventListener('click', () => {
+            // Open modal empty by default (do not prefill)
+            modalInput.value = '';
+            modalMensaje.style.display = 'none';
+            modalGuardar.disabled = false;
+            modalInstance.show();
+            setTimeout(() => modalInput.focus(), 200);
+          });
+        }
+
+        // Clear modal when hidden to ensure it opens empty
+        modalEl.addEventListener('hidden.bs.modal', () => {
+          modalInput.value = '';
+          modalMensaje.style.display = 'none';
+          modalGuardar.disabled = false;
+        });
+
+        // Allow confirming the name change with Enter while input is focused
+        modalInput.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            // Trigger the same action as clicking the guardar button
+            modalGuardar.click();
+          }
+        });
+
+        // Allow submitting the photo modal with Enter when file input focused
+        modalFotoInput.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            modalFotoGuardar.click();
+          }
+        });
+
+        modalGuardar.addEventListener('click', async () => {
+          // Use native browser validation tooltip (reportValidity) so the tooltip
+          // matches other forms like "crear receta". If invalid, stop and let
+          // the browser show the validation bubble.
+          modalMensaje.style.display = 'none';
+          if (!modalInput.reportValidity()) {
+            return;
+          }
+          const nuevo = modalInput.value.trim();
+
+          modalGuardar.disabled = true;
+          try {
+            const res = await fetch('/api/actualizar-usuario', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nombreUsuario: nuevo })
+            });
+            const j = await res.json();
+            if (!res.ok) {
+              modalMensaje.className = 'alert alert-danger small mt-2';
+              modalMensaje.textContent = j.mensaje || 'Error al actualizar nombre';
+              modalMensaje.style.display = 'block';
+              modalGuardar.disabled = false;
+              return;
+            }
+
+            // Actualizar UI y cerrar modal
+            document.getElementById('perfilNombre').textContent = nuevo;
+            modalMensaje.className = 'alert alert-success small mt-2';
+            modalMensaje.textContent = 'Nombre actualizado correctamente';
+            modalMensaje.style.display = 'block';
+            setTimeout(() => {
+              modalInstance.hide();
+            }, 700);
+          } catch (err) {
+            modalMensaje.className = 'alert alert-danger small mt-2';
+            modalMensaje.textContent = 'Error de conexión al actualizar nombre';
+            modalMensaje.style.display = 'block';
+          } finally {
+            modalGuardar.disabled = false;
+          }
+        });
+      });
+    </script>
   </body>
 </html>

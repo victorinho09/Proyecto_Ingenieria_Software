@@ -27,22 +27,26 @@ export function mostrarMensaje(mensaje, tipo = "info", duracion = 5000) {
   mensajeElement.innerHTML = mensajeSeguro;
 
   // Estilos del mensaje
+  // Default styles for the floating message. We position the message at
+  // top-left to match the application's existing visual language (see
+  // screenshot). Feel free to tweak the padding / radius values.
   Object.assign(mensajeElement.style, {
     position: "fixed",
     top: "20px",
     right: "20px",
-    padding: "12px 20px",
-    borderRadius: "5px",
+    padding: "14px 26px",
+    borderRadius: "8px",
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "700",
+    fontSize: "1.02rem",
     zIndex: "10000",
-    maxWidth: tipo === "error" ? "400px" : "300px",
+    maxWidth: tipo === "error" ? "520px" : "420px",
     wordWrap: "break-word",
     whiteSpace: "pre-wrap",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 6px 18px rgba(0, 0, 0, 0.25)",
     opacity: "0",
-    transform: "translateY(-20px)",
-    transition: "all 0.3s ease",
+    transform: "translateY(-10px)",
+    transition: "all 0.28s cubic-bezier(.2,.8,.2,1)",
   });
 
   // Colores según el tipo
@@ -103,7 +107,7 @@ export function mostrarExito(mensaje, duracion = 5000) {
  * @param {string} mensaje - Mensaje a mostrar
  * @param {number} duracion - Duración en milisegundos
  */
-export function mostrarError(mensaje, duracion = 5000) {
+export function mostrarError(mensaje, duracion = 2500) {
   mostrarMensaje(mensaje, "error", duracion);
 }
 
