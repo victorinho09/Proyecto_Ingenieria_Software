@@ -70,20 +70,6 @@
     "usuariosGuardado": []
   },
   {
-    "nombreReceta": "cambio",
-    "descripcion": "23fs",
-    "ingredientes": "dff",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "dsfwef",
-    "turnoComida": "",
-    "duracion": 231,
-    "dificultad": "",
-    "fotoReceta": "",
-    "usuariosGuardado": [],
-    "usuario": "victorvega@gmail.com"
-  },
-  {
     "nombreReceta": "Ensalada",
     "descripcion": "Ensalada de pasta",
     "ingredientes": "Pasta, lechuga, tomate",
@@ -271,6 +257,7 @@
     "dificultad": "",
     "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
     "usuariosGuardado": [],
-    "usuario": "victorvega@gmail.com"
+    "usuario": "victorvega@gmail.com",
+    "publicada": true
   }
 ]
