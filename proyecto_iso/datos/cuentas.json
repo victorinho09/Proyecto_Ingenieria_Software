@@ -44,5 +44,10 @@
     "nombreUsuario": "Alex",
     "email": "alexbarcelo@gmail.com",
     "password": "Alex1234"
+  },
+  {
+    "nombreUsuario": "campa",
+    "email": "a.campa@movistar.es",
+    "password": "Telefonica#1313"
   }
 ]

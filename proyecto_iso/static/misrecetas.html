@@ -1290,7 +1290,7 @@
         
         // Añadir evento al botón de guardar cambios
         const btnGuardar = document.getElementById('btnGuardarCambios');
-        btnGuardar.addEventListener('click', function() {
+        btnGuardar.addEventListener('click', async function() {
           const camposVacios = validarCamposObligatorios();
           
           if (camposVacios.length > 0) {
@@ -1326,35 +1326,48 @@
             const advertenciaPrevia = document.getElementById('advertenciaValidacion');
             if (advertenciaPrevia) advertenciaPrevia.remove();
             
-            // Crear objeto con los datos del formulario
-            const recetaData = {
-              nombreReceta: document.getElementById('nombreReceta').value,
-              duracion: parseInt(document.getElementById('duracion').value),
-              descripcion: document.getElementById('descripcion').value,
-              ingredientes: document.getElementById('ingredientes').value,
-              pasosAseguir: document.getElementById('pasosAseguir').value,
-              turnoComida: document.getElementById('turnoComida').value,
-              dificultad: document.getElementById('dificultad').value,
-              paisOrigen: document.getElementById('paisOrigen').value,
-              alergenos: document.getElementById('alergenos').value,
-              fotoReceta: document.getElementById('fotoReceta').value || '',
-              modoEdicion: document.getElementById('modoEdicion').value,
-              nombreRecetaOriginal: document.getElementById('nombreRecetaOriginal').value
-            };
-            
             // Deshabilitar botón mientras se procesa
             btnGuardar.disabled = true;
             btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
             
-            fetch('/crear-receta', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(recetaData)
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+              // Verificar si se seleccionó una nueva imagen
+              const inputImagen = document.getElementById('fotoReceta');
+              let fotoReceta = receta.fotoReceta || '';  // Preservar la foto existente por defecto
+              
+              if (inputImagen.files && inputImagen.files.length > 0) {
+                // Se seleccionó una nueva imagen, convertirla a Base64
+                console.log('📸 Convirtiendo nueva imagen a Base64...');
+                fotoReceta = await window.convertirArchivoABase64(inputImagen.files[0]);
+                console.log('✅ Imagen convertida exitosamente');
+              }
+              
+              // Crear objeto con los datos del formulario
+              const recetaData = {
+                nombreReceta: document.getElementById('nombreReceta').value,
+                duracion: parseInt(document.getElementById('duracion').value),
+                descripcion: document.getElementById('descripcion').value,
+                ingredientes: document.getElementById('ingredientes').value,
+                pasosAseguir: document.getElementById('pasosAseguir').value,
+                turnoComida: document.getElementById('turnoComida').value,
+                dificultad: document.getElementById('dificultad').value,
+                paisOrigen: document.getElementById('paisOrigen').value,
+                alergenos: document.getElementById('alergenos').value,
+                fotoReceta: fotoReceta,
+                modoEdicion: document.getElementById('modoEdicion').value,
+                nombreRecetaOriginal: document.getElementById('nombreRecetaOriginal').value
+              };
+              
+              const response = await fetch('/crear-receta', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(recetaData)
+              });
+              
+              const data = await response.json();
+              
               if (data.exito) {
                 // Cerrar modal
                 const modal = bootstrap.Modal.getInstance(modalElement);
@@ -1383,8 +1396,7 @@
                 btnGuardar.disabled = false;
                 btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar cambios';
               }
-            })
-            .catch(error => {
+            } catch (error) {
               console.error('Error:', error);
               
               // Mostrar error de conexión
@@ -1393,7 +1405,7 @@
               advertenciaError.className = 'alert alert-danger alert-dismissible fade show mb-3';
               advertenciaError.innerHTML = `
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Error de conexión:</strong> No se pudo conectar con el servidor
+                <strong>Error:</strong> ${error.message || 'No se pudo conectar con el servidor'}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               `;
               const banner = document.getElementById('bannerModoEdicion');
@@ -1404,7 +1416,7 @@
               // Rehabilitar botón
               btnGuardar.disabled = false;
               btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar cambios';
-            });
+            }
           }
         });
         
@@ -1487,9 +1499,11 @@
     <!-- Import del message handler -->
     <script type="module">
       import { mostrarMensaje } from '/static/js/components/message-handler.js';
+      import { convertirArchivoABase64 } from '/static/js/utils/dom-utils.js';
       
       // Hacer disponible globalmente para el código legacy
       window.mostrarMensaje = mostrarMensaje;
+      window.convertirArchivoABase64 = convertirArchivoABase64;
     </script>
 
     <!-- Importar la función eliminarReceta y exponerla globalmente -->

@@ -14,18 +14,18 @@
     "usuariosGuardado": []
   },
   {
-    "nombreReceta": "Garbanzos con tomate",
+    "nombreReceta": "Garbanzos ",
     "descripcion": "Garbanzos con tomate de León",
     "ingredientes": "Garbanzos, tomate, cebolla, ajo",
-    "pasosAseguir": "Cocinar",
-    "duracion": 15,
-    "fotoReceta": "/static/uploads/recetas/20251012_210858_victor_721cb3ae.jpg",
     "alergenos": "",
     "paisOrigen": "España",
+    "pasosAseguir": "Cocinar",
     "turnoComida": "comida",
+    "duracion": 15,
     "dificultad": "Facil",
-    "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "usuario": "victorvega@gmail.com"
   },
   {
     "nombreReceta": "receta2",
@@ -70,18 +70,18 @@
     "usuariosGuardado": []
   },
   {
-    "nombreReceta": "sdfws",
+    "nombreReceta": "cambio",
     "descripcion": "23fs",
     "ingredientes": "dff",
-    "pasosAseguir": "dsfwef",
-    "duracion": 231,
-    "fotoReceta": "/static/uploads/recetas/20251013_113645_victorvega_85581779.jpg",
     "alergenos": "",
     "paisOrigen": "",
+    "pasosAseguir": "dsfwef",
     "turnoComida": "",
+    "duracion": 231,
     "dificultad": "",
-    "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "usuario": "victorvega@gmail.com"
   },
   {
     "nombreReceta": "Ensalada",
@@ -244,5 +244,33 @@
     "fotoReceta": "",
     "usuariosGuardado": [],
     "usuario": "juanixer@gmail.com"
+  },
+  {
+    "nombreReceta": "Receta de prueba nueva nueva",
+    "descripcion": "asdfg",
+    "ingredientes": "df",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "asdf",
+    "turnoComida": "",
+    "duracion": 4,
+    "dificultad": "",
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "usuario": "victorvega@gmail.com"
+  },
+  {
+    "nombreReceta": "nueva receta prueba 2",
+    "descripcion": "sdf",
+    "ingredientes": "dfg",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "sdfg",
+    "turnoComida": "",
+    "duracion": 3,
+    "dificultad": "",
+    "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
+    "usuariosGuardado": [],
+    "usuario": "victorvega@gmail.com"
   }
 ]
