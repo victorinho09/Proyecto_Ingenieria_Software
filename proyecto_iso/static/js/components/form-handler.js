@@ -131,6 +131,8 @@ export async function manejarEnvioFormulario(event) {
 
     switch (formId) {
       case "crearCuentaForm":
+        // Mostrar mensaje de verificación
+        mostrarMensaje("⏳ Verificando email y creando cuenta...", "info", 3000);
         resultado = await crearCuenta(data);
         if (resultado.success) {
           mostrarMensaje(
