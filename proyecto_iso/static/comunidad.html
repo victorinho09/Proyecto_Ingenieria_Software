@@ -502,6 +502,46 @@
                       </div>
                     </div>
                   </div>
+                  
+                  <!-- Sección de Valoración -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-warning bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-star-fill text-warning me-2"></i>
+                        Valoración
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <!-- Valoración Media -->
+                      <div class="text-center mb-3">
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                          <div id="estrellaMediaReceta" class="fs-4">
+                            <!-- Estrellas de valoración media -->
+                          </div>
+                          <span class="ms-3 fs-5 fw-bold" id="valoracionMediaNumero">0.0</span>
+                        </div>
+                        <small class="text-muted" id="totalValoracionesTexto">Sin valoraciones</small>
+                      </div>
+                      
+                      <hr class="my-3">
+                      
+                      <!-- Valorar esta receta -->
+                      <div class="text-center">
+                        <label class="form-label fw-bold mb-2">
+                          <i class="bi bi-hand-thumbs-up me-1"></i>
+                          Tu valoración
+                        </label>
+                        <div id="estrellaValoracionUsuario" class="fs-3" style="cursor: pointer;">
+                          <i class="bi bi-star estrella-valoracion" data-valor="1"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="2"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="3"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="4"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="5"></i>
+                        </div>
+                        <small class="text-muted d-block mt-2" id="mensajeValoracion">Haz clic en una estrella para valorar</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <!-- Columna derecha: Descripción, ingredientes e instrucciones -->

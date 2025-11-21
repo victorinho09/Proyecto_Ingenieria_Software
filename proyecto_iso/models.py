@@ -21,6 +21,14 @@ class ComentarioRequest(BaseModel):
     nombreReceta: str
     texto: str
 
+class Valoracion(BaseModel):
+    usuario: str  # Email del usuario que valora
+    puntuacion: int  # Puntuación de 1 a 5 estrellas
+
+class ValoracionRequest(BaseModel):
+    nombreReceta: str
+    puntuacion: int  # Puntuación de 1 a 5 estrellas
+
 class Receta(BaseModel):
     nombreReceta: str
     descripcion: str
@@ -34,6 +42,7 @@ class Receta(BaseModel):
     fotoReceta: str  # Campo para imagen en Base64 o URL
     usuariosGuardado: List[str] = []  # Lista de emails de usuarios que han guardado la receta
     comentarios: List[Comentario] = []  # Lista de comentarios en la receta
+    valoraciones: List[Valoracion] = []  # Lista de valoraciones de la receta
     # Campos opcionales para modo edición
     modoEdicion: Optional[str] = "false"
     nombreRecetaOriginal: Optional[str] = ""

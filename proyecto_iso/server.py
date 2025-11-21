@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 
 # Importar módulos locales
 from constants import *
-from models import Cuenta, LoginData, Receta, ComentarioRequest
+from models import Cuenta, LoginData, Receta, ComentarioRequest, ValoracionRequest
 from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
@@ -1531,6 +1531,202 @@ async def obtener_comentarios_receta(receta_id: str, request: Request) -> JSONRe
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en obtener_comentarios_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.post("/api/valorar-receta")
+async def valorar_receta(valoracion_data: ValoracionRequest, request: Request) -> JSONResponse:
+    """
+    Endpoint para añadir o actualizar una valoración a una receta.
+    Solo usuarios autenticados pueden valorar.
+    Un usuario solo puede tener una valoración por receta (se actualiza si ya existe).
+    
+    Args:
+        valoracion_data: Datos de la valoración (nombreReceta, puntuacion)
+        request: Objeto Request de FastAPI para obtener cookies
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para valorar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Validar puntuación (1-5)
+        if valoracion_data.puntuacion < 1 or valoracion_data.puntuacion > 5:
+            return crear_respuesta_error(
+                "La puntuación debe estar entre 1 y 5",
+                "PUNTUACION_INVALIDA",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"⭐ [VALORAR RECETA] Usuario {email_usuario} valorando '{valoracion_data.nombreReceta}' con {valoracion_data.puntuacion} estrellas")
+        
+        # Cargar recetas
+        recetas = cargar_recetas()
+        
+        # Buscar la receta
+        receta_encontrada = False
+        for receta in recetas:
+            if receta.get("nombreReceta") == valoracion_data.nombreReceta:
+                receta_encontrada = True
+                
+                # Inicializar la lista de valoraciones si no existe
+                if "valoraciones" not in receta:
+                    receta["valoraciones"] = []
+                
+                # Buscar si el usuario ya valoró esta receta
+                valoracion_existente = None
+                for idx, val in enumerate(receta["valoraciones"]):
+                    if val.get("usuario") == email_usuario:
+                        valoracion_existente = idx
+                        break
+                
+                # Crear/actualizar la valoración
+                nueva_valoracion = {
+                    "usuario": email_usuario,
+                    "puntuacion": valoracion_data.puntuacion
+                }
+                
+                if valoracion_existente is not None:
+                    # Actualizar valoración existente
+                    receta["valoraciones"][valoracion_existente] = nueva_valoracion
+                    accion = "actualizada"
+                else:
+                    # Añadir nueva valoración
+                    receta["valoraciones"].append(nueva_valoracion)
+                    accion = "añadida"
+                
+                # Calcular valoración media
+                valoracion_media = sum(v.get("puntuacion", 0) for v in receta["valoraciones"]) / len(receta["valoraciones"])
+                
+                # Guardar cambios
+                if guardar_recetas(recetas):
+                    print(f"✅ Valoración {accion} por {email_usuario} en '{valoracion_data.nombreReceta}'")
+                    return crear_respuesta_exito(
+                        f"Valoración {accion} correctamente",
+                        {
+                            "valoracion": nueva_valoracion,
+                            "totalValoraciones": len(receta["valoraciones"]),
+                            "valoracionMedia": round(valoracion_media, 1)
+                        }
+                    )
+                else:
+                    return crear_respuesta_error(
+                        "Error al guardar la valoración",
+                        "ERROR_GUARDAR",
+                        HTTP_INTERNAL_SERVER_ERROR
+                    )
+        
+        if not receta_encontrada:
+            return crear_respuesta_error(
+                "Receta no encontrada",
+                "RECETA_NO_ENCONTRADA",
+                HTTP_NOT_FOUND
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en valorar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.get("/api/valoracion-receta/{receta_id}")
+async def obtener_valoracion_receta(receta_id: str, request: Request) -> JSONResponse:
+    """
+    Endpoint para obtener la valoración media y total de una receta,
+    además de la valoración del usuario actual si existe.
+    
+    Args:
+        receta_id: ID de la receta (formato: receta-{index})
+        request: Objeto Request de FastAPI
+
+    Returns:
+        JSONResponse: Respuesta con las valoraciones de la receta
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver valoraciones",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario
+        email_usuario = obtener_email_usuario(request)
+        
+        print(f"📊 [OBTENER VALORACIONES] Obteniendo valoraciones para receta ID '{receta_id}'")
+        
+        # Extraer el índice del ID
+        try:
+            index = int(receta_id.replace("receta-", ""))
+        except ValueError:
+            return crear_respuesta_error(
+                "ID de receta inválido",
+                "ID_INVALIDO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Cargar recetas
+        recetas = cargar_recetas()
+        
+        # Verificar que el índice sea válido
+        if index < 0 or index >= len(recetas):
+            return crear_respuesta_error(
+                "Receta no encontrada",
+                "RECETA_NO_ENCONTRADA",
+                HTTP_NOT_FOUND
+            )
+        
+        receta = recetas[index]
+        valoraciones = receta.get("valoraciones", [])
+        
+        # Calcular valoración media
+        valoracion_media = 0
+        if len(valoraciones) > 0:
+            valoracion_media = sum(v.get("puntuacion", 0) for v in valoraciones) / len(valoraciones)
+        
+        # Buscar valoración del usuario actual
+        valoracion_usuario = None
+        for val in valoraciones:
+            if val.get("usuario") == email_usuario:
+                valoracion_usuario = val.get("puntuacion")
+                break
+        
+        return crear_respuesta_exito(
+            "Valoraciones obtenidas correctamente",
+            {
+                "valoracionMedia": round(valoracion_media, 1),
+                "totalValoraciones": len(valoraciones),
+                "valoracionUsuario": valoracion_usuario,
+                "nombreReceta": receta.get("nombreReceta")
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_valoracion_receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

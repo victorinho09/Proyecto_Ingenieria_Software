@@ -314,6 +314,46 @@
                       </div>
                     </div>
                   </div>
+                  
+                  <!-- Sección de Valoración -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-warning bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-star-fill text-warning me-2"></i>
+                        Valoración
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <!-- Valoración Media -->
+                      <div class="text-center mb-3">
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                          <div id="estrellaMediaReceta" class="fs-4">
+                            <!-- Estrellas de valoración media -->
+                          </div>
+                          <span class="ms-3 fs-5 fw-bold" id="valoracionMediaNumero">0.0</span>
+                        </div>
+                        <small class="text-muted" id="totalValoracionesTexto">Sin valoraciones</small>
+                      </div>
+                      
+                      <hr class="my-3">
+                      
+                      <!-- Valorar esta receta -->
+                      <div class="text-center">
+                        <label class="form-label fw-bold mb-2">
+                          <i class="bi bi-hand-thumbs-up me-1"></i>
+                          Tu valoración
+                        </label>
+                        <div id="estrellaValoracionUsuario" class="fs-3" style="cursor: pointer;">
+                          <i class="bi bi-star estrella-valoracion" data-valor="1"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="2"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="3"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="4"></i>
+                          <i class="bi bi-star estrella-valoracion" data-valor="5"></i>
+                        </div>
+                        <small class="text-muted d-block mt-2" id="mensajeValoracion">Haz clic en una estrella para valorar</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <!-- Columna derecha: Descripción, ingredientes e instrucciones -->
@@ -630,9 +670,10 @@
         window.recetaActualNombre = receta.nombreReceta;
         window.recetaActualId = receta.id;
         
-        // Cargar comentarios
+        // Cargar comentarios y valoraciones
         if (receta.id) {
           cargarComentarios(receta.id);
+          cargarValoraciones(receta.id, receta.nombreReceta);
         }
       }
 
@@ -1039,6 +1080,178 @@
           btnCancelar.addEventListener('click', cancelarComentario);
         }
       });
+
+      // ============================================
+      // FUNCIONES DE VALORACIÓN
+      // ============================================
+
+      /**
+       * Carga las valoraciones de una receta
+       * @param {string} recetaId - ID de la receta
+       * @param {string} nombreReceta - Nombre de la receta
+       */
+      async function cargarValoraciones(recetaId, nombreReceta) {
+        console.log(`⭐ Cargando valoraciones para receta ID: ${recetaId}`);
+        window.recetaActualNombre = nombreReceta;
+        
+        try {
+          const respuesta = await fetch(`/api/valoracion-receta/${recetaId}`, {
+            method: 'GET',
+            credentials: 'include'
+          });
+          
+          const resultado = await respuesta.json();
+          console.log('📊 Resultado de valoraciones:', resultado);
+          
+          if (resultado.exito) {
+            mostrarValoraciones(resultado);
+            configurarEstrellas(resultado.valoracionUsuario || 0);
+          } else {
+            console.error('❌ Error al cargar valoraciones:', resultado.mensaje);
+          }
+        } catch (error) {
+          console.error('❌ Error al cargar valoraciones:', error);
+        }
+      }
+
+      /**
+       * Muestra las valoraciones en la interfaz
+       * @param {Object} datos - Datos de las valoraciones
+       */
+      function mostrarValoraciones(datos) {
+        const { valoracionMedia, totalValoraciones } = datos;
+        
+        // Mostrar valoración media
+        document.getElementById('valoracionMediaNumero').textContent = valoracionMedia.toFixed(1);
+        
+        // Mostrar estrellas de valoración media
+        const contenedorEstrellas = document.getElementById('estrellaMediaReceta');
+        contenedorEstrellas.innerHTML = '';
+        
+        for (let i = 1; i <= 5; i++) {
+          const estrella = document.createElement('i');
+          if (i <= Math.floor(valoracionMedia)) {
+            estrella.className = 'bi bi-star-fill text-warning';
+          } else if (i === Math.ceil(valoracionMedia) && valoracionMedia % 1 !== 0) {
+            estrella.className = 'bi bi-star-half text-warning';
+          } else {
+            estrella.className = 'bi bi-star text-warning';
+          }
+          contenedorEstrellas.appendChild(estrella);
+        }
+        
+        // Mostrar total de valoraciones
+        const textoValoraciones = totalValoraciones === 0 
+          ? 'Sin valoraciones' 
+          : totalValoraciones === 1 
+            ? '1 valoración' 
+            : `${totalValoraciones} valoraciones`;
+        document.getElementById('totalValoracionesTexto').textContent = textoValoraciones;
+      }
+
+      /**
+       * Configura las estrellas interactivas para que el usuario valore
+       * @param {number} valoracionActual - Valoración actual del usuario (0-5)
+       */
+      function configurarEstrellas(valoracionActual) {
+        const contenedor = document.getElementById('estrellaValoracionUsuario');
+        const estrellas = document.querySelectorAll('.estrella-valoracion');
+        
+        // IMPORTANTE: Clonar el contenedor para eliminar todos los event listeners anteriores
+        const nuevoContenedor = contenedor.cloneNode(true);
+        contenedor.parentNode.replaceChild(nuevoContenedor, contenedor);
+        
+        // Obtener las nuevas estrellas del contenedor clonado
+        const nuevasEstrellas = nuevoContenedor.querySelectorAll('.estrella-valoracion');
+        
+        // Marcar las estrellas según la valoración actual
+        actualizarEstrellasVisuales(valoracionActual);
+        
+        // Añadir eventos hover y click a las NUEVAS estrellas
+        nuevasEstrellas.forEach((estrella, index) => {
+          const valor = index + 1;
+          
+          // Evento hover: mostrar preview
+          estrella.addEventListener('mouseenter', () => {
+            actualizarEstrellasVisuales(valor);
+          });
+          
+          // Evento click: enviar valoración
+          estrella.addEventListener('click', async () => {
+            await enviarValoracion(valor);
+          });
+        });
+        
+        // Evento mouse leave del contenedor: volver a mostrar valoración actual
+        nuevoContenedor.addEventListener('mouseleave', () => {
+          actualizarEstrellasVisuales(valoracionActual);
+        });
+        
+        // Actualizar mensaje
+        if (valoracionActual > 0) {
+          document.getElementById('mensajeValoracion').textContent = `Tu valoración: ${valoracionActual} estrella${valoracionActual === 1 ? '' : 's'}`;
+        }
+      }
+
+      /**
+       * Actualiza visualmente las estrellas
+       * @param {number} valor - Número de estrellas a iluminar (0-5)
+       */
+      function actualizarEstrellasVisuales(valor) {
+        const estrellas = document.querySelectorAll('.estrella-valoracion');
+        estrellas.forEach((estrella, index) => {
+          if (index < valor) {
+            estrella.className = 'bi bi-star-fill text-warning estrella-valoracion';
+          } else {
+            estrella.className = 'bi bi-star text-warning estrella-valoracion';
+          }
+        });
+      }
+
+      /**
+       * Envía una valoración al servidor
+       * @param {number} puntuacion - Puntuación de 1 a 5
+       */
+      async function enviarValoracion(puntuacion) {
+        console.log(`⭐ Enviando valoración: ${puntuacion} estrellas para "${window.recetaActualNombre}"`);
+        
+        try {
+          const respuesta = await fetch('/api/valorar-receta', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+              nombreReceta: window.recetaActualNombre,
+              puntuacion: puntuacion
+            })
+          });
+          
+          const resultado = await respuesta.json();
+          console.log('✅ Resultado de valoración:', resultado);
+          
+          if (resultado.exito) {
+            // Actualizar interfaz con nueva valoración media
+            mostrarValoraciones({
+              valoracionMedia: resultado.valoracionMedia,
+              totalValoraciones: resultado.totalValoraciones
+            });
+            
+            // Actualizar configuración de estrellas
+            configurarEstrellas(puntuacion);
+            
+            // Mostrar mensaje de éxito
+            mostrarMensaje('¡Valoración guardada!', 'success');
+            
+          } else {
+            mostrarMensaje(resultado.mensaje || 'Error al guardar la valoración', 'error');
+          }
+        } catch (error) {
+          console.error('❌ Error al enviar valoración:', error);
+          mostrarMensaje('Error de conexión al enviar la valoración', 'error');
+        }
+      }
     </script>
 
     <style>
