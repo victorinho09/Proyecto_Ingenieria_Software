@@ -563,6 +563,64 @@
                       </div>
                     </div>
                   </div>
+
+                  <!-- Sección de Comentarios -->
+                  <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-info bg-opacity-10">
+                      <h6 class="mb-0">
+                        <i class="bi bi-chat-dots text-info me-2"></i>
+                        Comentarios
+                        <span class="badge bg-info ms-2" id="contadorComentarios">0</span>
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <!-- Formulario para añadir comentario -->
+                      <div class="mb-4">
+                        <label for="nuevoComentarioTexto" class="form-label fw-bold">
+                          <i class="bi bi-pencil-square me-1"></i>
+                          Añadir un comentario
+                        </label>
+                        <textarea
+                          class="form-control"
+                          id="nuevoComentarioTexto"
+                          rows="3"
+                          maxlength="500"
+                          placeholder="Escribe tu comentario aquí... (máximo 500 caracteres)"
+                        ></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                          <small class="text-muted">
+                            <span id="contadorCaracteres">0</span>/500 caracteres
+                          </small>
+                          <div>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-secondary me-2"
+                              id="cancelarComentarioBtn"
+                            >
+                              <i class="bi bi-x-circle me-1"></i>
+                              Cancelar
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-primary"
+                              id="publicarComentarioBtn"
+                            >
+                              <i class="bi bi-send me-1"></i>
+                              Publicar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Lista de comentarios -->
+                      <div id="listaComentarios">
+                        <p class="text-muted text-center py-3">
+                          <i class="bi bi-chat-quote"></i>
+                          No hay comentarios aún. ¡Sé el primero en comentar!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

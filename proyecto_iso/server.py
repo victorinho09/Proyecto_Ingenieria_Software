@@ -19,13 +19,14 @@ from fastapi.staticfiles import StaticFiles
 
 # Importar módulos locales
 from constants import *
-from models import Cuenta, LoginData, Receta
+from models import Cuenta, LoginData, Receta, ComentarioRequest
 from utils import (
     verificar_archivo_existe, guardar_nueva_cuenta, email_ya_existe, 
     validar_cuenta, validar_password, guardar_nueva_receta, obtener_recetas_usuario,
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
-    obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario
+    obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
+    cargar_cuentas
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -1345,6 +1346,191 @@ async def obtener_recetas_guardadas(request: Request) -> JSONResponse:
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en obtener_recetas_guardadas: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.post("/api/comentar-receta")
+async def comentar_receta(comentario_data: ComentarioRequest, request: Request) -> JSONResponse:
+    """
+    Endpoint para añadir un comentario a una receta.
+    Solo usuarios autenticados pueden comentar.
+    
+    Args:
+        comentario_data: Datos del comentario (nombreReceta, texto)
+        request: Objeto Request de FastAPI para obtener cookies
+
+    Returns:
+        JSONResponse: Respuesta con el resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para comentar recetas",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener email del usuario
+        email_usuario = obtener_email_usuario(request)
+        if not email_usuario:
+            return crear_respuesta_error(
+                "No se pudo identificar al usuario",
+                "EMAIL_NO_ENCONTRADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Obtener nombre del usuario
+        cuentas = cargar_cuentas()
+        cuenta_usuario = next((c for c in cuentas if c.get("email") == email_usuario), None)
+        
+        if not cuenta_usuario:
+            return crear_respuesta_error(
+                "No se encontró la cuenta del usuario",
+                "CUENTA_NO_ENCONTRADA",
+                HTTP_BAD_REQUEST
+            )
+        
+        nombre_usuario = cuenta_usuario.get("nombreUsuario", "Usuario")
+        
+        # Validar que el comentario no esté vacío
+        if not comentario_data.texto or comentario_data.texto.strip() == "":
+            return crear_respuesta_error(
+                "El comentario no puede estar vacío",
+                "COMENTARIO_VACIO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Validar longitud del comentario (máximo 500 caracteres)
+        if len(comentario_data.texto) > 500:
+            return crear_respuesta_error(
+                "El comentario no puede exceder los 500 caracteres",
+                "COMENTARIO_MUY_LARGO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"💬 [COMENTAR RECETA] Usuario {email_usuario} comentando en '{comentario_data.nombreReceta}'")
+        
+        # Cargar recetas
+        recetas = cargar_recetas()
+        
+        # Buscar la receta
+        receta_encontrada = False
+        for receta in recetas:
+            if receta.get("nombreReceta") == comentario_data.nombreReceta:
+                receta_encontrada = True
+                
+                # Crear el comentario
+                from datetime import datetime
+                nuevo_comentario = {
+                    "usuario": email_usuario,
+                    "nombreUsuario": nombre_usuario,
+                    "texto": comentario_data.texto.strip(),
+                    "fecha": datetime.now().isoformat()
+                }
+                
+                # Inicializar la lista de comentarios si no existe
+                if "comentarios" not in receta:
+                    receta["comentarios"] = []
+                
+                # Añadir el comentario
+                receta["comentarios"].append(nuevo_comentario)
+                
+                # Guardar cambios
+                if guardar_recetas(recetas):
+                    print(f"✅ Comentario añadido por {nombre_usuario} en '{comentario_data.nombreReceta}'")
+                    return crear_respuesta_exito(
+                        "Comentario publicado correctamente",
+                        {
+                            "comentario": nuevo_comentario,
+                            "totalComentarios": len(receta["comentarios"])
+                        }
+                    )
+                else:
+                    return crear_respuesta_error(
+                        "Error al guardar el comentario",
+                        "ERROR_GUARDAR",
+                        HTTP_INTERNAL_SERVER_ERROR
+                    )
+        
+        if not receta_encontrada:
+            return crear_respuesta_error(
+                "Receta no encontrada",
+                "RECETA_NO_ENCONTRADA",
+                HTTP_NOT_FOUND
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en comentar_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+
+@app.get("/api/comentarios-receta/{receta_id}")
+async def obtener_comentarios_receta(receta_id: str, request: Request) -> JSONResponse:
+    """
+    Endpoint para obtener todos los comentarios de una receta.
+    
+    Args:
+        receta_id: ID de la receta (formato: receta-{index})
+        request: Objeto Request de FastAPI
+
+    Returns:
+        JSONResponse: Respuesta con los comentarios de la receta
+    """
+    try:
+        # Verificar autenticación
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error(
+                "Debes estar registrado para ver comentarios",
+                "USUARIO_NO_AUTENTICADO",
+                HTTP_BAD_REQUEST
+            )
+        
+        print(f"📖 [OBTENER COMENTARIOS] Obteniendo comentarios para receta ID '{receta_id}'")
+        
+        # Extraer el índice del ID
+        try:
+            index = int(receta_id.replace("receta-", ""))
+        except ValueError:
+            return crear_respuesta_error(
+                "ID de receta inválido",
+                "ID_INVALIDO",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Cargar recetas
+        recetas = cargar_recetas()
+        
+        # Verificar que el índice sea válido
+        if index < 0 or index >= len(recetas):
+            return crear_respuesta_error(
+                "Receta no encontrada",
+                "RECETA_NO_ENCONTRADA",
+                HTTP_NOT_FOUND
+            )
+        
+        receta = recetas[index]
+        comentarios = receta.get("comentarios", [])
+        
+        return crear_respuesta_exito(
+            "Comentarios obtenidos correctamente",
+            {
+                "comentarios": comentarios,
+                "total": len(comentarios),
+                "nombreReceta": receta.get("nombreReceta")
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en obtener_comentarios_receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

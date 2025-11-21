@@ -81,10 +81,22 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": [
-      "victorvega@gmail.com"
-    ],
-    "publicada": true
+    "usuariosGuardado": [],
+    "publicada": true,
+    "comentarios": [
+      {
+        "usuario": "victorvega@gmail.com",
+        "nombreUsuario": "victor",
+        "texto": "ensaladicaa",
+        "fecha": "2025-11-21T11:45:36.004370"
+      },
+      {
+        "usuario": "victorvega@gmail.com",
+        "nombreUsuario": "victor",
+        "texto": "l",
+        "fecha": "2025-11-21T11:49:15.622382"
+      }
+    ]
   },
   {
     "nombreReceta": "Paella de pollo",
@@ -200,8 +212,18 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "juanixer@gmail.com",
-    "usuariosGuardado": [],
-    "publicada": true
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ],
+    "publicada": true,
+    "comentarios": [
+      {
+        "usuario": "alfredo.martinezescoval@usp.ceu.es",
+        "nombreUsuario": "alfredo",
+        "texto": "fe",
+        "fecha": "2025-11-21T11:04:21.715732"
+      }
+    ]
   },
   {
     "nombreReceta": "rwe",
