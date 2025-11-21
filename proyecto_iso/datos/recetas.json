@@ -25,7 +25,8 @@
     "dificultad": "Facil",
     "fotoReceta": "",
     "usuariosGuardado": [],
-    "usuario": "victorvega@gmail.com"
+    "usuario": "victorvega@gmail.com",
+    "publicada": true
   },
   {
     "nombreReceta": "receta2",
@@ -136,20 +137,6 @@
     "ingredientes": "prueba2",
     "pasosAseguir": "prueba2",
     "duracion": 120,
-    "fotoReceta": "",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "sdfosd",
-    "descripcion": "osdijf",
-    "ingredientes": "osdjgp",
-    "pasosAseguir": "sopgfj",
-    "duracion": 1143,
     "fotoReceta": "",
     "alergenos": "",
     "paisOrigen": "",
@@ -281,5 +268,19 @@
     "usuariosGuardado": [],
     "usuario": "victorvega@gmail.com",
     "publicada": true
+  },
+  {
+    "nombreReceta": "ejemplo",
+    "descripcion": "sdfadsf",
+    "ingredientes": "sfasdf",
+    "pasosAseguir": "dsfasf",
+    "duracion": 4,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
   }
 ]

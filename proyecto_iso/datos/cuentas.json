@@ -23,7 +23,7 @@
     "nombreUsuario": "alfredo",
     "email": "alfredo.martinezescoval@usp.ceu.es",
     "password": "Alfredo1234",
-    "fotoPerfil": "/static/uploads/perfiles/20251103_135604_alfredo_martinezescoval_cc2525b5.jpg"
+    "fotoPerfil": "/static/uploads/perfiles/20251104_104336_alfredo_martinezescoval_89ff1828.jpg"
   },
   {
     "nombreUsuario": "prueba",
@@ -49,5 +49,15 @@
     "nombreUsuario": "campa",
     "email": "a.campa@movistar.es",
     "password": "Telefonica#1313"
+  },
+  {
+    "nombreUsuario": "sdfa",
+    "email": "jaimeee@gmail.com",
+    "password": "Jaime#1234"
+  },
+  {
+    "nombreUsuario": "fernando",
+    "email": "rgg.eps@ceu.es",
+    "password": "alfredoA|1234"
   }
 ]
