@@ -26,7 +26,7 @@ from utils import (
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
-    cargar_cuentas
+    cargar_cuentas, hash_password
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -684,6 +684,57 @@ async def api_actualizar_usuario(request: Request) -> JSONResponse:
 
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en api_actualizar_usuario: {e}")
+        return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
+
+
+@app.post('/api/cambiar-password')
+async def api_cambiar_password(request: Request) -> JSONResponse:
+    """
+    Endpoint para cambiar la contraseña del usuario autenticado.
+    JSON esperado: { currentPassword: str, newPassword: str, confirmPassword: str }
+    Se verifica la contraseña actual, se valida la nueva y se actualiza en el archivo de cuentas.
+    """
+    try:
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error("Debes estar registrado para cambiar la contraseña", "USUARIO_NO_AUTENTICADO", HTTP_BAD_REQUEST)
+
+        payload = await request.json()
+        current = payload.get('currentPassword')
+        new = payload.get('newPassword')
+        confirm = payload.get('confirmPassword')
+
+        if not current or not new or not confirm:
+            return crear_respuesta_error("Rellena todos los campos", "CAMPOS_INCOMPLETOS", HTTP_BAD_REQUEST)
+
+        if new != confirm:
+            return crear_respuesta_error("La nueva contraseña y la confirmación no coinciden", "PASSWORD_CONFIRMACION", HTTP_BAD_REQUEST)
+
+        email = obtener_email_usuario(request)
+        if not email:
+            return crear_respuesta_error("No se pudo identificar al usuario", "EMAIL_NO_ENCONTRADO", HTTP_BAD_REQUEST)
+
+        # Verificar que la contraseña actual coincide
+        if not validar_cuenta(email, current):
+            return crear_respuesta_error("La contraseña actual es incorrecta", "PASSWORD_ACTUAL_INVALIDA", HTTP_BAD_REQUEST)
+
+        # La nueva contraseña no puede ser igual a la actual
+        if current == new:
+            return crear_respuesta_error("La nueva contraseña no puede ser igual a la actual", "PASSWORD_IGUAL_ACTUAL", HTTP_BAD_REQUEST)
+
+        # Validar nueva contraseña
+        is_valid, mensaje_validacion = validar_password(new)
+        if not is_valid:
+            return crear_respuesta_error(mensaje_validacion, "PASSWORD_INVALIDO", HTTP_BAD_REQUEST)
+
+        # Actualizar cuenta (guardar contraseña hasheada si es posible)
+        pwd_to_store = hash_password(new) if 'hash_password' in globals() else new
+        if actualizar_cuenta(email, {"password": pwd_to_store}):
+            return crear_respuesta_exito("Contraseña actualizada correctamente")
+        else:
+            return crear_respuesta_error("No se pudo actualizar la contraseña", "ERROR_ACTUALIZAR_CUENTA", HTTP_INTERNAL_SERVER_ERROR)
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en api_cambiar_password: {e}")
         return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
 
 # ==================== ENDPOINTS DE FUNCIONALIDADES ESPECÍFICAS ====================

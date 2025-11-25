@@ -285,7 +285,13 @@
     "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
     "usuariosGuardado": [],
     "usuario": "victorvega@gmail.com",
-    "publicada": true
+    "publicada": true,
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 1
+      }
+    ]
   },
   {
     "nombreReceta": "ejemplo",

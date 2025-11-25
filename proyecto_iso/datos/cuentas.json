@@ -59,5 +59,10 @@
     "nombreUsuario": "fernando",
     "email": "rgg.eps@ceu.es",
     "password": "alfredoA|1234"
+  },
+  {
+    "nombreUsuario": "Javier",
+    "email": "franciscojavier.martinezfernan@usp.ceu.es",
+    "password": "Javier1234"
   }
 ]

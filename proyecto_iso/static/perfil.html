@@ -135,8 +135,15 @@
 
               <div class="d-flex gap-2 justify-content-center mt-3" id="perfilActions">
                 <button id="btnEditarPerfil" class="btn btn-outline-primary btn-sm" type="button">Editar perfil</button>
-                <button id="btnGuardarPerfil" class="btn btn-primary btn-sm d-none" type="button">Guardar</button>
-                <button id="btnCancelarPerfil" class="btn btn-secondary btn-sm d-none" type="button">Cancelar</button>
+
+                <!-- Contenedor visible solo en modo edición: fila Guardar | Cancelar y debajo Cambiar contraseña -->
+                <div id="editarControls" class="d-none d-flex flex-column align-items-center">
+                  <div class="d-flex gap-2">
+                    <button id="btnGuardarPerfil" class="btn btn-primary btn-sm" type="button">Guardar</button>
+                    <button id="btnCancelarPerfil" class="btn btn-secondary btn-sm" type="button">Cancelar</button>
+                  </div>
+                  <button id="btnCambiarPassword" class="btn btn-outline-secondary btn-sm mt-2 d-none" type="button">Cambiar contraseña</button>
+                </div>
               </div>
 
               <div id="mensajeEdicion" style="display:none" class="mt-2"></div>
@@ -293,6 +300,37 @@
     </div>
 
     <!-- Modal Confirmar salida sin guardar (cuando hay cambios en modo edición) -->
+    <!-- Modal Cambiar Contraseña -->
+    <div class="modal fade" id="cambiarPasswordModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cambiar contraseña</h5>
+            <button id="modalCerrarPassword" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div id="modalMensajePassword" style="display:none" class="mt-2"></div>
+            <div class="mb-3">
+              <label for="modalInputPasswordActual" class="form-label">Contraseña actual</label>
+              <input id="modalInputPasswordActual" type="password" class="form-control" placeholder="Introduce tu contraseña actual" required>
+            </div>
+            <div class="mb-3">
+              <label for="modalInputPasswordNueva" class="form-label">Nueva contraseña</label>
+              <input id="modalInputPasswordNueva" type="password" class="form-control" placeholder="Introduce la nueva contraseña" required>
+            </div>
+            <div class="mb-3">
+              <label for="modalInputPasswordConfirm" class="form-label">Confirmar nueva contraseña</label>
+              <input id="modalInputPasswordConfirm" type="password" class="form-control" placeholder="Repite la nueva contraseña" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="modalCancelarPassword" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="modalGuardarPassword" type="button" class="btn btn-primary">Cambiar contraseña</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="confirmSalirModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -435,10 +473,14 @@
           perfilFotoInputInline.value = '';
           perfilFotoInputInline.style.display = 'block';
           btnEditar.classList.add('d-none');
-          btnGuardar.classList.remove('d-none');
-          btnCancelar.classList.remove('d-none');
+          const editarControls = document.getElementById('editarControls');
+          if (editarControls) editarControls.classList.remove('d-none');
+          // Mostrar el botón de cambiar contraseña dentro de editarControls
+          const btnCambiar = document.getElementById('btnCambiarPassword');
+          if (btnCambiar) btnCambiar.classList.remove('d-none');
           mensajeEdicion.style.display = 'none';
           setTimeout(() => perfilNombreInput.focus(), 100);
+          
           // Attach Escape key listener to cancel edit mode
           escListener = (ev) => {
             if (ev.key === 'Escape') {
@@ -463,8 +505,11 @@
           perfilFotoInputInline.style.display = 'none';
           perfilFotoInputInline.value = '';
           btnEditar.classList.remove('d-none');
-          btnGuardar.classList.add('d-none');
-          btnCancelar.classList.add('d-none');
+          const editarControlsHide = document.getElementById('editarControls');
+          if (editarControlsHide) editarControlsHide.classList.add('d-none');
+          // Ocultar botón de cambiar contraseña al salir del modo edición
+          const btnCambiarHide = document.getElementById('btnCambiarPassword');
+          if (btnCambiarHide) btnCambiarHide.classList.add('d-none');
           // Remove Escape key listener when leaving edit mode
           if (escListener) {
             document.removeEventListener('keydown', escListener);
@@ -684,6 +729,140 @@
           modalInput.value = '';
           modalMensaje.style.display = 'none';
           modalGuardar.disabled = false;
+        });
+
+        // --- Manejo del modal para cambiar contraseña ---
+        const btnAbrirPassword = document.getElementById('btnCambiarPassword');
+        const modalPasswordEl = document.getElementById('cambiarPasswordModal');
+        const modalPasswordInstance = modalPasswordEl ? new bootstrap.Modal(modalPasswordEl) : null;
+        const inputPasswordActual = document.getElementById('modalInputPasswordActual');
+        const inputPasswordNueva = document.getElementById('modalInputPasswordNueva');
+        const inputPasswordConfirm = document.getElementById('modalInputPasswordConfirm');
+        const modalGuardarPassword = document.getElementById('modalGuardarPassword');
+        const modalMensajePassword = document.getElementById('modalMensajePassword');
+
+        if (btnAbrirPassword) {
+          btnAbrirPassword.addEventListener('click', () => {
+            if (!modalPasswordInstance) return;
+            // Clear inputs
+            inputPasswordActual.value = '';
+            inputPasswordNueva.value = '';
+            inputPasswordConfirm.value = '';
+            modalMensajePassword.style.display = 'none';
+            modalGuardarPassword.disabled = false;
+            modalPasswordInstance.show();
+            setTimeout(() => inputPasswordActual.focus(), 150);
+          });
+        }
+
+        // Mostrar mensaje cuando el usuario cancela el modal (botón Cancelar o cerrar)
+        const modalCancelarBtn = document.getElementById('modalCancelarPassword');
+        const modalCerrarBtn = document.getElementById('modalCerrarPassword');
+        // reason flag: null = no explicit action (e.g. backdrop), 'cancel' = cancelled by user button/close, 'success' = saved successfully
+        let passwordModalCloseReason = null;
+        function onPasswordModalCancelled() {
+          try { mostrarMensaje('Cambio de contraseña cancelado', 'error'); } catch (e) {}
+          passwordModalCloseReason = 'cancel';
+        }
+        if (modalCancelarBtn) {
+          modalCancelarBtn.addEventListener('click', () => {
+            onPasswordModalCancelled();
+          });
+        }
+        if (modalCerrarBtn) {
+          modalCerrarBtn.addEventListener('click', () => {
+            onPasswordModalCancelled();
+          });
+        }
+
+        if (modalPasswordEl) {
+          modalPasswordEl.addEventListener('hidden.bs.modal', () => {
+            // If modal was closed by backdrop (no explicit cancel or success), show cancel toast
+            if (passwordModalCloseReason === null) {
+              try { mostrarMensaje('Cambio de contraseña cancelado', 'error'); } catch (e) {}
+            }
+            // Reset reason for next open
+            passwordModalCloseReason = null;
+            inputPasswordActual.value = '';
+            inputPasswordNueva.value = '';
+            inputPasswordConfirm.value = '';
+            modalMensajePassword.style.display = 'none';
+            modalGuardarPassword.disabled = false;
+          });
+        }
+
+        modalGuardarPassword.addEventListener('click', async () => {
+          modalMensajePassword.style.display = 'none';
+          // Use native validation first (so browser shows tooltips like other modals)
+          if (!inputPasswordActual.reportValidity() || !inputPasswordNueva.reportValidity() || !inputPasswordConfirm.reportValidity()) {
+            return;
+          }
+
+          // Basic client-side validation
+          if (!inputPasswordActual.value || !inputPasswordNueva.value || !inputPasswordConfirm.value) {
+            modalMensajePassword.className = 'alert alert-danger small mt-2';
+            modalMensajePassword.textContent = 'Rellena todos los campos';
+            modalMensajePassword.style.display = 'block';
+            return;
+          }
+          if (inputPasswordNueva.value !== inputPasswordConfirm.value) {
+            modalMensajePassword.className = 'alert alert-danger small mt-2';
+            modalMensajePassword.textContent = 'La nueva contraseña y la confirmación no coinciden';
+            modalMensajePassword.style.display = 'block';
+            return;
+          }
+
+          // La nueva contraseña no puede ser igual a la actual
+          if (inputPasswordActual.value === inputPasswordNueva.value) {
+            modalMensajePassword.className = 'alert alert-danger small mt-2';
+            modalMensajePassword.textContent = 'La nueva contraseña no puede ser igual a la actual';
+            modalMensajePassword.style.display = 'block';
+            return;
+          }
+
+          modalGuardarPassword.disabled = true;
+          try {
+            const res = await fetch('/api/cambiar-password', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ currentPassword: inputPasswordActual.value, newPassword: inputPasswordNueva.value, confirmPassword: inputPasswordConfirm.value })
+            });
+            const j = await res.json();
+            if (!res.ok) {
+              modalMensajePassword.className = 'alert alert-danger small mt-2';
+              modalMensajePassword.textContent = j.mensaje || 'Error al cambiar la contraseña';
+              modalMensajePassword.style.display = 'block';
+              modalGuardarPassword.disabled = false;
+              return;
+            }
+
+            modalMensajePassword.className = 'alert alert-success small mt-2';
+            modalMensajePassword.textContent = j.mensaje || 'Contraseña cambiada correctamente';
+            modalMensajePassword.style.display = 'block';
+            try { mostrarMensaje(j.mensaje || 'Contraseña cambiada correctamente', 'success'); } catch (e) {}
+            passwordModalCloseReason = 'success';
+            setTimeout(() => {
+              if (modalPasswordInstance) modalPasswordInstance.hide();
+            }, 900);
+          } catch (err) {
+            modalMensajePassword.className = 'alert alert-danger small mt-2';
+            modalMensajePassword.textContent = 'Error de conexión al cambiar la contraseña';
+            modalMensajePassword.style.display = 'block';
+          } finally {
+            modalGuardarPassword.disabled = false;
+          }
+        });
++
+        // Allow submitting the password modal with Enter when focused on any input
+        [inputPasswordActual, inputPasswordNueva, inputPasswordConfirm].forEach((el) => {
+          if (!el) return;
+          el.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Enter') {
+              ev.preventDefault();
+              if (modalGuardarPassword) modalGuardarPassword.click();
+            }
+          });
         });
 
         // Allow confirming the name change with Enter while input is focused

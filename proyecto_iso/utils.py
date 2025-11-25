@@ -8,6 +8,27 @@ from typing import Optional, List, Dict, Any, Tuple, Union
 from constants import *
 import re
 
+# Cryptography for passwords
+try:
+    import bcrypt
+except Exception:
+    bcrypt = None
+
+
+def hash_password(password: str) -> str:
+    """Hash a password using bcrypt if available, otherwise return plaintext (fallback).
+
+    Returns the hashed password as a string.
+    """
+    if not password:
+        return ''
+    if bcrypt:
+        try:
+            return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        except Exception:
+            return password
+    return password
+
 
 def verificar_archivo_existe(ruta: str) -> bool:
     """
@@ -95,12 +116,30 @@ def validar_cuenta(email: str, password: str) -> bool:
     """
     try:
         cuentas = cargar_cuentas()
-        # Buscar una cuenta que coincida con email y password
-        return any(
-            cuenta['email'].lower() == email.lower() and 
-            cuenta['password'] == password 
-            for cuenta in cuentas
-        )
+        # Buscar la cuenta por email
+        for cuenta in cuentas:
+            if cuenta.get('email', '').lower() == email.lower():
+                stored = cuenta.get('password', '')
+                # If bcrypt is available and stored looks like a bcrypt hash, verify using bcrypt
+                if isinstance(stored, str) and stored.startswith('$2') and bcrypt:
+                    try:
+                        return bcrypt.checkpw(password.encode('utf-8'), stored.encode('utf-8'))
+                    except Exception:
+                        return False
+                else:
+                    # Fallback: plaintext comparison (legacy). If matches, migrate to hashed password when possible.
+                    if stored == password:
+                        # Attempt to migrate to hashed password for better security
+                        if bcrypt:
+                            try:
+                                hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                                # Update stored account with hashed password
+                                actualizar_cuenta(email, {'password': hashed})
+                            except Exception:
+                                pass
+                        return True
+                    return False
+        return False
     except Exception as e:
         print(f"{LOG_ERROR} Error al validar cuenta: {e}")
         return False 
@@ -157,13 +196,21 @@ def guardar_nueva_cuenta(cuenta_data: Dict[str, Any]) -> bool:
         # Verificar si el email ya existe
         if email_ya_existe(cuenta_data['email']):
             return False
-        
+
+        # If bcrypt available, hash the password before saving
+        pwd = cuenta_data.get('password')
+        if pwd and bcrypt and not (isinstance(pwd, str) and pwd.startswith('$2')):
+            try:
+                cuenta_data['password'] = bcrypt.hashpw(pwd.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            except Exception:
+                pass
+
         # Cargar cuentas existentes
         cuentas = cargar_cuentas()
-        
+
         # Añadir la nueva cuenta
         cuentas.append(cuenta_data)
-        
+
         # Guardar todas las cuentas
         return guardar_cuentas(cuentas)
         
