@@ -63,6 +63,7 @@
   {
     "nombreUsuario": "Javier",
     "email": "franciscojavier.martinezfernan@usp.ceu.es",
-    "password": "Javier1234"
+    "password": "Javier1234",
+    "fotoPerfil": "/static/uploads/perfiles/20251125_153534_franciscojavier_martinezfernan_90826a3f.jpg"
   }
 ]

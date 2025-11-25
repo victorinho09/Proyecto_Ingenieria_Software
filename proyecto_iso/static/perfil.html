@@ -408,6 +408,13 @@
         } catch (err) {
           console.error('Error cargando perfil:', err);
         }
+
+        // Update navbar if available so changes reflect without full reload
+        try {
+          if (window.actualizarNavbarUsuario) window.actualizarNavbarUsuario();
+        } catch (e) {
+          console.error('Error actualizando navbar', e);
+        }
       }
 
       async function subirFoto(archivo) {
@@ -436,6 +443,12 @@
             mensaje.className = 'alert alert-success small mt-2';
             mensaje.textContent = 'Foto subida correctamente';
             mensaje.style.display = 'block';
+            // Update navbar thumbnail if available
+            try {
+              if (window.actualizarNavbarUsuario) window.actualizarNavbarUsuario();
+            } catch (e) {
+              console.error('Error actualizando navbar tras subir foto', e);
+            }
           }
         } catch (err) {
           mensaje.className = 'alert alert-danger small mt-2';
@@ -914,6 +927,12 @@
             modalMensaje.className = 'alert alert-success small mt-2';
             modalMensaje.textContent = 'Nombre actualizado correctamente';
             modalMensaje.style.display = 'block';
+            // Refresh navbar to show new username immediately
+            try {
+              if (window.actualizarNavbarUsuario) window.actualizarNavbarUsuario();
+            } catch (e) {
+              console.error('Error actualizando navbar tras cambiar nombre', e);
+            }
             setTimeout(() => {
               modalInstance.hide();
             }, 700);
