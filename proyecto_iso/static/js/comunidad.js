@@ -576,7 +576,7 @@ function mostrarComentarios(comentarios) {
           <div class="d-flex justify-content-between align-items-start mb-2">
             <h6 class="mb-0 text-primary">
               <i class="bi bi-person-circle me-1"></i>
-              ${comentario.nombreUsuario || 'Usuario'}
+              ${comentario.usuario || 'Usuario'}
             </h6>
             <small class="text-muted">
               <i class="bi bi-clock me-1"></i>

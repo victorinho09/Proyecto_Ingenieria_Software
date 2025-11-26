@@ -1435,19 +1435,6 @@ async def comentar_receta(comentario_data: ComentarioRequest, request: Request) 
                 HTTP_BAD_REQUEST
             )
         
-        # Obtener nombre del usuario
-        cuentas = cargar_cuentas()
-        cuenta_usuario = next((c for c in cuentas if c.get("email") == email_usuario), None)
-        
-        if not cuenta_usuario:
-            return crear_respuesta_error(
-                "No se encontró la cuenta del usuario",
-                "CUENTA_NO_ENCONTRADA",
-                HTTP_BAD_REQUEST
-            )
-        
-        nombre_usuario = cuenta_usuario.get("nombreUsuario", "Usuario")
-        
         # Validar que el comentario no esté vacío
         if not comentario_data.texto or comentario_data.texto.strip() == "":
             return crear_respuesta_error(
@@ -1479,7 +1466,6 @@ async def comentar_receta(comentario_data: ComentarioRequest, request: Request) 
                 from datetime import datetime
                 nuevo_comentario = {
                     "usuario": email_usuario,
-                    "nombreUsuario": nombre_usuario,
                     "texto": comentario_data.texto.strip(),
                     "fecha": datetime.now().isoformat()
                 }
@@ -1493,7 +1479,7 @@ async def comentar_receta(comentario_data: ComentarioRequest, request: Request) 
                 
                 # Guardar cambios
                 if guardar_recetas(recetas):
-                    print(f"✅ Comentario añadido por {nombre_usuario} en '{comentario_data.nombreReceta}'")
+                    print(f"✅ Comentario añadido por {email_usuario} en '{comentario_data.nombreReceta}'")
                     return crear_respuesta_exito(
                         "Comentario publicado correctamente",
                         {
