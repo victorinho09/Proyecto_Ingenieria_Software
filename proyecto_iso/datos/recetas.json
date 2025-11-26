@@ -207,7 +207,9 @@
     "turnoComida": "",
     "dificultad": "",
     "usuario": "juanixer@gmail.com",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ],
     "publicada": true,
     "comentarios": [
       {
