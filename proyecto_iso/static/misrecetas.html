@@ -900,6 +900,8 @@
         .querySelectorAll(".nav-item.dropdown")
         .forEach(function (dropdown) {
           const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+          if (!toggle) return; // nothing to do if toggle is absent
+
           const dd = new bootstrap.Dropdown(toggle, {
             popperConfig: { strategy: "fixed" },
           });
@@ -986,61 +988,56 @@
 
       // Función para mostrar el modal de confirmación de publicar
       function mostrarModalConfirmarPublicar(receta, botonPublicar) {
-        // Actualizar el nombre de la receta en el título del modal
-        document.getElementById('nombreRecetaConfirmarTitulo').textContent = receta.nombreReceta;
-        
+        // Actualizar el nombre de la receta en el título del modal (si existe)
+        const tituloEl = document.getElementById('nombreRecetaConfirmarTitulo');
+        if (tituloEl) tituloEl.textContent = receta.nombreReceta || '';
+
         const modalElement = document.getElementById('confirmarPublicarModal');
-        
-        // Configurar z-index ANTES de mostrar el modal para evitar transiciones raras
+        if (!modalElement) {
+          console.warn('confirmarPublicarModal no encontrado - abortando');
+          return;
+        }
+
+        // Ajustar z-index antes de mostrar
         modalElement.style.zIndex = '1060';
-        
-        // Crear y mostrar backdrop personalizado primero
-        const customBackdrop = document.createElement('div');
-        customBackdrop.className = 'modal-backdrop fade';
-        customBackdrop.style.zIndex = '1059';
-        customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
-        customBackdrop.id = 'custom-publicar-backdrop';
-        document.body.appendChild(customBackdrop);
-        
-        // Animar la aparición del backdrop
-        setTimeout(() => {
-          customBackdrop.classList.add('show');
-        }, 10);
-        
-        // Crear el modal y configurarlo para que no cree su propio backdrop
+
+        // Crear o reutilizar backdrop personalizado
+        const customBackdropId = 'custom-publicar-backdrop';
+        let customBackdrop = document.getElementById(customBackdropId);
+        if (!customBackdrop) {
+          customBackdrop = document.createElement('div');
+          customBackdrop.className = 'modal-backdrop fade';
+          customBackdrop.style.zIndex = '1059';
+          customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+          customBackdrop.id = customBackdropId;
+          document.body.appendChild(customBackdrop);
+          setTimeout(() => customBackdrop.classList.add('show'), 10);
+        }
+
+        // Crear el modal (siempre con guardas, modalElement ya existe)
         const modal = new bootstrap.Modal(modalElement, {
-          backdrop: false,  // No crear backdrop automático
-          keyboard: false
+          backdrop: false,
+          keyboard: false,
         });
-        
-        // Mostrar el modal después de que aparezca el backdrop
-        setTimeout(() => {
-          modal.show();
-        }, 150);
-        
-        // Configurar el botón de confirmación
+
+        setTimeout(() => modal.show(), 150);
+
+        // Botón confirmar (si existe)
         const btnConfirmar = document.getElementById('confirmarPublicarBtn');
-        
-        // Limpiar event listeners previos
-        const nuevoBtn = btnConfirmar.cloneNode(true);
-        btnConfirmar.parentNode.replaceChild(nuevoBtn, btnConfirmar);
-        
-        // Agregar nuevo event listener para confirmar
-        nuevoBtn.onclick = function() {
-          // Cerrar el modal de confirmación completamente
-          modal.hide();
-          
-          // Proceder con la publicación
-          const recetaId = receta.id || receta._id || receta.nombreReceta;
-          publicarReceta(recetaId, botonPublicar);
-        };
-        
-        // Limpiar el backdrop personalizado cuando se cierre el modal
+        if (btnConfirmar) {
+          const nuevoBtn = btnConfirmar.cloneNode(true);
+          btnConfirmar.parentNode.replaceChild(nuevoBtn, btnConfirmar);
+          nuevoBtn.onclick = function() {
+            modal.hide();
+            const recetaId = receta.id || receta._id || receta.nombreReceta;
+            publicarReceta(recetaId, botonPublicar);
+          };
+        }
+
+        // Limpiar el backdrop personalizado al cerrar
         modalElement.addEventListener('hidden.bs.modal', function cleanupBackdrop() {
-          const customBd = document.getElementById('custom-publicar-backdrop');
-          if (customBd) {
-            customBd.remove();
-          }
+          const customBd = document.getElementById(customBackdropId);
+          if (customBd) customBd.remove();
           modalElement.removeEventListener('hidden.bs.modal', cleanupBackdrop);
         });
       }
@@ -1100,11 +1097,12 @@
 
       // Función para abrir el modal de detalle de receta
       async function abrirModalDetalleReceta(recetaId) {
-        const modal = new bootstrap.Modal(document.getElementById('detalleRecetaModal'));
+        const detalleModalEl = document.getElementById('detalleRecetaModal');
+        const modal = detalleModalEl ? new bootstrap.Modal(detalleModalEl) : null;
         
         // Mostrar modal con loading
-        mostrarLoadingModal();
-        modal.show();
+        try { mostrarLoadingModal(); } catch (e) {}
+        if (modal) modal.show();
         
         try {
           const response = await fetch(`/api/receta/${recetaId}`, {
@@ -1275,10 +1273,9 @@
         
         document.getElementById('editarRecetaBtn').onclick = function() {
           // Cerrar el modal de detalle
-          const modalDetalle = bootstrap.Modal.getInstance(document.getElementById('detalleRecetaModal'));
-          if (modalDetalle) {
-            modalDetalle.hide();
-          }
+          const detalleModalEl = document.getElementById('detalleRecetaModal');
+          const modalDetalle = detalleModalEl ? bootstrap.Modal.getInstance(detalleModalEl) : null;
+          if (modalDetalle) modalDetalle.hide();
           
           // Esperar a que se cierre el modal de detalle antes de abrir el de edición
           setTimeout(() => {
@@ -1296,41 +1293,41 @@
             
             const modalElement = document.getElementById('confirmarEliminarModal');
             const confirmarBtn = document.getElementById('confirmarEliminarBtn');
-            confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
-            
+            if (confirmarBtn) confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta || '');
+
+            if (!modalElement) {
+              console.warn('confirmarEliminarModal no encontrado - abortando');
+              return;
+            }
+
             // Configurar z-index ANTES de mostrar el modal para evitar transiciones raras
             modalElement.style.zIndex = '1060';
-            
-            // Crear y mostrar backdrop personalizado primero
-            const customBackdrop = document.createElement('div');
-            customBackdrop.className = 'modal-backdrop fade';
-            customBackdrop.style.zIndex = '1059';
-            customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
-            customBackdrop.id = 'custom-eliminar-backdrop';
-            document.body.appendChild(customBackdrop);
-            
-            // Animar la aparición del backdrop
-            setTimeout(() => {
-              customBackdrop.classList.add('show');
-            }, 10);
-            
-            // Crear el modal y configurarlo para que no cree su propio backdrop
+
+            // Crear o reutilizar backdrop personalizado
+            const customBackdropId = 'custom-eliminar-backdrop';
+            let customBackdrop = document.getElementById(customBackdropId);
+            if (!customBackdrop) {
+              customBackdrop = document.createElement('div');
+              customBackdrop.className = 'modal-backdrop fade';
+              customBackdrop.style.zIndex = '1059';
+              customBackdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+              customBackdrop.id = customBackdropId;
+              document.body.appendChild(customBackdrop);
+              setTimeout(() => customBackdrop.classList.add('show'), 10);
+            }
+
+            // Crear el modal con guardas
             const confirmarModal = new bootstrap.Modal(modalElement, {
-              backdrop: false,  // No crear backdrop automático
-              keyboard: false
+              backdrop: false,
+              keyboard: false,
             });
-            
-            // Mostrar el modal después de que aparezca el backdrop
-            setTimeout(() => {
-              confirmarModal.show();
-            }, 150);
-            
+
+            setTimeout(() => confirmarModal.show(), 150);
+
             // Limpiar el backdrop personalizado cuando se cierre el modal
             modalElement.addEventListener('hidden.bs.modal', function cleanupBackdrop() {
-              const customBd = document.getElementById('custom-eliminar-backdrop');
-              if (customBd) {
-                customBd.remove();
-              }
+              const customBd = document.getElementById(customBackdropId);
+              if (customBd) customBd.remove();
               modalElement.removeEventListener('hidden.bs.modal', cleanupBackdrop);
             });
           };
@@ -1356,7 +1353,27 @@
           const totalRecetas = document.getElementById("totalRecetas");
 
           if (resultado.exito && resultado.recetas) {
-            const recetas = resultado.recetas;
+            let recetas = resultado.recetas;
+            // Aplicar filtro desde querystring (ej. ?filter=hechas)
+            try {
+              const params = new URLSearchParams(window.location.search || '');
+              const filtro = (params.get('filter') || '').toLowerCase();
+              if (filtro === 'hechas') {
+                // Filtrar recetas marcadas como hechas por el usuario (buscamos usuariosHecho o campo 'hecho')
+                const usuarioActual = resultado.usuario || '';
+                recetas = recetas.filter(r => {
+                  try {
+                    if (Array.isArray(r.usuariosHecho) && usuarioActual) {
+                      return r.usuariosHecho.map(u => (u||'').toLowerCase()).includes(usuarioActual.toLowerCase());
+                    }
+                    if (r.hecho === true) return true;
+                    // fallback: si existe una marca 'hechoPor' o similar
+                    if (r.hechoPor && typeof r.hechoPor === 'string') return r.hechoPor.toLowerCase() === usuarioActual.toLowerCase();
+                    return false;
+                  } catch (e) { return false; }
+                });
+              }
+            } catch (e) { /* ignore URL parsing errors */ }
 
             if (recetas.length === 0) {
               contenedor.innerHTML = `
@@ -1371,9 +1388,7 @@
               totalRecetas.textContent = "Sin recetas";
             } else {
               contenedor.innerHTML = recetas.map(crearCardReceta).join("");
-              totalRecetas.textContent = `${recetas.length} receta${
-                recetas.length !== 1 ? "s" : ""
-              }`;
+              totalRecetas.textContent = `${recetas.length} receta${recetas.length !== 1 ? 's' : ''}`;
               
               // Agregar event listeners a las tarjetas de recetas
               agregarEventListenersRecetas();
@@ -1626,7 +1641,7 @@
         });
         
         // Mostrar el modal
-        const modal = new bootstrap.Modal(modalElement);
+        const modal = modalElement ? new bootstrap.Modal(modalElement) : null;
         modal.show();
         
         // Cuando se cierre el modal, restaurar el estado original
@@ -1753,9 +1768,17 @@
               resultado = { success: resp.ok, data: resultado };
             }
 
-            // Cerrar modales
-            try { bootstrap.Modal.getInstance(document.getElementById('detalleRecetaModal')).hide(); } catch (e) {}
-            try { bootstrap.Modal.getInstance(document.getElementById('confirmarEliminarModal')).hide(); } catch (e) {}
+            // Cerrar modales (verificar elementos antes de pedir la instancia)
+            try {
+              const detEl = document.getElementById('detalleRecetaModal');
+              const instDet = detEl ? bootstrap.Modal.getInstance(detEl) : null;
+              if (instDet) instDet.hide();
+            } catch (e) {}
+            try {
+              const confEl = document.getElementById('confirmarEliminarModal');
+              const instConf = confEl ? bootstrap.Modal.getInstance(confEl) : null;
+              if (instConf) instConf.hide();
+            } catch (e) {}
 
             if (resultado && resultado.success) {
               if (typeof window.mostrarMensaje === 'function') {

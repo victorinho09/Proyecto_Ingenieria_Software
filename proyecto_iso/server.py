@@ -587,6 +587,32 @@ async def obtener_perfil_api(request: Request) -> JSONResponse:
         recetas_usuario_ids = obtener_recetas_usuario_con_ids(email)
         total_hechas = len(recetas_usuario_ids)
 
+        # Calcular la valoración agregada del usuario (media ponderada por número de valoraciones)
+        try:
+            suma_puntos = 0
+            total_valoraciones = 0
+            for r in recetas_propias:
+                # Solo considerar las recetas publicadas
+                if not r.get('publicada', False):
+                    continue
+                vals = r.get('valoraciones', []) or []
+                for v in vals:
+                    try:
+                        suma_puntos += float(v.get('puntuacion', 0))
+                        total_valoraciones += 1
+                    except Exception:
+                        continue
+
+            valoracion_perfil = round((suma_puntos / total_valoraciones), 1) if total_valoraciones > 0 else 0.0
+            # Persistir valoracion y el contador de valoraciones en la cuenta (si se puede)
+            try:
+                actualizar_cuenta(email, {"valoracion": valoracion_perfil, "valoracion_count": total_valoraciones})
+            except Exception as e:
+                print(f"{LOG_WARNING} No se pudo actualizar la cuenta con la valoración: {e}")
+        except Exception as e:
+            print(f"{LOG_ERROR} Error calculando valoración del perfil: {e}")
+            valoracion_perfil = 0.0
+
         data = {
             "email": email,
             "nombreUsuario": nombre_usuario,
@@ -596,6 +622,25 @@ async def obtener_perfil_api(request: Request) -> JSONResponse:
             "totalGuardadas": total_guardadas,
             "totalHechas": total_hechas
         }
+
+        # Añadir valoracion almacenada en la cuenta (si existe) o la calculada
+        cuenta = obtener_cuenta_por_email(email)
+        if cuenta and 'valoracion' in cuenta:
+            data['valoracion'] = cuenta.get('valoracion', valoracion_perfil)
+        else:
+            data['valoracion'] = valoracion_perfil
+
+        # Añadir también el contador de valoraciones si está disponible
+        if cuenta and 'valoracion_count' in cuenta:
+            try:
+                data['valoracion_count'] = int(cuenta.get('valoracion_count', 0))
+            except Exception:
+                data['valoracion_count'] = 0
+        else:
+            try:
+                data['valoracion_count'] = int(total_valoraciones)
+            except Exception:
+                data['valoracion_count'] = 0
 
         return crear_respuesta_exito("Perfil obtenido correctamente", {"perfil": data})
 
@@ -1716,28 +1761,53 @@ async def obtener_valoracion_receta(receta_id: str, request: Request) -> JSONRes
         
         print(f"📊 [OBTENER VALORACIONES] Obteniendo valoraciones para receta ID '{receta_id}'")
         
-        # Extraer el índice del ID
-        try:
-            index = int(receta_id.replace("receta-", ""))
-        except ValueError:
-            return crear_respuesta_error(
-                "ID de receta inválido",
-                "ID_INVALIDO",
-                HTTP_BAD_REQUEST
-            )
-        
         # Cargar recetas
         recetas = cargar_recetas()
-        
-        # Verificar que el índice sea válido
-        if index < 0 or index >= len(recetas):
-            return crear_respuesta_error(
-                "Receta no encontrada",
-                "RECETA_NO_ENCONTRADA",
-                HTTP_NOT_FOUND
-            )
-        
-        receta = recetas[index]
+
+        receta = None
+
+        # Soportar dos formatos de ID:
+        # - "receta-{idx}" : índice directo en el array de recetas
+        # - cualquier otra cadena: se intenta interpretar como nombre codificado (base64 URL encoded)
+        if receta_id.startswith("receta-"):
+            try:
+                index = int(receta_id.replace("receta-", ""))
+                if 0 <= index < len(recetas):
+                    receta = recetas[index]
+                else:
+                    return crear_respuesta_error(
+                        "Receta no encontrada",
+                        "RECETA_NO_ENCONTRADA",
+                        HTTP_NOT_FOUND
+                    )
+            except ValueError:
+                return crear_respuesta_error(
+                    "ID de receta inválido",
+                    "ID_INVALIDO",
+                    HTTP_BAD_REQUEST
+                )
+        else:
+            # Intentar decodificar como base64 URL-encoded nombre de receta
+            try:
+                decoded = base64.b64decode(urllib.parse.unquote(receta_id)).decode('utf-8')
+                # Buscar receta por nombre (case insensitive)
+                for r in recetas:
+                    if r.get('nombreReceta', '').strip().lower() == decoded.strip().lower():
+                        receta = r
+                        break
+                if receta is None:
+                    return crear_respuesta_error(
+                        "Receta no encontrada por nombre codificado",
+                        "RECETA_NO_ENCONTRADA",
+                        HTTP_NOT_FOUND
+                    )
+            except Exception:
+                return crear_respuesta_error(
+                    "ID de receta inválido",
+                    "ID_INVALIDO",
+                    HTTP_BAD_REQUEST
+                )
+
         valoraciones = receta.get("valoraciones", [])
         
         # Calcular valoración media

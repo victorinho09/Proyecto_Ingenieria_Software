@@ -24,15 +24,13 @@
     "duracion": 15,
     "dificultad": "Facil",
     "fotoReceta": "",
-    "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es"
-    ],
+    "usuariosGuardado": [],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
     "valoraciones": [
       {
         "usuario": "alfredo.martinezescoval@usp.ceu.es",
-        "puntuacion": 1
+        "puntuacion": 4
       }
     ]
   },
@@ -104,6 +102,17 @@
         "nombreUsuario": "victor",
         "texto": "l",
         "fecha": "2025-11-21T11:49:15.622382"
+      },
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "texto": "muy buena la pizza",
+        "fecha": "2025-11-26T19:49:09.232483"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 1
       }
     ]
   },
@@ -120,7 +129,13 @@
     "dificultad": "Dificil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
     "usuariosGuardado": [],
-    "publicada": true
+    "publicada": true,
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 3
+      }
+    ]
   },
   {
     "nombreReceta": "ensalada cesar",
@@ -137,7 +152,13 @@
     "usuariosGuardado": [
       "pedro.varonaparra@usp.ceu.es"
     ],
-    "publicada": true
+    "publicada": true,
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 2
+      }
+    ]
   },
   {
     "nombreReceta": "prueba2",
@@ -283,13 +304,19 @@
     "duracion": 3,
     "dificultad": "",
     "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
     "valoraciones": [
       {
         "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
         "puntuacion": 3
+      },
+      {
+        "usuario": "alfredo.martinezescoval@usp.ceu.es",
+        "puntuacion": 2
       }
     ]
   },

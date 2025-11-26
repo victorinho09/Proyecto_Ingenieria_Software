@@ -10,6 +10,18 @@
  * @param {number} duracion - Duración en milisegundos (por defecto 5000)
  */
 export function mostrarMensaje(mensaje, tipo = "info", duracion = 5000) {
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const suppressed = window.sessionStorage.getItem('suppressNextFlash');
+      if (suppressed === '1') {
+        // consume the flag and do not show the transient message
+        window.sessionStorage.removeItem('suppressNextFlash');
+        return;
+      }
+    }
+  } catch (e) {
+    // ignore storage errors and continue showing the message
+  }
   // Eliminar mensajes existentes
   const mensajesExistentes = document.querySelectorAll(".mensaje-flotante");
   mensajesExistentes.forEach((msg) => msg.remove());

@@ -587,11 +587,12 @@
        * @param {string} recetaId - ID de la receta a mostrar
        */
       async function abrirModalDetalleReceta(recetaId) {
-        const modal = new bootstrap.Modal(document.getElementById('detalleRecetaModal'));
+        const detalleModalEl = document.getElementById('detalleRecetaModal');
+        const modal = detalleModalEl ? new bootstrap.Modal(detalleModalEl) : null;
         
         // Mostrar modal con loading
-        mostrarLoadingModal();
-        modal.show();
+        try { mostrarLoadingModal(); } catch (e) {}
+        if (modal) modal.show();
         
         try {
           const resultado = await obtenerDetalleReceta(recetaId);
@@ -687,17 +688,18 @@
         if (!btnEliminar) return;
 
         // Mostrar el botón solo si el usuario autenticado es el autor de la receta
-        if (emailUsuario && receta.usuario && emailUsuario === receta.usuario) {
+          if (emailUsuario && receta.usuario && emailUsuario === receta.usuario) {
           btnEliminar.style.display = 'inline-block';
           btnEliminar.disabled = false;
 
           // Al pulsar el botón, abrir modal de confirmación
           btnEliminar.onclick = function() {
-            const confirmarModal = new bootstrap.Modal(document.getElementById('confirmarEliminarModal'));
+            const confirmarEl = document.getElementById('confirmarEliminarModal');
+            const confirmarModal = confirmarEl ? new bootstrap.Modal(confirmarEl) : null;
             // Guardar el nombre de la receta a eliminar en un atributo data
             const confirmarBtn = document.getElementById('confirmarEliminarBtn');
-            confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
-            confirmarModal.show();
+            if (confirmarBtn) confirmarBtn.setAttribute('data-nombre-receta', receta.nombreReceta);
+            if (confirmarModal) confirmarModal.show();
           };
         } else {
           btnEliminar.style.display = 'none';
@@ -718,9 +720,9 @@
 
               // Cerrar modal de detalle y confirmación
               const detalleModalEl = document.getElementById('detalleRecetaModal');
-              try { bootstrap.Modal.getInstance(detalleModalEl).hide(); } catch (e) {}
-              const confirmarModalEl = document.getElementById('confirmarEliminarModal');
-              try { bootstrap.Modal.getInstance(confirmarModalEl).hide(); } catch (e) {}
+                try { if (detalleModalEl) { const inst = bootstrap.Modal.getInstance(detalleModalEl); if (inst) inst.hide(); } } catch (e) {}
+                const confirmarModalEl = document.getElementById('confirmarEliminarModal');
+                try { if (confirmarModalEl) { const inst2 = bootstrap.Modal.getInstance(confirmarModalEl); if (inst2) inst2.hide(); } } catch (e) {}
 
               if (resultado && resultado.success) {
                 mostrarMensaje(`Receta "${nombreReceta}" eliminada correctamente`, 'success');
@@ -781,8 +783,8 @@
           const resultado = await response.json();
 
           if (resultado.exito) {
-            // Cerrar el modal
-            bootstrap.Modal.getInstance(document.getElementById('detalleRecetaModal')).hide();
+            // Cerrar el modal (guardado)
+            try { const detEl = document.getElementById('detalleRecetaModal'); if (detEl) { const inst = bootstrap.Modal.getInstance(detEl); if (inst) inst.hide(); } } catch (e) {}
             
             // Mostrar mensaje de éxito
             mostrarMensaje(`Receta "${nombreReceta}" desguardada correctamente`, "success");

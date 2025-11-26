@@ -19,11 +19,12 @@ import { mostrarMensaje } from './components/message-handler.js';
  * @param {string} recetaId - ID de la receta a mostrar
  */
 async function abrirModalDetalleReceta(recetaId) {
-  const modal = new bootstrap.Modal(document.getElementById('detalleRecetaModal'));
-  
+  const detalleModalEl = document.getElementById('detalleRecetaModal');
+  const modal = detalleModalEl ? new bootstrap.Modal(detalleModalEl) : null;
+
   // Mostrar modal con loading
-  mostrarLoadingModal();
-  modal.show();
+  try { mostrarLoadingModal(); } catch (e) {}
+  if (modal) modal.show();
   
   try {
     const resultado = await obtenerDetalleReceta(recetaId);
