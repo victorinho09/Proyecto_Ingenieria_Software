@@ -805,6 +805,89 @@
         await cargarYMostrarRecetasGuardadas();
       });
 
+      /**
+       * Configura los botones de desguardar en las cards de recetas guardadas
+       */
+      function configurarBotonesDesguardarCards() {
+        const botones = document.querySelectorAll('.btn-guardar-card');
+        
+        botones.forEach((boton) => {
+          const nombreReceta = boton.getAttribute('data-receta-nombre');
+          
+          // En recetas guardadas, todas están guardadas (mostrar icono lleno)
+          actualizarEstadoBotonCard(boton, true);
+          
+          // Añadir evento click para desguardar
+          boton.addEventListener('click', async (e) => {
+            e.stopPropagation(); // Evitar que se abra el modal
+            await desguardarRecetaCard(nombreReceta, boton);
+          });
+        });
+      }
+
+      /**
+       * Desguarda una receta desde el botón en la card
+       * @param {string} nombreReceta - Nombre de la receta a desguardar
+       * @param {HTMLElement} boton - Elemento del botón
+       */
+      async function desguardarRecetaCard(nombreReceta, boton) {
+        try {
+          // Deshabilitar el botón mientras se procesa
+          boton.disabled = true;
+          
+          const response = await fetch("/desguardar-receta", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({ nombreReceta: nombreReceta }),
+          });
+
+          const resultado = await response.json();
+
+          if (resultado.exito) {
+            console.log(`🗑️ Receta "${nombreReceta}" desguardada desde la card`);
+            
+            // Mostrar mensaje de éxito
+            mostrarMensaje(`Receta "${nombreReceta}" desguardada correctamente`, "success");
+            
+            // Recargar las recetas guardadas (eliminará la card de la vista)
+            await cargarYMostrarRecetasGuardadas();
+          } else {
+            mostrarMensaje(resultado.mensaje || "No se pudo desguardar la receta", "error");
+            boton.disabled = false;
+          }
+        } catch (error) {
+          console.error("Error al desguardar receta:", error);
+          mostrarMensaje("Error al desguardar la receta", "error");
+          boton.disabled = false;
+        }
+      }
+
+      /**
+       * Actualiza el aspecto del botón en la card según el estado de guardado
+       * @param {HTMLElement} boton - Elemento del botón
+       * @param {boolean} estaGuardada - true si la receta está guardada
+       */
+      function actualizarEstadoBotonCard(boton, estaGuardada) {
+        if (estaGuardada) {
+          // Estado: Ya guardada (bookmark lleno, amarillo/dorado)
+          boton.innerHTML = '<i class="bi bi-bookmark-fill fs-5 text-warning"></i>';
+          boton.className = 'btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center btn-guardar-card shadow-sm';
+          boton.setAttribute('data-guardada', 'true');
+          boton.title = 'Quitar de guardados';
+        } else {
+          // Estado: No guardada (bookmark vacío)
+          boton.innerHTML = '<i class="bi bi-bookmark fs-5"></i>';
+          boton.className = 'btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center btn-guardar-card shadow-sm';
+          boton.setAttribute('data-guardada', 'false');
+          boton.title = 'Guardar receta';
+        }
+        boton.disabled = false;
+      }
+
       async function cargarYMostrarRecetasGuardadas() {
         const mensajeEstado = document.getElementById("mensajeEstado");
         const contenedorRecetas = document.getElementById("contenedorRecetas");
@@ -836,6 +919,9 @@
               
               // Agregar event listeners a las tarjetas de recetas
               agregarEventListenersRecetas(abrirModalDetalleReceta);
+              
+              // Configurar botones de desguardar en las cards
+              configurarBotonesDesguardarCards();
             }
           } else {
             throw new Error(
