@@ -28,11 +28,12 @@ export function crearCardReceta(receta, mostrarAutor = false) {
   return `
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm border-0 h-100 receta-card" 
-           data-receta-id="${receta.id || receta._id || ''}" 
+           data-receta-id="${receta.id || receta._id || ''}"
+           data-receta-nombre="${receta.nombreReceta || ''}"
            style="cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;"
            onmouseenter="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.15)'"
            onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
-        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+        <div class="card-img-top bg-light d-flex align-items-center justify-content-center position-relative" style="height: 200px;">
           ${
             receta.fotoReceta && receta.fotoReceta.trim() !== ""
               ? `<img src="${receta.fotoReceta}" class="img-fluid rounded-top w-100 h-100" style="object-fit: cover;" alt="${receta.nombreReceta}" loading="lazy">`
@@ -41,6 +42,14 @@ export function crearCardReceta(receta, mostrarAutor = false) {
                    <small class="mt-2">Sin imagen</small>
                  </div>`
           }
+          <!-- Botón de guardar en la card -->
+          <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center btn-guardar-card shadow-sm" 
+                  data-receta-nombre="${receta.nombreReceta || ''}"
+                  style="width: 40px; height: 40px; z-index: 10; border: none; transition: all 0.2s ease;"
+                  onclick="event.stopPropagation();"
+                  title="Guardar receta">
+            <i class="bi bi-bookmark fs-5"></i>
+          </button>
         </div>
         <div class="card-body d-flex flex-column">
           <h6 class="card-title fw-bold mb-1">${receta.nombreReceta}</h6>

@@ -260,6 +260,165 @@ function actualizarEstadoBotonGuardar(boton, estaGuardada) {
 }
 
 /**
+ * Configura los botones de guardar en las cards de recetas
+ */
+async function configurarBotonesGuardarCards() {
+  const botones = document.querySelectorAll('.btn-guardar-card');
+  
+  // Obtener lista de recetas guardadas del usuario
+  const recetasGuardadas = await obtenerRecetasGuardadas();
+  
+  botones.forEach(async (boton) => {
+    const nombreReceta = boton.getAttribute('data-receta-nombre');
+    
+    // Verificar si esta receta ya está guardada
+    const estaGuardada = recetasGuardadas.includes(nombreReceta);
+    
+    // Actualizar estado visual del botón
+    actualizarEstadoBotonCard(boton, estaGuardada);
+    
+    // Añadir evento click
+    boton.addEventListener('click', async (e) => {
+      e.stopPropagation(); // Evitar que se abra el modal
+      
+      const estadoActual = boton.getAttribute('data-guardada') === 'true';
+      
+      if (estadoActual) {
+        // Desguardar
+        await desguardarRecetaCard(nombreReceta, boton);
+      } else {
+        // Guardar
+        await guardarRecetaCard(nombreReceta, boton);
+      }
+    });
+  });
+}
+
+/**
+ * Obtiene la lista de nombres de recetas guardadas por el usuario
+ * @returns {Promise<Array<string>>} Array con los nombres de las recetas guardadas
+ */
+async function obtenerRecetasGuardadas() {
+  try {
+    const response = await fetch("/obtener-recetas-guardadas", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Cache-Control": "no-cache",
+      },
+    });
+
+    const resultado = await response.json();
+    
+    if (resultado.exito && resultado.recetas) {
+      return resultado.recetas.map(r => r.nombreReceta);
+    }
+    
+    return [];
+  } catch (error) {
+    console.error("Error al obtener recetas guardadas:", error);
+    return [];
+  }
+}
+
+/**
+ * Guarda una receta desde el botón en la card
+ * @param {string} nombreReceta - Nombre de la receta a guardar
+ * @param {HTMLElement} boton - Elemento del botón
+ */
+async function guardarRecetaCard(nombreReceta, boton) {
+  try {
+    // Deshabilitar el botón mientras se procesa
+    boton.disabled = true;
+    
+    const response = await fetch("/guardar-receta", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ nombreReceta: nombreReceta }),
+    });
+
+    const resultado = await response.json();
+
+    if (resultado.exito) {
+      // Actualizar el estado del botón a "guardada"
+      actualizarEstadoBotonCard(boton, true);
+      console.log(`✅ Receta "${nombreReceta}" guardada desde la card`);
+    } else {
+      mostrarMensaje(resultado.mensaje || "No se pudo guardar la receta", "error");
+      boton.disabled = false;
+    }
+  } catch (error) {
+    console.error("Error al guardar receta:", error);
+    mostrarMensaje("Error al guardar la receta", "error");
+    boton.disabled = false;
+  }
+}
+
+/**
+ * Desguarda una receta desde el botón en la card
+ * @param {string} nombreReceta - Nombre de la receta a desguardar
+ * @param {HTMLElement} boton - Elemento del botón
+ */
+async function desguardarRecetaCard(nombreReceta, boton) {
+  try {
+    // Deshabilitar el botón mientras se procesa
+    boton.disabled = true;
+    
+    const response = await fetch("/desguardar-receta", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ nombreReceta: nombreReceta }),
+    });
+
+    const resultado = await response.json();
+
+    if (resultado.exito) {
+      // Actualizar el estado del botón a "no guardada"
+      actualizarEstadoBotonCard(boton, false);
+      console.log(`🗑️ Receta "${nombreReceta}" desguardada desde la card`);
+    } else {
+      mostrarMensaje(resultado.mensaje || "No se pudo desguardar la receta", "error");
+      boton.disabled = false;
+    }
+  } catch (error) {
+    console.error("Error al desguardar receta:", error);
+    mostrarMensaje("Error al desguardar la receta", "error");
+    boton.disabled = false;
+  }
+}
+
+/**
+ * Actualiza el aspecto del botón en la card según el estado de guardado
+ * @param {HTMLElement} boton - Elemento del botón
+ * @param {boolean} estaGuardada - true si la receta está guardada
+ */
+function actualizarEstadoBotonCard(boton, estaGuardada) {
+  if (estaGuardada) {
+    // Estado: Ya guardada (bookmark lleno, amarillo/dorado)
+    boton.innerHTML = '<i class="bi bi-bookmark-fill fs-5 text-warning"></i>';
+    boton.className = 'btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center btn-guardar-card shadow-sm';
+    boton.setAttribute('data-guardada', 'true');
+    boton.title = 'Quitar de guardados';
+  } else {
+    // Estado: No guardada (bookmark vacío)
+    boton.innerHTML = '<i class="bi bi-bookmark fs-5"></i>';
+    boton.className = 'btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center btn-guardar-card shadow-sm';
+    boton.setAttribute('data-guardada', 'false');
+    boton.title = 'Guardar receta';
+  }
+  boton.disabled = false;
+}
+
+/**
  * Carga y muestra las recetas de la comunidad (todas excepto las del usuario actual)
  */
 async function cargarRecetasComunidad() {
@@ -300,6 +459,9 @@ async function cargarRecetasComunidad() {
         
         // Agregar event listeners a las tarjetas de recetas
         agregarEventListenersRecetas(abrirModalDetalleReceta);
+        
+        // Configurar botones de guardar en las cards
+        await configurarBotonesGuardarCards();
       }
     } else {
       contenedor.innerHTML = `
