@@ -2280,23 +2280,69 @@
         const badges = [];
         
         if (filtros.ingredientes) {
-          badges.push(`<span class="badge bg-success me-2 mb-2">Ingredientes: ${filtros.ingredientes}</span>`);
+          badges.push(`
+            <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+              Ingredientes: ${filtros.ingredientes}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingredientes')" title="Eliminar filtro"></i>
+            </span>`);
         }
         if (filtros.paisOrigen) {
-          badges.push(`<span class="badge bg-danger me-2 mb-2">País: ${filtros.paisOrigen}</span>`);
+          badges.push(`
+            <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+              País: ${filtros.paisOrigen}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('paisOrigen')" title="Eliminar filtro"></i>
+            </span>`);
         }
         if (filtros.dificultad) {
-          badges.push(`<span class="badge bg-warning me-2 mb-2">Dificultad: ${filtros.dificultad}</span>`);
+          badges.push(`
+            <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
+              Dificultad: ${filtros.dificultad}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('dificultad')" title="Eliminar filtro"></i>
+            </span>`);
         }
         if (filtros.turnoComida) {
           const turnoCapitalizado = filtros.turnoComida.charAt(0).toUpperCase() + filtros.turnoComida.slice(1);
-          badges.push(`<span class="badge bg-primary me-2 mb-2">Turno: ${turnoCapitalizado}</span>`);
+          badges.push(`
+            <span class="badge bg-primary me-2 mb-2 d-inline-flex align-items-center">
+              Turno: ${turnoCapitalizado}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('turnoComida')" title="Eliminar filtro"></i>
+            </span>`);
         }
         if (filtros.duracion) {
-          badges.push(`<span class="badge bg-secondary me-2 mb-2">Máx. ${filtros.duracion} min</span>`);
+          badges.push(`
+            <span class="badge bg-secondary me-2 mb-2 d-inline-flex align-items-center">
+              Máx. ${filtros.duracion} min
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('duracion')" title="Eliminar filtro"></i>
+            </span>`);
         }
         
         list.innerHTML = badges.join('');
+      }
+
+      // Función para eliminar un filtro específico
+      function eliminarFiltro(nombreFiltro) {
+        // Limpiar el campo correspondiente en el formulario
+        const mapeoFiltros = {
+          'ingredientes': 'filtroIngredientes',
+          'paisOrigen': 'filtroPais',
+          'dificultad': 'filtroDificultad',
+          'turnoComida': 'filtroTurnoComida',
+          'duracion': 'filtroDuracion'
+        };
+        
+        const elementoId = mapeoFiltros[nombreFiltro];
+        if (elementoId) {
+          const elemento = document.getElementById(elementoId);
+          if (elemento) {
+            elemento.value = '';
+          }
+        }
+        
+        // Recoger los filtros actualizados y aplicarlos
+        const filtros = obtenerFiltrosDelFormulario();
+        const recetasFiltradas = filtrarRecetas(todasLasRecetas, filtros);
+        mostrarRecetasFiltradas(recetasFiltradas);
+        mostrarFiltrosActivos(filtros);
       }
 
       // Función para limpiar todos los filtros
