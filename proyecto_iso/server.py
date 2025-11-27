@@ -992,6 +992,15 @@ async def obtener_recetas_comunidad(request: Request) -> JSONResponse:
                 receta.get("publicada", False) == True):
                 receta_con_id = receta.copy()
                 receta_con_id["id"] = f"receta-{idx}"
+                
+                # Calcular valoración media si hay valoraciones
+                valoraciones = receta.get("valoraciones", [])
+                if valoraciones and len(valoraciones) > 0:
+                    valoracion_media = sum(v.get("puntuacion", 0) for v in valoraciones) / len(valoraciones)
+                    receta_con_id["valoracionMedia"] = round(valoracion_media, 1)
+                else:
+                    receta_con_id["valoracionMedia"] = 0
+                
                 recetas_comunidad.append(receta_con_id)
         
         return crear_respuesta_exito(

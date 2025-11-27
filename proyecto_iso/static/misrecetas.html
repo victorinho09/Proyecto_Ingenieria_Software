@@ -2319,7 +2319,63 @@
         list.innerHTML = badges.join('');
       }
 
-      // Función para eliminar un filtro específico
+      // Función para actualizar solo la visualización de filtros activos en el modal
+      function mostrarFiltrosActivosEnModal(filtros) {
+        const container = document.getElementById('filtrosActivosContainer');
+        const list = document.getElementById('filtrosActivosList');
+        
+        const filtrosCount = Object.keys(filtros).length;
+        
+        if (filtrosCount === 0) {
+          container.style.display = 'none';
+          return;
+        }
+        
+        container.style.display = 'block';
+        
+        const badges = [];
+        
+        if (filtros.ingredientes) {
+          badges.push(`
+            <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+              Ingredientes: ${filtros.ingredientes}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingredientes')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.paisOrigen) {
+          badges.push(`
+            <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+              País: ${filtros.paisOrigen}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('paisOrigen')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.dificultad) {
+          badges.push(`
+            <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
+              Dificultad: ${filtros.dificultad}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('dificultad')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.turnoComida) {
+          const turnoCapitalizado = filtros.turnoComida.charAt(0).toUpperCase() + filtros.turnoComida.slice(1);
+          badges.push(`
+            <span class="badge bg-primary me-2 mb-2 d-inline-flex align-items-center">
+              Turno: ${turnoCapitalizado}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('turnoComida')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.duracion) {
+          badges.push(`
+            <span class="badge bg-secondary me-2 mb-2 d-inline-flex align-items-center">
+              Máx. ${filtros.duracion} min
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('duracion')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        
+        list.innerHTML = badges.join('');
+      }
+
+      // Función para eliminar un filtro específico sin aplicar los cambios
       function eliminarFiltro(nombreFiltro) {
         // Limpiar el campo correspondiente en el formulario
         const mapeoFiltros = {
@@ -2338,20 +2394,15 @@
           }
         }
         
-        // Recoger los filtros actualizados y aplicarlos
+        // Actualizar solo la visualización de filtros activos en el modal
         const filtros = obtenerFiltrosDelFormulario();
-        const recetasFiltradas = filtrarRecetas(todasLasRecetas, filtros);
-        mostrarRecetasFiltradas(recetasFiltradas);
-        mostrarFiltrosActivos(filtros);
+        mostrarFiltrosActivosEnModal(filtros);
       }
 
-      // Función para limpiar todos los filtros
+      // Función para limpiar todos los filtros sin aplicar cambios
       function limpiarFiltros() {
         document.getElementById('filtrosRecetasForm').reset();
         document.getElementById('filtrosActivosContainer').style.display = 'none';
-        
-        // Mostrar todas las recetas
-        mostrarRecetasFiltradas(todasLasRecetas);
       }
 
       // Event listener para el botón de aplicar filtros
@@ -2359,6 +2410,15 @@
         const btnAplicar = document.getElementById('aplicarFiltrosBtn');
         const btnLimpiar = document.getElementById('limpiarFiltrosBtn');
         const modalElement = document.getElementById('filtrosRecetasModal');
+        
+        // Event listener para cuando se abre el modal
+        if (modalElement) {
+          modalElement.addEventListener('show.bs.modal', function() {
+            // Actualizar la visualización de filtros activos al abrir el modal
+            const filtros = obtenerFiltrosDelFormulario();
+            mostrarFiltrosActivosEnModal(filtros);
+          });
+        }
         
         if (btnAplicar) {
           btnAplicar.addEventListener('click', function() {

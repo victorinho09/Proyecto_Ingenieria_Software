@@ -14,6 +14,9 @@ import {
 } from './utils/recetas-utils.js';
 import { mostrarMensaje } from './components/message-handler.js';
 
+// Variable global para almacenar todas las recetas cargadas
+let todasLasRecetasComunidad = [];
+
 /**
  * Abre el modal de detalle de una receta
  * @param {string} recetaId - ID de la receta a mostrar
@@ -189,6 +192,9 @@ async function guardarReceta(nombreReceta, boton) {
       // Actualizar el estado del botón a "guardada"
       actualizarEstadoBotonGuardar(boton, true);
       
+      // También actualizar el icono en la card si existe
+      actualizarIconoCardDesdModal(nombreReceta, true);
+      
       // Mostrar mensaje de éxito
       console.log(`✅ Receta "${nombreReceta}" guardada correctamente`);
     } else {
@@ -228,6 +234,9 @@ async function desguardarReceta(nombreReceta, boton) {
       // Actualizar el estado del botón a "no guardada"
       actualizarEstadoBotonGuardar(boton, false);
       
+      // También actualizar el icono en la card si existe
+      actualizarIconoCardDesdModal(nombreReceta, false);
+      
       // Mostrar mensaje de éxito
       console.log(`🗑️ Receta "${nombreReceta}" desguardada correctamente`);
     } else {
@@ -239,6 +248,21 @@ async function desguardarReceta(nombreReceta, boton) {
     alert("Error al desguardar la receta");
     boton.disabled = false;
   }
+}
+
+/**
+ * Actualiza el icono de la card cuando se guarda/desguarda desde el modal
+ * @param {string} nombreReceta - Nombre de la receta
+ * @param {boolean} estaGuardada - true si está guardada
+ */
+function actualizarIconoCardDesdModal(nombreReceta, estaGuardada) {
+  // Buscar el botón de la card con ese nombre de receta
+  const botones = document.querySelectorAll('.btn-guardar-card');
+  botones.forEach(boton => {
+    if (boton.dataset.recetaNombre === nombreReceta) {
+      actualizarEstadoBotonCard(boton, estaGuardada);
+    }
+  });
 }
 
 /**
@@ -439,6 +463,9 @@ async function cargarRecetasComunidad() {
 
     if (resultado.exito && resultado.recetas) {
       const recetas = resultado.recetas;
+      
+      // Guardar recetas en variable global para filtrado
+      todasLasRecetasComunidad = recetas;
 
       if (recetas.length === 0) {
         contenedor.innerHTML = `
@@ -721,31 +748,6 @@ function actualizarContadorCaracteres() {
   contador.textContent = textarea.value.length;
 }
 
-// Cargar recetas al cargar la página
-document.addEventListener("DOMContentLoaded", cargarRecetasComunidad);
-
-// Inicializar eventos de comentarios cuando el DOM esté listo
-document.addEventListener("DOMContentLoaded", function() {
-  // Contador de caracteres
-  const textarea = document.getElementById('nuevoComentarioTexto');
-  if (textarea) {
-    textarea.addEventListener('input', actualizarContadorCaracteres);
-  }
-  
-  // Botón publicar comentario
-  const btnPublicar = document.getElementById('publicarComentarioBtn');
-  if (btnPublicar) {
-    btnPublicar.addEventListener('click', publicarComentario);
-  }
-  
-  // Botón cancelar comentario
-  const btnCancelar = document.getElementById('cancelarComentarioBtn');
-  if (btnCancelar) {
-    btnCancelar.addEventListener('click', cancelarComentario);
-  }
-});
-
-
 // ============================================
 // FUNCIONES DE VALORACIÓN
 // ============================================
@@ -918,3 +920,327 @@ async function enviarValoracion(puntuacion) {
     mostrarMensaje('error', 'Error de conexión al enviar la valoración');
   }
 }
+
+// ============================================
+// FUNCIONES DE FILTRADO
+// ============================================
+
+/**
+ * Filtra las recetas según los criterios proporcionados
+ * @param {Array} recetas - Array de recetas a filtrar
+ * @param {Object} filtros - Objeto con los filtros a aplicar
+ * @returns {Array} - Recetas filtradas
+ */
+function filtrarRecetasComunidad(recetas, filtros) {
+  return recetas.filter(receta => {
+    // Filtro por ingredientes (búsqueda parcial en ingredientes)
+    if (filtros.ingredientes) {
+      const ingredientesFiltro = filtros.ingredientes.toLowerCase();
+      const ingredientesReceta = (receta.ingredientes || []).map(i => i.toLowerCase());
+      const tieneIngrediente = ingredientesReceta.some(ing => ing.includes(ingredientesFiltro));
+      if (!tieneIngrediente) return false;
+    }
+
+    // Filtro por país (coincidencia exacta)
+    if (filtros.paisOrigen && receta.paisOrigen !== filtros.paisOrigen) {
+      return false;
+    }
+
+    // Filtro por usuario (búsqueda parcial en email)
+    if (filtros.usuario) {
+      const usuarioFiltro = filtros.usuario.toLowerCase();
+      const usuarioReceta = (receta.usuario || '').toLowerCase();
+      if (!usuarioReceta.includes(usuarioFiltro)) return false;
+    }
+
+    // Filtro por dificultad (coincidencia exacta)
+    if (filtros.dificultad && receta.dificultad !== filtros.dificultad) {
+      return false;
+    }
+
+    // Filtro por turno de comida (coincidencia exacta)
+    if (filtros.turnoComida && receta.turnoComida !== filtros.turnoComida) {
+      return false;
+    }
+
+    // Filtro por duración (menor o igual que el valor especificado)
+    if (filtros.duracion) {
+      const duracionMaxima = parseInt(filtros.duracion);
+      const duracionReceta = parseInt(receta.duracion || 0);
+      if (duracionReceta > duracionMaxima) return false;
+    }
+
+    // Filtro por valoración mínima
+    if (filtros.valoracion) {
+      const valoracionMinima = parseFloat(filtros.valoracion);
+      const valoracionReceta = receta.valoracionMedia || 0;
+      
+      // Solo considerar recetas con valoraciones
+      if (valoracionReceta === 0 || valoracionReceta < valoracionMinima) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Obtiene los valores de los filtros del formulario
+ * @returns {Object} - Objeto con los valores de los filtros
+ */
+function obtenerFiltrosDelFormulario() {
+  const form = document.getElementById('filtrosRecetasForm');
+  if (!form) return {};
+
+  const formData = new FormData(form);
+  const filtros = {};
+
+  for (let [key, value] of formData.entries()) {
+    if (value && value.trim() !== '') {
+      filtros[key] = value.trim();
+    }
+  }
+
+  return filtros;
+}
+
+/**
+ * Muestra las recetas filtradas en el contenedor
+ */
+function mostrarRecetasFiltradas() {
+  const filtros = obtenerFiltrosDelFormulario();
+  const recetasFiltradas = filtrarRecetasComunidad(todasLasRecetasComunidad, filtros);
+
+  const contenedor = document.getElementById('contenedorRecetas');
+  const totalRecetasElement = document.getElementById('totalRecetas');
+
+  if (!contenedor) return;
+
+  // Actualizar contador
+  if (totalRecetasElement) {
+    totalRecetasElement.textContent = recetasFiltradas.length;
+  }
+
+  // Limpiar contenedor
+  contenedor.innerHTML = '';
+
+  // Mostrar recetas filtradas
+  if (recetasFiltradas.length === 0) {
+    contenedor.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-warning text-center" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          No se encontraron recetas que coincidan con los filtros seleccionados.
+        </div>
+      </div>
+    `;
+  } else {
+    // Generar HTML de las cards filtradas usando innerHTML (crearCardReceta ya incluye el wrapper column)
+    contenedor.innerHTML = recetasFiltradas.map(receta => 
+      crearCardReceta(receta, true)
+    ).join('');
+
+    // Agregar event listeners a las nuevas cards
+    agregarEventListenersRecetas(abrirModalDetalleReceta);
+    
+    // Configurar botones de guardar en las cards filtradas
+    configurarBotonesGuardarCards();
+  }
+
+  // Mostrar filtros activos
+  mostrarFiltrosActivos(filtros);
+
+  // Cerrar el modal
+  const modal = bootstrap.Modal.getInstance(document.getElementById('filtrosRecetasModal'));
+  if (modal) modal.hide();
+}
+
+/**
+ * Muestra los filtros activos como badges
+ * @param {Object} filtros - Objeto con los filtros activos
+ */
+function mostrarFiltrosActivos(filtros) {
+  const container = document.getElementById('filtrosActivosContainer');
+  const listContainer = document.getElementById('filtrosActivosList');
+
+  if (!container || !listContainer) return;
+
+  const filtrosArray = Object.entries(filtros);
+
+  if (filtrosArray.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'block';
+  listContainer.innerHTML = '';
+
+  const nombresAmigables = {
+    ingredientes: 'Ingredientes',
+    paisOrigen: 'País',
+    usuario: 'Usuario',
+    dificultad: 'Dificultad',
+    turnoComida: 'Turno de Comida',
+    duracion: 'Duración',
+    valoracion: 'Valoración'
+  };
+
+  filtrosArray.forEach(([key, value]) => {
+    const badge = document.createElement('span');
+    badge.className = 'badge bg-primary me-2 mb-2';
+    badge.style.fontSize = '0.9rem';
+    badge.style.cursor = 'pointer';
+    
+    let valorMostrar = value;
+    if (key === 'duracion') {
+      valorMostrar = `≤ ${value} min`;
+    } else if (key === 'valoracion') {
+      valorMostrar = `≥ ${value} ⭐`;
+    }
+    
+    badge.innerHTML = `
+      <strong>${nombresAmigables[key] || key}:</strong> ${valorMostrar}
+      <i class="bi bi-x-circle ms-1" onclick="eliminarFiltro('${key}')" style="cursor: pointer;"></i>
+    `;
+    
+    listContainer.appendChild(badge);
+  });
+}
+
+/**
+ * Actualiza solo la visualización de filtros activos dentro del modal
+ * @param {Object} filtros - Objeto con los filtros activos
+ */
+function mostrarFiltrosActivosEnModal(filtros) {
+  const container = document.getElementById('filtrosActivosContainer');
+  const listContainer = document.getElementById('filtrosActivosList');
+
+  if (!container || !listContainer) return;
+
+  const filtrosArray = Object.entries(filtros);
+
+  if (filtrosArray.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'block';
+  listContainer.innerHTML = '';
+
+  const nombresAmigables = {
+    ingredientes: 'Ingredientes',
+    paisOrigen: 'País',
+    usuario: 'Usuario',
+    dificultad: 'Dificultad',
+    turnoComida: 'Turno de Comida',
+    duracion: 'Duración',
+    valoracion: 'Valoración'
+  };
+
+  filtrosArray.forEach(([key, value]) => {
+    const badge = document.createElement('span');
+    badge.className = 'badge bg-primary me-2 mb-2';
+    badge.style.fontSize = '0.9rem';
+    badge.style.cursor = 'pointer';
+    
+    let valorMostrar = value;
+    if (key === 'duracion') {
+      valorMostrar = `≤ ${value} min`;
+    } else if (key === 'valoracion') {
+      valorMostrar = `≥ ${value} ⭐`;
+    }
+    
+    badge.innerHTML = `
+      <strong>${nombresAmigables[key] || key}:</strong> ${valorMostrar}
+      <i class="bi bi-x-circle ms-1" onclick="eliminarFiltro('${key}')" style="cursor: pointer;"></i>
+    `;
+    
+    listContainer.appendChild(badge);
+  });
+}
+
+/**
+ * Elimina un filtro específico del formulario sin aplicar los cambios
+ * @param {string} nombreFiltro - Nombre del campo del filtro a eliminar
+ */
+window.eliminarFiltro = function(nombreFiltro) {
+  const form = document.getElementById('filtrosRecetasForm');
+  if (!form) return;
+
+  const campo = form.elements[nombreFiltro];
+  if (campo) {
+    if (campo.tagName === 'SELECT') {
+      campo.selectedIndex = 0; // Volver a la primera opción (vacía)
+    } else {
+      campo.value = '';
+    }
+  }
+
+  // Actualizar la vista de filtros activos en el modal sin aplicar los filtros
+  const filtros = obtenerFiltrosDelFormulario();
+  mostrarFiltrosActivosEnModal(filtros);
+};
+
+/**
+ * Limpia todos los filtros y actualiza la visualización en el modal
+ */
+function limpiarFiltros() {
+  const form = document.getElementById('filtrosRecetasForm');
+  if (form) {
+    form.reset();
+  }
+
+  // Limpiar la visualización de filtros activos en el modal
+  const container = document.getElementById('filtrosActivosContainer');
+  if (container) {
+    container.style.display = 'none';
+  }
+}
+
+// ============================================
+// EVENT LISTENERS PARA FILTROS
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Cargar recetas al iniciar
+  cargarRecetasComunidad();
+  
+  // 2. Event listeners de filtros
+  const aplicarFiltrosBtn = document.getElementById('aplicarFiltrosBtn');
+  if (aplicarFiltrosBtn) {
+    aplicarFiltrosBtn.addEventListener('click', mostrarRecetasFiltradas);
+  }
+
+  const limpiarFiltrosBtn = document.getElementById('limpiarFiltrosBtn');
+  if (limpiarFiltrosBtn) {
+    limpiarFiltrosBtn.addEventListener('click', limpiarFiltros);
+  }
+  
+  // Event listener para cuando se abre el modal de filtros
+  const modalFiltros = document.getElementById('filtrosRecetasModal');
+  if (modalFiltros) {
+    modalFiltros.addEventListener('show.bs.modal', function() {
+      // Actualizar la visualización de filtros activos al abrir el modal
+      const filtros = obtenerFiltrosDelFormulario();
+      mostrarFiltrosActivosEnModal(filtros);
+    });
+  }
+  
+  // 3. Event listeners de comentarios
+  const textarea = document.getElementById('nuevoComentarioTexto');
+  if (textarea) {
+    textarea.addEventListener('input', actualizarContadorCaracteres);
+  }
+  
+  const btnPublicar = document.getElementById('publicarComentarioBtn');
+  if (btnPublicar) {
+    btnPublicar.addEventListener('click', publicarComentario);
+  }
+  
+  const btnCancelar = document.getElementById('cancelarComentarioBtn');
+  if (btnCancelar) {
+    btnCancelar.addEventListener('click', cancelarComentario);
+  }
+});
+
