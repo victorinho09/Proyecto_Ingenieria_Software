@@ -1057,24 +1057,79 @@ function mostrarRecetasFiltradas() {
 }
 
 /**
- * Muestra los filtros activos como badges
+ * Muestra los filtros activos como badges tanto en el modal como en la página
  * @param {Object} filtros - Objeto con los filtros activos
  */
 function mostrarFiltrosActivos(filtros) {
+  // Actualizar filtros en el modal
   const container = document.getElementById('filtrosActivosContainer');
   const listContainer = document.getElementById('filtrosActivosList');
 
-  if (!container || !listContainer) return;
+  if (container && listContainer) {
+    const filtrosArray = Object.entries(filtros);
+
+    if (filtrosArray.length === 0) {
+      container.style.display = 'none';
+    } else {
+      container.style.display = 'block';
+      listContainer.innerHTML = '';
+
+      const nombresAmigables = {
+        ingredientes: 'Ingredientes',
+        paisOrigen: 'País',
+        usuario: 'Usuario',
+        dificultad: 'Dificultad',
+        turnoComida: 'Turno de Comida',
+        duracion: 'Duración',
+        valoracion: 'Valoración'
+      };
+
+      filtrosArray.forEach(([key, value]) => {
+        const badge = document.createElement('span');
+        badge.className = 'badge bg-primary me-2 mb-2';
+        badge.style.fontSize = '0.9rem';
+        badge.style.cursor = 'pointer';
+        
+        let valorMostrar = value;
+        if (key === 'duracion') {
+          valorMostrar = `≤ ${value} min`;
+        } else if (key === 'valoracion') {
+          valorMostrar = `≥ ${value} ⭐`;
+        }
+        
+        badge.innerHTML = `
+          <strong>${nombresAmigables[key] || key}:</strong> ${valorMostrar}
+          <i class="bi bi-x-circle ms-1" onclick="eliminarFiltro('${key}')" style="cursor: pointer;"></i>
+        `;
+        
+        listContainer.appendChild(badge);
+      });
+    }
+  }
+  
+  // Actualizar filtros en la página principal
+  mostrarFiltrosActivosEnPagina(filtros);
+}
+
+/**
+ * Muestra los filtros activos en la página principal (fuera del modal)
+ * @param {Object} filtros - Objeto con los filtros activos
+ */
+function mostrarFiltrosActivosEnPagina(filtros) {
+  const pageContainer = document.getElementById('filtrosActivosPageContainer');
+  const pageList = document.getElementById('filtrosActivosPageList');
+
+  if (!pageContainer || !pageList) return;
 
   const filtrosArray = Object.entries(filtros);
 
   if (filtrosArray.length === 0) {
-    container.style.display = 'none';
+    pageContainer.style.display = 'none';
     return;
   }
 
-  container.style.display = 'block';
-  listContainer.innerHTML = '';
+  pageContainer.style.display = 'block';
+  pageList.innerHTML = '';
 
   const nombresAmigables = {
     ingredientes: 'Ingredientes',
@@ -1089,7 +1144,7 @@ function mostrarFiltrosActivos(filtros) {
   filtrosArray.forEach(([key, value]) => {
     const badge = document.createElement('span');
     badge.className = 'badge bg-primary me-2 mb-2';
-    badge.style.fontSize = '0.9rem';
+    badge.style.fontSize = '0.95rem';
     badge.style.cursor = 'pointer';
     
     let valorMostrar = value;
@@ -1101,10 +1156,10 @@ function mostrarFiltrosActivos(filtros) {
     
     badge.innerHTML = `
       <strong>${nombresAmigables[key] || key}:</strong> ${valorMostrar}
-      <i class="bi bi-x-circle ms-1" onclick="eliminarFiltro('${key}')" style="cursor: pointer;"></i>
+      <i class="bi bi-x-circle ms-1" onclick="eliminarFiltroYAplicar('${key}')" style="cursor: pointer;" title="Eliminar filtro"></i>
     `;
     
-    listContainer.appendChild(badge);
+    pageList.appendChild(badge);
   });
 }
 
@@ -1197,6 +1252,78 @@ function limpiarFiltros() {
     container.style.display = 'none';
   }
 }
+
+/**
+ * Elimina un filtro desde la página principal y aplica los cambios inmediatamente
+ * @param {string} nombreFiltro - Nombre del campo del filtro a eliminar
+ */
+window.eliminarFiltroYAplicar = function(nombreFiltro) {
+  const form = document.getElementById('filtrosRecetasForm');
+  if (!form) return;
+
+  const campo = form.elements[nombreFiltro];
+  if (campo) {
+    if (campo.tagName === 'SELECT') {
+      campo.selectedIndex = 0;
+    } else {
+      campo.value = '';
+    }
+  }
+
+  // Aplicar los filtros inmediatamente
+  mostrarRecetasFiltradas();
+};
+
+/**
+ * Limpia todos los filtros desde la página principal y muestra todas las recetas
+ */
+window.limpiarTodosFiltros = function() {
+  const form = document.getElementById('filtrosRecetasForm');
+  if (form) {
+    form.reset();
+  }
+
+  // Ocultar contenedores de filtros activos
+  const container = document.getElementById('filtrosActivosContainer');
+  if (container) {
+    container.style.display = 'none';
+  }
+  
+  const pageContainer = document.getElementById('filtrosActivosPageContainer');
+  if (pageContainer) {
+    pageContainer.style.display = 'none';
+  }
+
+  // Mostrar todas las recetas
+  const contenedor = document.getElementById('contenedorRecetas');
+  const totalRecetasElement = document.getElementById('totalRecetas');
+
+  if (!contenedor) return;
+
+  if (totalRecetasElement) {
+    totalRecetasElement.textContent = todasLasRecetasComunidad.length;
+  }
+
+  contenedor.innerHTML = '';
+
+  if (todasLasRecetasComunidad.length === 0) {
+    contenedor.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-warning text-center" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          No hay recetas disponibles.
+        </div>
+      </div>
+    `;
+  } else {
+    contenedor.innerHTML = todasLasRecetasComunidad.map(receta => 
+      crearCardReceta(receta, true)
+    ).join('');
+
+    agregarEventListenersRecetas(abrirModalDetalleReceta);
+    configurarBotonesGuardarCards();
+  }
+};
 
 // ============================================
 // EVENT LISTENERS PARA FILTROS

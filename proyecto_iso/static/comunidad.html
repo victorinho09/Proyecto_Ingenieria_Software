@@ -141,6 +141,19 @@
               </div>
             </div>
 
+            <!-- Filtros activos visibles -->
+            <div id="filtrosActivosPageContainer" class="mb-3" style="display: none;">
+              <div class="alert alert-info mb-0 d-flex justify-content-between align-items-center">
+                <div>
+                  <strong><i class="bi bi-funnel-fill me-2"></i>Filtros activos:</strong>
+                  <div id="filtrosActivosPageList" class="mt-2 d-flex flex-wrap gap-2"></div>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="limpiarTodosFiltros()">
+                  <i class="bi bi-x-circle me-1"></i>Limpiar todos
+                </button>
+              </div>
+            </div>
+
             <!-- Contenedor de recetas -->
             <div id="contenedorRecetas" class="row g-4">
               <!-- Las recetas se cargarán aquí dinámicamente -->
