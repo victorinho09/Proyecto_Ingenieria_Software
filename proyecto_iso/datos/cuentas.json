@@ -4,7 +4,8 @@
     "email": "victorvega@gmail.com",
     "password": "Victor#1313",
     "valoracion": 3.0,
-    "valoracion_count": 3
+    "valoracion_count": 3,
+    "fotoPerfil": null
   },
   {
     "nombreUsuario": "Javier",
@@ -68,8 +69,16 @@
     "nombreUsuario": "Javier",
     "email": "franciscojavier.martinezfernan@usp.ceu.es",
     "password": "Javier1234",
-    "fotoPerfil": "/static/uploads/perfiles/20251125_205908_franciscojavier_martinezfernan_7406aba8.jpg",
+    "fotoPerfil": "/static/uploads/perfiles/20251128_181753_franciscojavier_martinezfernan_98997754.jpg",
     "valoracion": 0.0,
     "valoracion_count": 0
+  },
+  {
+    "nombreUsuario": "Prueba",
+    "email": "fjmaira@gmail.com",
+    "password": "Javier1234",
+    "valoracion": 0.0,
+    "valoracion_count": 0,
+    "fotoPerfil": null
   }
 ]

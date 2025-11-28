@@ -16,6 +16,15 @@ export function mostrarMensaje(mensaje, tipo = "info", duracion = 5000) {
       if (suppressed === '1') {
         // consume the flag and do not show the transient message
         window.sessionStorage.removeItem('suppressNextFlash');
+        try {
+          // Debugging trace: record suppressed flash details for investigation
+          const trace = (new Error('suppressed-flash')).stack;
+          if (typeof window !== 'undefined') {
+            window.__lastFlashSuppressed = { mensaje, tipo, time: Date.now(), stack: trace };
+            console.debug('message-handler: suppressed flash', { mensaje, tipo });
+            console.debug(trace);
+          }
+        } catch (e) {}
         return;
       }
     }
@@ -73,6 +82,16 @@ export function mostrarMensaje(mensaje, tipo = "info", duracion = 5000) {
 
   // Agregar al DOM
   document.body.appendChild(mensajeElement);
+
+  try {
+    // Debugging trace: record shown flash details
+    const trace = (new Error('shown-flash')).stack;
+    if (typeof window !== 'undefined') {
+      window.__lastFlashShown = { mensaje, tipo, time: Date.now(), stack: trace };
+      console.debug('message-handler: showing flash', { mensaje, tipo });
+      console.debug(trace);
+    }
+  } catch (e) {}
 
   // Animación de entrada
   setTimeout(() => {

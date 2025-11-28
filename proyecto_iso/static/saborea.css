@@ -325,6 +325,8 @@ button[type="submit"].btn{
   letter-spacing: .6px;
   text-shadow: 0 1px 0 rgba(255,255,255,0.06);
 }
+/* When using the default avatar, reduce the gap so the name sits closer to the icon */
+.profile-hero .hero-inner.default-avatar{ gap:0.6rem; }
 
 /* Make the top hero card stand out */
 .card-body.text-center.p-4{
@@ -348,24 +350,38 @@ button[type="submit"].btn{
 
 /* Simple hover effect: circular image zoom + slight rotation only */
 .hero-avatar{ overflow:hidden; border-radius:50%; display:inline-block; }
-.hero-avatar img{ display:block; width:100%; height:100%; object-fit:cover; border-radius:50%; transition: transform .32s cubic-bezier(.2,.9,.2,1); }
+.hero-avatar img{ display:block; width:100% !important; height:100% !important; max-width:100% !important; max-height:100% !important; object-fit:cover !important; object-position:center center !important; border-radius:50% !important; box-sizing:border-box !important; transition: transform .32s cubic-bezier(.2,.9,.2,1); }
 .hero-avatar:hover img{ transform: scale(1.06) rotate(-2deg); }
+/* When the image has class 'contain' we show it fully (useful for default SVG/PNG icons) and disable zoom */
+.hero-avatar img.contain{ object-fit:contain !important; transition: none !important; transform: none !important; }
+
+/* Default icon styling: reduce size so it never touches the circular border */
+.hero-avatar.default-icon{
+  background-size:78% !important; /* make icon smaller inside the circle */
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+}
 
 /* Keep the profile wrap stable (no large lift) but allow a gentle shadow change */
 #perfilImagenWrap{ transition: box-shadow .28s ease; border-radius:50%; overflow:hidden; }
 #perfilImagenWrap:hover{ box-shadow: 0 16px 40px rgba(58,47,42,0.12); }
 
 /* Ensure modal/hero/profile images are always circular and cover the area */
-#perfilImagen, #modalPerfilImagenPreview, #heroAvatarImg{ border-radius:50%; width:100%; height:100%; object-fit:cover; display:block; }
+#perfilImagen, #modalPerfilImagenPreview, #heroAvatarImg{ border-radius:50% !important; width:100% !important; height:100% !important; max-width:100% !important; max-height:100% !important; object-fit:cover !important; object-position:center center !important; box-sizing:border-box !important; }
 
 @media (max-width: 768px){
   .hero-avatar:hover img{ transform: none; }
   #perfilImagenWrap:hover{ box-shadow: 0 12px 30px rgba(58,47,42,0.10); }
 }
 
-/* Modal preview avatar to match hero/profile sizing */
 #modalPerfilImagenPreview{
-  width:216px; height:216px; object-fit:cover; border-radius:999px; display:inline-block; border:4px solid #fff;
+  width:140px !important;
+  height:140px !important;
+  object-fit:cover !important;
+  border-radius:999px !important;
+  display:block !important;
+  margin: 0 auto !important;
+  border:4px solid #fff !important;
 }
 
 #perfilNombre{
@@ -380,25 +396,52 @@ button[type="submit"].btn{
 
 /* Action area in profile */
 #perfilActions .btn{ min-width:110px; }
+/* Navbar username spacing tweak: nudge name slightly left toward avatar */
+/* Reduce ligeramente el espacio para que el nombre quede más cerca del avatar */
+.navbar-username{ display:inline-block; margin-left: -0.2rem; }
+
+@media (min-width: 992px){
+  /* On desktop: use a negative right margin on the avatar image so the name sits very close */
+  .navbar-username{ margin-left: -0.8rem; }
+  /* tighten name->avatar spacing a bit more */
+  a[href="/perfil"] img.rounded-circle{ margin-right: -2.4rem !important; vertical-align: middle; }
+  /* create more breathing room between the profile block and the logout button */
+  nav .navbar-text.text-light{ margin-right: 4rem !important; }
+}
 #editarControls{ transform-origin: top center; transition: transform .22s ease, opacity .22s ease; }
 
 /* Hero edit button: outline style by default (no fill). On hover it becomes filled. */
 .hero-edit-btn{
-  background-color: transparent;
-  color: var(--saborea-mango);
-  border: 2px solid var(--saborea-mango);
+  /* Force outline appearance to match other outlined buttons */
+  background-color: transparent !important;
+  color: var(--saborea-mango) !important;
+  border: 2px solid var(--saborea-mango) !important;
   padding: .45rem .9rem;
   border-radius: 28px;
   font-weight:800;
-  box-shadow: none;
+  box-shadow: none !important;
   transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, color .12s ease;
 }
-.hero-edit-btn:hover,
-.hero-edit-btn:focus{
-  background-color: var(--saborea-mango);
-  color:#fff;
+.hero-edit-btn:hover{
+  background-color: var(--saborea-mango) !important;
+  color:#fff !important;
   transform: translateY(-2px);
   box-shadow: 0 10px 22px rgba(var(--bs-primary-rgb), .12);
+}
+
+/* Keep focus visible for accessibility but do not fill the button */
+.hero-edit-btn:focus{
+  outline: none !important;
+  box-shadow: var(--saborea-focus) !important;
+  background-color: transparent !important;
+  color: var(--saborea-mango) !important;
+  transform: none !important;
+}
+/* Prevent active/pressed state from filling the outline button permanently */
+.hero-edit-btn:active{
+  background-color: transparent !important;
+  color: var(--saborea-mango) !important;
+  transform: none !important;
 }
 
 /* Recipe cards grid: more visual weight */
@@ -471,6 +514,13 @@ a[href="/perfil"] img.rounded-circle{
   object-fit:cover !important;
 }
 
+/* Desktop: ensure avatar does not overlap the username — remove negative margin and nudge name left */
+@media (min-width: 992px){
+  a[href="/perfil"] img.rounded-circle{ margin-right: 0 !important; }
+  /* Increase spacing between avatar and username on desktop */
+  .navbar-username{ margin-left: 0rem !important; }
+}
+
 /* Slightly reduce size on very small screens to avoid overlap with toggler */
 @media (max-width: 576px){
   .navbar .navbar-text{ position: static; transform: none; margin-left:8px; }
@@ -518,5 +568,6 @@ a[href="/perfil"] img.rounded-circle{
 footer.bg-light{ padding:2rem 0; }
 
 /* Small helper to give more contrast to metric numbers */
+
 .metric-number{ font-size:1.2rem; font-weight:800; color:var(--saborea-choco); }
 

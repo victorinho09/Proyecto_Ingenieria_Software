@@ -1381,7 +1381,7 @@
             // Guardar todas las recetas en la variable global
             todasLasRecetas = recetas;
             
-            // Aplicar filtro desde querystring (ej. ?filter=hechas)
+            // Aplicar filtro desde querystring (ej. ?filter=hechas o ?publicada=si)
             try {
               const params = new URLSearchParams(window.location.search || '');
               const filtro = (params.get('filter') || '').toLowerCase();
@@ -1399,6 +1399,26 @@
                     return false;
                   } catch (e) { return false; }
                 });
+              }
+
+              // Soporta ?publicada=si|no para mostrar solo publicadas/no publicadas
+              const publicadaParam = (params.get('publicada') || '').toLowerCase();
+              if (publicadaParam === 'si' || publicadaParam === 'no') {
+                recetas = recetas.filter(r => {
+                  try {
+                    const estaPublicada = !!r.publicada;
+                    return publicadaParam === 'si' ? estaPublicada : !estaPublicada;
+                  } catch (e) { return false; }
+                });
+
+                // Reflejar el filtro en el formulario si existe el select
+                try {
+                  const sel = document.getElementById('filtroPublicado');
+                  if (sel) sel.value = publicadaParam;
+                } catch (e) {}
+
+                // Mostrar badges de filtros activos
+                try { mostrarFiltrosActivos(obtenerFiltrosDelFormulario()); } catch(e) {}
               }
             } catch (e) { /* ignore URL parsing errors */ }
 
@@ -2059,6 +2079,20 @@
                   </select>
                 </div>
 
+                <!-- Filtro por Publicada (sí/no) -->
+                <div class="col-md-6 mb-3">
+                  <label for="filtroPublicado" class="form-label">
+                    <i class="bi bi-toggle-on text-info me-1"></i>
+                    Publicada
+                  </label>
+                  <select class="form-select" id="filtroPublicado" name="publicada">
+                    <option value="" selected>Todos</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                  <small class="text-muted">Filtra recetas publicadas o no publicadas</small>
+                </div>
+
                 <!-- Filtro por Tiempo (Duración) -->
                 <div class="col-md-6 mb-3">
                   <label for="filtroDuracion" class="form-label">
@@ -2217,6 +2251,14 @@
             }
           }
 
+          // Filtro por estado de publicación (sí/no)
+          if (filtros.publicada) {
+            // receta.publicada expected boolean
+            const estaPublicada = !!receta.publicada;
+            if (filtros.publicada === 'si' && !estaPublicada) return false;
+            if (filtros.publicada === 'no' && estaPublicada) return false;
+          }
+
           // Filtro por duración máxima
           if (filtros.duracion) {
             const duracionMaxima = parseInt(filtros.duracion);
@@ -2273,6 +2315,9 @@
         const duracion = document.getElementById('filtroDuracion').value;
         if (duracion) filtros.duracion = duracion;
         
+        const publicada = document.getElementById('filtroPublicado') ? document.getElementById('filtroPublicado').value : '';
+        if (publicada) filtros.publicada = publicada;
+        
         return filtros;
       }
 
@@ -2312,6 +2357,14 @@
                 <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('dificultad')" title="Eliminar filtro"></i>
               </span>`);
           }
+            if (filtros.publicada) {
+              const labelPub = filtros.publicada === 'si' ? 'Sí' : 'No';
+              badges.push(`
+                <span class="badge bg-info me-2 mb-2 d-inline-flex align-items-center">
+                  Publicada: ${labelPub}
+                  <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('publicada')" title="Eliminar filtro"></i>
+                </span>`);
+            }
           if (filtros.turnoComida) {
             const turnoCapitalizado = filtros.turnoComida.charAt(0).toUpperCase() + filtros.turnoComida.slice(1);
             badges.push(`
@@ -2372,6 +2425,14 @@
             <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
               Dificultad: ${filtros.dificultad}
               <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('dificultad')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.publicada) {
+          const labelPub = filtros.publicada === 'si' ? 'Sí' : 'No';
+          badges.push(`
+            <span class="badge bg-info me-2 mb-2 d-inline-flex align-items-center">
+              Publicada: ${labelPub}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('publicada')" title="Eliminar filtro"></i>
             </span>`);
         }
         if (filtros.turnoComida) {
@@ -2457,7 +2518,8 @@
           'paisOrigen': 'filtroPais',
           'dificultad': 'filtroDificultad',
           'turnoComida': 'filtroTurnoComida',
-          'duracion': 'filtroDuracion'
+          'duracion': 'filtroDuracion',
+          'publicada': 'filtroPublicado'
         };
         
         const elementoId = mapeoFiltros[nombreFiltro];
@@ -2480,7 +2542,8 @@
           'paisOrigen': 'filtroPais',
           'dificultad': 'filtroDificultad',
           'turnoComida': 'filtroTurnoComida',
-          'duracion': 'filtroDuracion'
+          'duracion': 'filtroDuracion',
+          'publicada': 'filtroPublicado'
         };
         
         const elementoId = mapeoFiltros[nombreFiltro];

@@ -701,6 +701,54 @@ async def subir_foto_perfil(request: Request, archivo: UploadFile = File(...)) -
         return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
 
 
+@app.post('/api/eliminar-foto-perfil')
+async def eliminar_foto_perfil(request: Request) -> JSONResponse:
+    """
+    Elimina (restaura) la foto de perfil del usuario autenticado a la imagen por defecto.
+    Si la foto actual está almacenada en `static/uploads/...` intentará eliminar el archivo físico.
+    """
+    try:
+        if not es_usuario_registrado(request):
+            return crear_respuesta_error("Debes estar registrado para eliminar la foto", "USUARIO_NO_AUTENTICADO", HTTP_BAD_REQUEST)
+
+        email = obtener_email_usuario(request)
+        if not email:
+            return crear_respuesta_error("No se pudo identificar al usuario", "EMAIL_NO_ENCONTRADO", HTTP_BAD_REQUEST)
+
+        cuenta = obtener_cuenta_por_email(email)
+        foto_actual = cuenta.get('fotoPerfil') if cuenta else None
+
+        # If there is no custom photo (None or default), refuse the operation
+        if not foto_actual or (isinstance(foto_actual, str) and ('cocinero.png' in foto_actual or foto_actual.endswith('/cocinero.png'))):
+            return crear_respuesta_error("No hay foto de perfil para eliminar", "NO_FOTO_PERFIL", HTTP_BAD_REQUEST)
+
+        # Intentar borrar archivo si está en uploads
+        try:
+            if foto_actual and isinstance(foto_actual, str) and '/static/uploads/' in foto_actual:
+                # mapear a ruta local segura
+                ruta_rel = foto_actual.lstrip('/')
+                ruta_abs = os.path.join(BASE_DIR, ruta_rel)
+                if os.path.exists(ruta_abs):
+                    try:
+                        os.remove(ruta_abs)
+                        print(f"{LOG_INFO} Archivo de foto eliminado: {ruta_abs}")
+                    except Exception as e:
+                        print(f"{LOG_WARNING} No se pudo eliminar archivo de foto {ruta_abs}: {e}")
+        except Exception as e:
+            print(f"{LOG_WARNING} Error tratando de eliminar archivo anterior de fotoPerfil: {e}")
+
+        # Actualizar la cuenta para eliminar la referencia a la foto
+        if actualizar_cuenta(email, {"fotoPerfil": None}):
+            # Devolver la URL de la imagen por defecto para que el frontend la use
+            return crear_respuesta_exito("Foto de perfil restaurada a la predeterminada", {"fotoPerfil": "/static/cocinero.png"})
+        else:
+            return crear_respuesta_error("No se pudo actualizar la cuenta", "ERROR_ACTUALIZAR_CUENTA", HTTP_INTERNAL_SERVER_ERROR)
+
+    except Exception as e:
+        print(f"{LOG_ERROR} Error inesperado en eliminar_foto_perfil: {e}")
+        return crear_respuesta_error(MENSAJE_ERROR_INTERNO, "INTERNAL_ERROR", HTTP_INTERNAL_SERVER_ERROR)
+
+
 @app.post('/api/actualizar-usuario')
 async def api_actualizar_usuario(request: Request) -> JSONResponse:
     """

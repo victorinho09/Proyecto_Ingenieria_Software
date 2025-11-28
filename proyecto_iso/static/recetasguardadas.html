@@ -339,10 +339,10 @@
                       
                       <!-- Valorar esta receta -->
                       <div class="text-center">
-                        <label class="form-label fw-bold mb-2">
+                        <div class="form-label fw-bold mb-2">
                           <i class="bi bi-hand-thumbs-up me-1"></i>
                           Tu valoración
-                        </label>
+                        </div>
                         <div id="estrellaValoracionUsuario" class="fs-3" style="cursor: pointer;">
                           <i class="bi bi-star estrella-valoracion" data-valor="1"></i>
                           <i class="bi bi-star estrella-valoracion" data-valor="2"></i>
@@ -578,6 +578,26 @@
       } from "/static/js/utils/recetas-utils.js";
 
       // Cargar recetas guardadas al cargar la página
+      // Wrapper para consumir/suprimir flashes rápidos heredados
+      // Si existe la bandera `suppressNextFlash` la consumimos aquí antes
+      // de permitir que se muestren mensajes desde este archivo.
+      function mostrarMensajeGuardado(mensaje, tipo = "info", duracion = 5000) {
+        try {
+          if (typeof window !== 'undefined' && window.sessionStorage) {
+            const suppressed = window.sessionStorage.getItem('suppressNextFlash');
+            if (suppressed === '1') {
+              // Consumir la bandera y no mostrar el mensaje
+              window.sessionStorage.removeItem('suppressNextFlash');
+              return;
+            }
+          }
+        } catch (e) {
+          // ignore storage errors
+        }
+        // Llamar al mostrarMensaje importado
+        try { mostrarMensaje(mensaje, tipo, duracion); } catch(e) { console.error(e); }
+      }
+
       document.addEventListener("DOMContentLoaded", async function () {
         await cargarYMostrarRecetasGuardadas();
       });
@@ -725,16 +745,16 @@
                 try { if (confirmarModalEl) { const inst2 = bootstrap.Modal.getInstance(confirmarModalEl); if (inst2) inst2.hide(); } } catch (e) {}
 
               if (resultado && resultado.success) {
-                mostrarMensaje(`Receta "${nombreReceta}" eliminada correctamente`, 'success');
+                mostrarMensajeGuardado(`Receta "${nombreReceta}" eliminada correctamente`, 'success');
                 // Recargar lista de recetas guardadas
                 await cargarYMostrarRecetasGuardadas();
               } else {
-                mostrarMensaje(resultado.data?.mensaje || 'No se pudo eliminar la receta', 'error');
+                mostrarMensajeGuardado(resultado.data?.mensaje || 'No se pudo eliminar la receta', 'error');
                 this.disabled = false;
               }
-            } catch (err) {
+              } catch (err) {
               console.error('Error al eliminar receta:', err);
-              mostrarMensaje('Error al eliminar la receta', 'error');
+              mostrarMensajeGuardado('Error al eliminar la receta', 'error');
               this.disabled = false;
             }
           });
@@ -787,17 +807,17 @@
             try { const detEl = document.getElementById('detalleRecetaModal'); if (detEl) { const inst = bootstrap.Modal.getInstance(detEl); if (inst) inst.hide(); } } catch (e) {}
             
             // Mostrar mensaje de éxito
-            mostrarMensaje(`Receta "${nombreReceta}" desguardada correctamente`, "success");
+            mostrarMensajeGuardado(`Receta "${nombreReceta}" desguardada correctamente`, "success");
             
             // Recargar las recetas guardadas
             await cargarYMostrarRecetasGuardadas();
-          } else {
-            alert(resultado.mensaje || "No se pudo desguardar la receta");
+            } else {
+            mostrarMensajeGuardado(resultado.mensaje || "No se pudo desguardar la receta", "error");
             boton.disabled = false;
           }
-        } catch (error) {
+          } catch (error) {
           console.error("Error al desguardar receta:", error);
-          alert("Error al desguardar la receta");
+          mostrarMensajeGuardado("Error al desguardar la receta", "error");
           boton.disabled = false;
         }
       }
@@ -853,17 +873,17 @@
             console.log(`🗑️ Receta "${nombreReceta}" desguardada desde la card`);
             
             // Mostrar mensaje de éxito
-            mostrarMensaje(`Receta "${nombreReceta}" desguardada correctamente`, "success");
+            mostrarMensajeGuardado(`Receta "${nombreReceta}" desguardada correctamente`, "success");
             
             // Recargar las recetas guardadas (eliminará la card de la vista)
             await cargarYMostrarRecetasGuardadas();
           } else {
-            mostrarMensaje(resultado.mensaje || "No se pudo desguardar la receta", "error");
+            mostrarMensajeGuardado(resultado.mensaje || "No se pudo desguardar la receta", "error");
             boton.disabled = false;
           }
         } catch (error) {
           console.error("Error al desguardar receta:", error);
-          mostrarMensaje("Error al desguardar la receta", "error");
+          mostrarMensajeGuardado("Error al desguardar la receta", "error");
           boton.disabled = false;
         }
       }
@@ -895,17 +915,27 @@
         const contenedorRecetas = document.getElementById("contenedorRecetas");
         const mensajeSinRecetas = document.getElementById("mensajeSinRecetas");
 
+        // Mostrar el mensaje de carga SOLO si la operación tarda más de 250ms.
+        // Esto evita que el texto "Cargando tus recetas guardadas..." parpadee
+        // en navegaciones rápidas donde los datos llegan inmediatamente.
+        let loadingTimer = null;
         try {
-          // Mostrar mensaje de carga
-          mensajeEstado.style.display = "block";
-          document.getElementById("textoMensajeEstado").textContent =
-            "Cargando tus recetas guardadas...";
+          loadingTimer = setTimeout(() => {
+            try {
+              mensajeEstado.style.display = "block";
+              document.getElementById("textoMensajeEstado").textContent =
+                "Cargando tus recetas guardadas...";
+            } catch (e) {
+              // ignore DOM errors
+            }
+          }, 250);
 
           // Cargar recetas guardadas
           const resultado = await cargarRecetasGuardadas();
 
-          // Ocultar mensaje de estado
-          mensajeEstado.style.display = "none";
+          // Ocultar mensaje de estado (si se mostró)
+          if (loadingTimer) { clearTimeout(loadingTimer); loadingTimer = null; }
+          try { mensajeEstado.style.display = "none"; } catch (e) {}
 
           if (resultado.success && resultado.data.recetas) {
             const recetas = resultado.data.recetas;
@@ -933,7 +963,7 @@
         } catch (error) {
           console.error("Error al cargar recetas guardadas:", error);
           mensajeEstado.style.display = "none";
-          mostrarMensaje(
+            mostrarMensajeGuardado(
             `Error al cargar recetas guardadas: ${error.message}`,
             "error"
           );
@@ -1074,12 +1104,12 @@
         const texto = textarea.value.trim();
         
         if (!texto) {
-          mostrarMensaje('Por favor, escribe un comentario antes de publicar.', 'warning');
+          mostrarMensajeGuardado('Por favor, escribe un comentario antes de publicar.', 'warning');
           return;
         }
         
         if (!window.recetaActualNombre) {
-          mostrarMensaje('Error: No se pudo identificar la receta.', 'error');
+          mostrarMensajeGuardado('Error: No se pudo identificar la receta.', 'error');
           return;
         }
         
@@ -1116,13 +1146,13 @@
             }
             
             // Mostrar mensaje de éxito
-            mostrarMensaje('✅ ¡Comentario publicado correctamente!', 'success');
+            mostrarMensajeGuardado('✅ ¡Comentario publicado correctamente!', 'success');
           } else {
-            mostrarMensaje(`Error al publicar comentario: ${resultado.mensaje || 'Error desconocido'}`, 'error');
+            mostrarMensajeGuardado(`Error al publicar comentario: ${resultado.mensaje || 'Error desconocido'}`, 'error');
           }
         } catch (error) {
           console.error('Error al publicar comentario:', error);
-          mostrarMensaje('Error de conexión. No se pudo publicar el comentario.', 'error');
+          mostrarMensajeGuardado('Error de conexión. No se pudo publicar el comentario.', 'error');
         } finally {
           // Restaurar botón
           btnPublicar.disabled = false;
@@ -1330,14 +1360,14 @@
             configurarEstrellas(puntuacion);
             
             // Mostrar mensaje de éxito
-            mostrarMensaje('¡Valoración guardada!', 'success');
+            mostrarMensajeGuardado('¡Valoración guardada!', 'success');
             
           } else {
-            mostrarMensaje(resultado.mensaje || 'Error al guardar la valoración', 'error');
+            mostrarMensajeGuardado(resultado.mensaje || 'Error al guardar la valoración', 'error');
           }
         } catch (error) {
           console.error('❌ Error al enviar valoración:', error);
-          mostrarMensaje('Error de conexión al enviar la valoración', 'error');
+          mostrarMensajeGuardado('Error de conexión al enviar la valoración', 'error');
         }
       }
     </script>
