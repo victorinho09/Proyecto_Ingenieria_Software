@@ -117,31 +117,153 @@
       </div>
     </nav>
 
-    <!-- Contenedor principal con espaciado superior -->
+    <!-- Contenedor principal con diseño hero -->
     <main class="flex-grow-1">
-      <div class="container-fluid mt-3 pt-2 px-4">
+      <!-- Estilos personalizados para las cards con gradientes -->
+      <style>
+        .hero-card {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border: none;
+          border-radius: 20px;
+          box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .hero-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 1;
+          pointer-events: none;
+        }
+        
+        .hero-card .card-body {
+          position: relative;
+          z-index: 2;
+        }
+        
+        .hero-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          box-shadow: 0 30px 80px rgba(102, 126, 234, 0.4);
+        }
+        
+        .hero-card:hover::before {
+          opacity: 1;
+        }
+        
+        .hero-icon {
+          width: 80px;
+          height: 80px;
+          background: rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1.5rem;
+          transition: all 0.3s ease;
+        }
+        
+        .hero-card:hover .hero-icon {
+          transform: rotate(10deg) scale(1.1);
+          background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-card-1 {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          border-radius: 16px;
+          border: none;
+          box-shadow: 0 10px 40px rgba(240, 147, 251, 0.3);
+          transition: all 0.3s ease;
+        }
+        
+        .gradient-card-1:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 50px rgba(240, 147, 251, 0.4);
+        }
+        
+        .gradient-card-2 {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          border-radius: 16px;
+          border: none;
+          box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+          transition: all 0.3s ease;
+        }
+        
+        .gradient-card-2:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 50px rgba(79, 172, 254, 0.4);
+        }
+        
+        .card-icon-small {
+          width: 60px;
+          height: 60px;
+          background: rgba(255, 255, 255, 0.25);
+          backdrop-filter: blur(10px);
+          border-radius: 15px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+        }
+        
+        .gradient-card-1:hover .card-icon-small,
+        .gradient-card-2:hover .card-icon-small {
+          transform: scale(1.1);
+          background: rgba(255, 255, 255, 0.35);
+        }
+        
+        .text-white-shadow {
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-white-gradient {
+          background: rgba(255, 255, 255, 0.95);
+          color: #667eea;
+          border: none;
+          border-radius: 12px;
+          padding: 12px 30px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-white-gradient:hover {
+          background: rgba(255, 255, 255, 1);
+          color: #667eea;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+      </style>
+
+      <!-- Card Hero Principal - Nueva Receta -->
+      <div class="container-fluid mt-4 pt-2 px-4">
         <div class="row justify-content-center">
           <div class="col-12 col-md-11 col-lg-10">
-            <div class="card shadow-sm border-0">
-              <div class="card-body text-center p-4">
-                <div
-                  class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                  style="width: 60px; height: 60px"
-                >
-                  <i class="bi bi-book-half text-primary fs-3"></i>
+            <div class="hero-card">
+              <div class="card-body text-center p-5">
+                <div class="hero-icon">
+                  <i class="bi bi-book-half text-white fs-1"></i>
                 </div>
-                <h5 class="card-title fw-bold mb-3">Nueva Receta</h5>
-                <p class="card-text text-muted mb-3">
-                  Pincha aquí para crear una nueva receta de comida
-                  personalizada.
+                <h2 class="text-white fw-bold mb-3 text-white-shadow">Nueva Receta</h2>
+                <p class="text-white mb-4 fs-5 text-white-shadow" style="max-width: 600px; margin: 0 auto;">
+                  Crea y comparte tu receta de comida personalizada con la comunidad
                 </p>
                 <button
                   type="button"
-                  class="btn btn-outline-primary ms-2"
+                  class="btn btn-white-gradient"
                   data-bs-toggle="modal"
                   data-bs-target="#crearRecetaModal"
                 >
-                  <i class="bi bi-arrow-right"></i> Crear Receta
+                  <i class="bi bi-plus-circle me-2"></i> Crear Receta
                 </button>
               </div>
             </div>
@@ -149,67 +271,48 @@
         </div>
       </div>
 
-      <!-- Cards inferiores -->
-      <div class="container-fluid mt-4 px-4">
+      <!-- Cards inferiores con gradientes -->
+      <div class="container-fluid mt-4 px-4 mb-4">
         <div class="row justify-content-center">
           <div class="col-12 col-md-11 col-lg-10">
             <div class="row g-4">
-              <!-- Primera card inferior -->
+              <!-- Card Mis Recetas -->
               <div class="col-md-6">
-                <div
-                  class="card shadow-sm border-0 h-100"
-                  style="min-height: 280px"
-                >
-                  <div
-                    class="card-body text-center p-4 d-flex flex-column justify-content-between"
-                  >
+                <div class="gradient-card-1 h-100" style="min-height: 280px">
+                  <div class="card-body text-center p-4 d-flex flex-column justify-content-between text-white">
                     <div class="d-flex justify-content-center mb-3">
-                      <div
-                        class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px"
-                      >
-                        <i class="bi bi-person-circle text-primary fs-3"></i>
+                      <div class="card-icon-small">
+                        <i class="bi bi-person-circle text-white fs-3"></i>
                       </div>
                     </div>
-                    <h5 class="card-title fw-bold mb-3">Mis Recetas</h5>
-                    <p class="card-text text-muted mb-3">
+                    <h5 class="card-title fw-bold mb-3 text-white-shadow">Mis Recetas</h5>
+                    <p class="mb-4 text-white-shadow">
                       Accede a tu colección personal de recetas guardadas y
                       organizadas para una consulta rápida y fácil.
                     </p>
-                    <a href="/mis-recetas" class="btn btn-outline-primary">
-                      <i class="bi bi-arrow-right"></i> Explorar mis recetas
+                    <a href="/mis-recetas" class="btn btn-white-gradient align-self-center">
+                      <i class="bi bi-arrow-right me-2"></i> Explorar mis recetas
                     </a>
                   </div>
                 </div>
               </div>
-              <!-- Segunda card inferior -->
+              
+              <!-- Card Recetas Guardadas -->
               <div class="col-md-6">
-                <div
-                  class="card shadow-sm border-0 h-100"
-                  style="min-height: 280px"
-                >
-                  <div
-                    class="card-body text-center p-4 d-flex flex-column justify-content-between"
-                  >
+                <div class="gradient-card-2 h-100" style="min-height: 280px">
+                  <div class="card-body text-center p-4 d-flex flex-column justify-content-between text-white">
                     <div class="d-flex justify-content-center mb-3">
-                      <div
-                        class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
-                        style="width: 60px; height: 60px"
-                      >
-                        <i class="bi bi-heart-fill text-primary fs-3"></i>
+                      <div class="card-icon-small">
+                        <i class="bi bi-heart-fill text-white fs-3"></i>
                       </div>
                     </div>
-                    <h5 class="card-title fw-bold mb-3">Recetas Guardadas</h5>
-                    <p class="card-text text-muted mb-3">
-                      Descubre tus recetas guardads para revisar tu repertorio
+                    <h5 class="card-title fw-bold mb-3 text-white-shadow">Recetas Guardadas</h5>
+                    <p class="mb-4 text-white-shadow">
+                      Descubre tus recetas guardadas para revisar tu repertorio
                       culinario.
                     </p>
-                    <a
-                      href="/recetas-guardadas"
-                      class="btn btn-outline-primary"
-                    >
-                      <i class="bi bi-arrow-right"></i> Explorar recetas
-                      guardadas
+                    <a href="/recetas-guardadas" class="btn btn-white-gradient align-self-center">
+                      <i class="bi bi-arrow-right me-2"></i> Explorar recetas guardadas
                     </a>
                   </div>
                 </div>
