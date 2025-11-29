@@ -210,9 +210,9 @@
               <h2 id="heroNombre">Usuario</h2>
               <div id="heroEmail" style="color:#7a6f66;font-size:0.95rem;">email@ejemplo.com</div>
             </div>
-            <div class="hero-metrics">
+              <div class="hero-metrics">
               <div class="metric text-end">
-                <button id="btnEditarPerfilHero" class="btn btn-outline-primary hero-edit-btn" type="button" data-bs-toggle="modal" data-bs-target="#perfilEditModal">Editar perfil</button>
+                <button id="btnEditarPerfilHero" class="btn btn-outline-primary hero-edit-btn" type="button" aria-label="Editar perfil" data-bs-toggle="modal" data-bs-target="#perfilEditModal">Editar perfil</button>
               </div>
             </div>
           </div>
@@ -243,13 +243,13 @@
           <div class="card mt-3 shadow-sm">
             <div class="card-body">
               <h4 class="card-title">Recetas</h4>
-              <p class="card-text">Aquí puedes ver algunos datos tu cuenta.</p>
+              <p class="card-text">Aquí puedes ver algunos datos de tu cuenta.</p>
 
               <div class="row text-center mt-4 gx-3">
                 <!-- Interactive stat tiles -->
                 <div class="col-12">
                   <div class="d-flex gap-3 flex-wrap justify-content-center recetas-stats">
-                    <button id="tilePropias" class="stat-tile btn shadow-sm" type="button" title="Ver mis recetas publicadas">
+                    <button id="tilePropias" class="stat-tile btn shadow-sm propias" type="button" title="Ver mis recetas publicadas">
                       <div class="stat-icon bg-light rounded-circle"><i class="bi bi-journal-bookmark-fill text-primary"></i></div>
                       <div>
                         <div class="stat-number fw-bold" id="countPropias">0</div>
@@ -257,7 +257,7 @@
                       </div>
                     </button>
 
-                    <button id="tileHechas" class="stat-tile btn shadow-sm" type="button" title="Recetas que has marcado como hechas">
+                    <button id="tileHechas" class="stat-tile btn shadow-sm hechas" type="button" title="Recetas que has marcado como hechas">
                       <div class="stat-icon bg-light rounded-circle"><i class="bi bi-check2-square text-success"></i></div>
                       <div>
                         <div class="stat-number fw-bold" id="countHechas">0</div>
@@ -265,7 +265,7 @@
                       </div>
                     </button>
 
-                    <button id="tileGuardadas" class="stat-tile btn shadow-sm" type="button" title="Recetas que has guardado">
+                    <button id="tileGuardadas" class="stat-tile btn shadow-sm guardadas" type="button" title="Recetas que has guardado">
                       <div class="stat-icon bg-light rounded-circle"><i class="bi bi-bookmark-check-fill text-warning"></i></div>
                       <div>
                         <div class="stat-number fw-bold" id="countGuardadas">0</div>
@@ -280,8 +280,8 @@
                   <div class="recetas-preview d-flex gap-2 justify-content-center flex-wrap" id="recetasPreview">
                     <!-- thumbnails cargadas dinámicamente -->
                   </div>
-                  <div class="text-center mt-2">
-                    <button id="btnVerTodasRecetas" class="btn btn-link">Ver todas mis recetas</button>
+                    <div class="text-center mt-2">
+                    <a id="btnVerTodasRecetas" href="/mis-recetas" class="btn btn-sm btn-outline-primary" role="button" aria-label="Ver todas mis recetas">Ver todas mis recetas</a>
                   </div>
                 </div>
               </div>

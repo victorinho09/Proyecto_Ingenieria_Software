@@ -245,6 +245,80 @@ a:focus-visible, button:focus-visible{
   --saborea-chili:   #D03A27;
 }
 
+/* ===== Perfil: tintados suaves para botones de estado (stat tiles) ===== */
+/* These give a gentle hint of the page theme (mis recetas = pink, guardadas = cyan, hechas = pistach)
+   without using full-on colored fills — subtle color-mix with white for a soft look. */
+.stat-tile{
+  border-radius: 14px;
+  padding: .6rem .9rem;
+  min-width: 160px;
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, border-color .12s ease;
+}
+.stat-tile .stat-icon{ width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:999px; }
+
+/* Mis Recetas (rosa suave) — referencia: #f093fb / #f5576c */
+.stat-tile.propias{
+  background: color-mix(in oklab, #f093fb 10%, #fff);
+  border: 1px solid color-mix(in oklab, #f093fb 14%, #eee);
+}
+.stat-tile.propias .stat-icon{ background: color-mix(in oklab, #f093fb 8%, #fff); }
+.stat-tile.propias:hover{ transform: translateY(-3px); box-shadow: 0 8px 22px rgba(240,147,251,0.08); background: color-mix(in oklab, #f093fb 18%, #fff); }
+
+/* Recetas Guardadas (cyan suave) — referencia: #4facfe / #00f2fe */
+.stat-tile.guardadas{
+  background: color-mix(in oklab, #4facfe 10%, #fff);
+  border: 1px solid color-mix(in oklab, #4facfe 14%, #eee);
+}
+.stat-tile.guardadas .stat-icon{ background: color-mix(in oklab, #4facfe 8%, #fff); }
+.stat-tile.guardadas:hover{ transform: translateY(-3px); box-shadow: 0 8px 22px rgba(79,172,254,0.08); background: color-mix(in oklab, #4facfe 18%, #fff); }
+
+/* Recetas Hechas (pistach suave) — use site variable */
+.stat-tile.hechas{
+  background: color-mix(in oklab, var(--saborea-pistach) 10%, #fff);
+  border: 1px solid color-mix(in oklab, var(--saborea-pistach) 14%, #eee);
+}
+.stat-tile.hechas .stat-icon{ background: color-mix(in oklab, var(--saborea-pistach) 8%, #fff); }
+.stat-tile.hechas:hover{ transform: translateY(-3px); box-shadow: 0 8px 22px rgba(95,191,113,0.08); background: color-mix(in oklab, var(--saborea-pistach) 18%, #fff); }
+
+/* Ensure icon sizes/tints inside stat tiles look good */
+.stat-tile .stat-icon i{ font-size:1.1rem; }
+
+/* Focus and accessibility for stat tiles */
+.stat-tile:focus-visible{ outline: none; box-shadow: 0 0 0 4px color-mix(in oklab, var(--bs-primary) 14%, #fff); border-color: color-mix(in oklab, var(--bs-primary) 18%, #ddd); }
+.stat-tile .stat-number{ font-size:1.35rem; }
+.stat-tile .stat-label{ color: #6f675f; }
+
+/* Button-like link for "Ver todas mis recetas" in profile */
+#btnVerTodasRecetas{
+  display:inline-block;
+  padding:.4rem .9rem;
+  border-radius:20px;
+  background: color-mix(in oklab, var(--saborea-mango) 6%, #fff);
+  border: 1px solid color-mix(in oklab, var(--saborea-mango) 16%, #eee);
+  color: var(--saborea-choco);
+  font-weight:700;
+  text-decoration:none !important;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+#btnVerTodasRecetas:hover, #btnVerTodasRecetas:focus{
+  background: color-mix(in oklab, var(--saborea-mango) 18%, #fff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255,158,44,0.08);
+}
+
+/* Modal-specific primary styling so saving in perfil looks consistent */
+.modal#perfilEditModal .btn-primary{
+  background: linear-gradient(180deg, var(--saborea-mango), color-mix(in oklab, var(--saborea-mango) 86%, #000));
+  border-color: transparent;
+  color:#fff;
+  box-shadow: 0 10px 20px rgba(255,158,44,0.12);
+}
+
+
+
 /* ===== Estilos para valoración en perfil ===== */
 .rating-display{
   display:flex;
