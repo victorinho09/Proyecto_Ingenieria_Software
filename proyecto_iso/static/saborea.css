@@ -645,3 +645,27 @@ footer.bg-light{ padding:2rem 0; }
 
 .metric-number{ font-size:1.2rem; font-weight:800; color:var(--saborea-choco); }
 
+/* Estilos para card-header del menú semanal - centrado vertical */
+.card-header.bg-primary {
+  min-height: 40px;
+  padding: 0.4rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-header.bg-primary h5 {
+  font-size: 1.05rem;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+/* Degradado de amarillo a marrón para cada día de la semana */
+.dia-lunes { background: linear-gradient(135deg, #F4D03F 0%, #F5D76E 100%) !important; }
+.dia-martes { background: linear-gradient(135deg, #E8C547 0%, #E3C060 100%) !important; }
+.dia-miercoles { background: linear-gradient(135deg, #D9B34D 0%, #D1A854 100%) !important; }
+.dia-jueves { background: linear-gradient(135deg, #C19A4F 0%, #BB8E4D 100%) !important; }
+.dia-viernes { background: linear-gradient(135deg, #A87E47 0%, #9F7344 100%) !important; }
+.dia-sabado { background: linear-gradient(135deg, #8B6642 0%, #80593D 100%) !important; }
+.dia-domingo { background: linear-gradient(135deg, #6D4C37 0%, #5D4032 100%) !important; }
+

@@ -235,14 +235,14 @@ function renderizarMenuSemanal(menuSemanal) {
  */
 function crearTarjetaDia(dia, diaData) {
   const col = document.createElement('div');
-  col.className = 'col-12';
+  col.className = 'col-12 mb-3';
   
   const card = document.createElement('div');
   card.className = 'card shadow-sm';
   
   const cardHeader = document.createElement('div');
-  cardHeader.className = 'card-header bg-primary text-white';
-  cardHeader.innerHTML = `<h5 class="mb-0"><i class="bi bi-calendar-day me-2"></i>${dia.nombre}</h5>`;
+  cardHeader.className = `card-header bg-primary text-white d-flex align-items-center justify-content-center dia-${dia.id}`;
+  cardHeader.innerHTML = `<h5 class="mb-0">${dia.nombre}</h5>`;
   
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body';
@@ -480,14 +480,14 @@ function renderizarMenuManualEditable(menuSemanal) {
  */
 function crearTarjetaDiaEditable(dia, diaData, menuSemanal) {
   const col = document.createElement('div');
-  col.className = 'col-12';
+  col.className = 'col-12 mb-3';
   
   const card = document.createElement('div');
   card.className = 'card shadow-sm';
   
   const cardHeader = document.createElement('div');
-  cardHeader.className = 'card-header bg-primary text-white';
-  cardHeader.innerHTML = `<h5 class="mb-0"><i class="bi bi-calendar-day me-2"></i>${dia.nombre}</h5>`;
+  cardHeader.className = `card-header bg-primary text-white d-flex align-items-center justify-content-center dia-${dia.id}`;
+  cardHeader.innerHTML = `<h5 class="mb-0">${dia.nombre}</h5>`;
   
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body';

@@ -1,52 +1,52 @@
 {
   "alfredo.martinezescoval@usp.ceu.es": {
     "lunes": {
-      "desayuno": "psifjidp",
+      "desayuno": "ensalada cesar",
       "aperitivo": "Paella valenciana",
       "comida": "Paella de pollo",
-      "merienda": "iosfjp",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "martes": {
-      "desayuno": "ejemplo",
+      "desayuno": "ensalada cesar",
       "aperitivo": "prueba2",
-      "comida": null,
-      "merienda": "iosfjp",
+      "comida": "Garbanzos ",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "miercoles": {
-      "desayuno": "ejemplo",
-      "aperitivo": "prueba2",
+      "desayuno": "ensalada cesar",
+      "aperitivo": "dfgh",
       "comida": "Paella de pollo",
-      "merienda": "iosfjp",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "jueves": {
       "desayuno": "psifjidp",
-      "aperitivo": "prueba2",
-      "comida": null,
-      "merienda": "iosfjp",
+      "aperitivo": "dfgh",
+      "comida": "Paella de pollo",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "viernes": {
-      "desayuno": "ejemplo",
-      "aperitivo": "Paella valenciana",
-      "comida": "Paella de pollo",
-      "merienda": "iosfjp",
+      "desayuno": "ensalada cesar",
+      "aperitivo": "dfgh",
+      "comida": "Ensalada",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "sabado": {
-      "desayuno": "ejemplo",
-      "aperitivo": "Paella valenciana",
-      "comida": null,
-      "merienda": "iosfjp",
+      "desayuno": "prueba",
+      "aperitivo": "prueba2",
+      "comida": "iosfjp",
+      "merienda": null,
       "cena": "jkgfvi"
     },
     "domingo": {
-      "desayuno": "psifjidp",
-      "aperitivo": "Paella valenciana",
+      "desayuno": "hgfd",
+      "aperitivo": "onse",
       "comida": "Paella de pollo",
-      "merienda": "iosfjp",
+      "merienda": null,
       "cena": "jkgfvi"
     }
   }

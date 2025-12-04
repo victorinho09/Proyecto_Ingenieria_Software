@@ -24,7 +24,9 @@
     "duracion": 15,
     "dificultad": "Facil",
     "fotoReceta": "",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
     "valoraciones": [
@@ -218,7 +220,7 @@
     "alergenos": "",
     "paisOrigen": "",
     "pasosAseguir": "pjgdf",
-    "turnoComida": "merienda",
+    "turnoComida": "comida",
     "duracion": 23,
     "dificultad": "",
     "fotoReceta": "",
