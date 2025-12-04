@@ -49,56 +49,5 @@
       "merienda": "iosfjp",
       "cena": "jkgfvi"
     }
-  },
-  "pedro.varonaparra@usp.ceu.es": {
-    "lunes": {
-      "desayuno": null,
-      "aperitivo": null,
-      "comida": null,
-      "merienda": null,
-      "cena": null
-    },
-    "martes": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Ensalada",
-      "merienda": null,
-      "cena": null
-    },
-    "miercoles": {
-      "desayuno": "jdsjfjd",
-      "aperitivo": null,
-      "comida": null,
-      "merienda": null,
-      "cena": null
-    },
-    "jueves": {
-      "desayuno": "jdsjfjd",
-      "aperitivo": null,
-      "comida": "Ensalada",
-      "merienda": null,
-      "cena": null
-    },
-    "viernes": {
-      "desayuno": "jdsjfjd",
-      "aperitivo": null,
-      "comida": "Ensalada",
-      "merienda": null,
-      "cena": null
-    },
-    "sabado": {
-      "desayuno": "jdsjfjd",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
-      "merienda": null,
-      "cena": null
-    },
-    "domingo": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Ensalada",
-      "merienda": null,
-      "cena": null
-    }
   }
 }

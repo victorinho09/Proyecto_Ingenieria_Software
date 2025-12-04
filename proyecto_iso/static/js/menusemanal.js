@@ -27,8 +27,8 @@ const DIAS_SEMANA = [
 
 const COMIDAS = [
   { id: 'desayuno', nombre: 'Desayuno', icon: 'bi-cup-hot' },
-  { id: 'aperitivo', nombre: 'Aperitivo', icon: 'bi-egg-fried' },
-  { id: 'comida', nombre: 'Comida', icon: 'bi-box2-heart' },
+  { id: 'aperitivo', nombre: 'Aperitivo', icon: 'bi-cup-straw' },
+  { id: 'comida', nombre: 'Comida', icon: 'bi-egg-fried' },
   { id: 'merienda', nombre: 'Merienda', icon: 'bi-cookie' },
   { id: 'cena', nombre: 'Cena', icon: 'bi-moon-stars' }
 ];
@@ -459,9 +459,7 @@ function renderizarMenuManualEditable(menuSemanal) {
   
   // Configurar eventos de los botones de acción
   document.getElementById('btnCancelarMenuManual').addEventListener('click', () => {
-    if (confirm('¿Estás seguro de que quieres cancelar? Se perderán los cambios.')) {
-      cargarMenuSemanal();
-    }
+    cargarMenuSemanal();
   });
   
   document.getElementById('btnGuardarMenuManual').addEventListener('click', () => {
@@ -615,25 +613,30 @@ async function mostrarModalSeleccionReceta(turnoComida, diaId, menuSemanal) {
     const modalBody = modal.querySelector('.modal-body');
     modalBody.innerHTML = `
       <div class="list-group">
-        ${recetasFiltradas.map(receta => `
-          <button type="button" class="list-group-item list-group-item-action" 
-                  onclick="seleccionarReceta('${diaId}', '${turnoComida}', '${receta.nombreReceta.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(receta.fotoReceta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">
-            <div class="d-flex align-items-center">
-              ${receta.fotoReceta ? 
-                `<img src="${receta.fotoReceta}" alt="${receta.nombreReceta}" 
-                     class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">` : 
-                `<div class="bg-secondary rounded me-3 d-flex align-items-center justify-content-center" 
-                     style="width: 60px; height: 60px;">
-                   <i class="bi bi-image text-white"></i>
-                 </div>`
-              }
-              <div>
-                <h6 class="mb-0">${receta.nombreReceta}</h6>
-                <small class="text-muted">${receta.dificultad || 'Sin especificar'} - ${receta.duracion || '?'} min</small>
+        ${recetasFiltradas.map(receta => {
+          const nombreEscapado = (receta.nombreReceta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          const fotoEscapada = (receta.fotoReceta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          
+          return `
+            <button type="button" class="list-group-item list-group-item-action" 
+                    onclick="seleccionarReceta('${diaId}', '${turnoComida}', '${nombreEscapado}', '${fotoEscapada}')">
+              <div class="d-flex align-items-center">
+                ${receta.fotoReceta ? 
+                  `<img src="${receta.fotoReceta}" alt="${receta.nombreReceta}" 
+                       class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">` : 
+                  `<div class="bg-secondary rounded me-3 d-flex align-items-center justify-content-center" 
+                       style="width: 60px; height: 60px;">
+                     <i class="bi bi-image text-white"></i>
+                   </div>`
+                }
+                <div>
+                  <h6 class="mb-0">${receta.nombreReceta}</h6>
+                  <small class="text-muted">${receta.dificultad || 'Sin especificar'} - ${receta.duracion || '?'} min</small>
+                </div>
               </div>
-            </div>
-          </button>
-        `).join('')}
+            </button>
+          `;
+        }).join('')}
       </div>
     `;
     
@@ -694,7 +697,7 @@ window.seleccionarReceta = function(diaId, turnoComida, nombreReceta, fotoReceta
   // Actualizar la UI
   const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
   if (contenedor) {
-    if (fotoReceta) {
+    if (fotoReceta && fotoReceta.trim() !== '') {
       contenedor.innerHTML = `
         <div class="position-relative mb-2">
           <img src="${fotoReceta}" alt="${nombreReceta}" 
@@ -708,7 +711,7 @@ window.seleccionarReceta = function(diaId, turnoComida, nombreReceta, fotoReceta
         <small class="text-muted">${nombreReceta}</small>
       `;
     } else {
-      contenido.innerHTML = `
+      contenedor.innerHTML = `
         <div class="position-relative mb-2">
           <i class="bi ${iconoTurno} text-primary" style="font-size: 4rem;"></i>
           <button class="btn btn-sm btn-danger position-absolute top-0 end-0" 
