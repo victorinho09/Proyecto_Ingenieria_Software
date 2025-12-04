@@ -218,50 +218,43 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="container-fluid py-4 flex-grow-1">
-      <!-- Encabezado -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 class="display-6 fw-bold text-primary mb-2">
-                <i class="bi bi-bookmark-heart-fill"></i> Mis Recetas Guardadas
-              </h1>
-              <p class="text-muted mb-0">
-                Explora las recetas que has guardado para más tarde
-              </p>
+    <main class="flex-grow-1">
+      <div class="container-fluid mt-3 pt-2 px-4">
+        <!-- Sección de recetas guardadas -->
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-bold mb-0">
+                <i class="bi bi-bookmark-heart-fill text-primary"></i> Mis Recetas Guardadas
+              </h4>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Mensaje de estado -->
-      <div id="mensajeEstado" class="row mb-4" style="display: none">
-        <div class="col-12">
-          <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i>
-            <span id="textoMensajeEstado">Cargando recetas guardadas...</span>
-          </div>
-        </div>
-      </div>
+            <!-- Mensaje de estado -->
+            <div id="mensajeEstado" class="mb-4" style="display: none">
+              <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i>
+                <span id="textoMensajeEstado">Cargando recetas guardadas...</span>
+              </div>
+            </div>
 
-      <!-- Contenedor de recetas -->
-      <div class="row" id="contenedorRecetas">
-        <!-- Las recetas se cargarán dinámicamente aquí -->
-      </div>
+            <!-- Contenedor de recetas -->
+            <div class="row g-4" id="contenedorRecetas">
+              <!-- Las recetas se cargarán dinámicamente aquí -->
+            </div>
 
-      <!-- Mensaje cuando no hay recetas -->
-      <div id="mensajeSinRecetas" class="row" style="display: none">
-        <div class="col-12">
-          <div class="text-center py-5">
-            <i class="bi bi-bookmark text-muted" style="font-size: 4rem"></i>
-            <h3 class="text-muted mt-3">No tienes recetas guardadas</h3>
-            <p class="text-muted mb-4">
-              Explora la sección de comunidad y guarda las recetas que más te gusten
-            </p>
-            <a href="/comunidad" class="btn btn-primary btn-lg">
-              <i class="bi bi-search"></i> Explorar Recetas
-            </a>
+            <!-- Mensaje cuando no hay recetas -->
+            <div id="mensajeSinRecetas" style="display: none">
+              <div class="text-center py-5">
+                <i class="bi bi-bookmark text-muted" style="font-size: 4rem"></i>
+                <h3 class="text-muted mt-3">No tienes recetas guardadas</h3>
+                <p class="text-muted mb-4">
+                  Explora la sección de comunidad y guarda las recetas que más te gusten
+                </p>
+                <a href="/comunidad" class="btn btn-primary btn-lg">
+                  <i class="bi bi-search"></i> Explorar Recetas
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

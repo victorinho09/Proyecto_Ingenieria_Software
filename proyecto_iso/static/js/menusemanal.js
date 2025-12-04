@@ -443,20 +443,20 @@ function renderizarMenuManualEditable(menuSemanal) {
     btnEliminarMenu.style.display = 'none';
   }
   
-  // Crear botones de acción del menú
-  const botonesAccion = document.createElement('div');
-  botonesAccion.className = 'row mb-3';
-  botonesAccion.innerHTML = `
-    <div class="col-12 d-flex justify-content-end gap-2">
-      <button id="btnCancelarMenuManual" class="btn btn-secondary">
-        <i class="bi bi-x-circle"></i> Cancelar
-      </button>
-      <button id="btnGuardarMenuManual" class="btn btn-success">
-        <i class="bi bi-check-circle"></i> Guardar Menú
-      </button>
-    </div>
+  // Crear botones de acción del menú en el mismo lugar que los botones principales
+  const contenedorBotones = btnEditarMenu.parentElement;
+  const botonesTemporales = document.createElement('div');
+  botonesTemporales.id = 'botonesEdicionMenu';
+  botonesTemporales.className = 'd-flex gap-2';
+  botonesTemporales.innerHTML = `
+    <button id="btnCancelarMenuManual" class="btn btn-secondary">
+      <i class="bi bi-x-circle me-1"></i> Cancelar
+    </button>
+    <button id="btnGuardarMenuManual" class="btn btn-success">
+      <i class="bi bi-check-circle me-1"></i> Guardar Menú
+    </button>
   `;
-  menuSemanalContainer.appendChild(botonesAccion);
+  contenedorBotones.appendChild(botonesTemporales);
   
   // Renderizar los días
   DIAS_SEMANA.forEach(dia => {
@@ -467,6 +467,11 @@ function renderizarMenuManualEditable(menuSemanal) {
   
   // Configurar eventos de los botones de acción
   document.getElementById('btnCancelarMenuManual').addEventListener('click', () => {
+    // Eliminar botones temporales
+    const botonesTempDiv = document.getElementById('botonesEdicionMenu');
+    if (botonesTempDiv) {
+      botonesTempDiv.remove();
+    }
     cargarMenuSemanal();
   });
   
@@ -808,6 +813,11 @@ async function guardarMenuManual(menuSemanal) {
     
     if (data.exito) {
       mostrarMensaje('Menú semanal guardado correctamente', 'success');
+      // Eliminar botones temporales
+      const botonesTempDiv = document.getElementById('botonesEdicionMenu');
+      if (botonesTempDiv) {
+        botonesTempDiv.remove();
+      }
       // Mostrar los botones de editar y eliminar después de guardar
       if (btnEditarMenu) {
         btnEditarMenu.style.display = 'inline-block';
