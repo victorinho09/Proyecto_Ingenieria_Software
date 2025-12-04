@@ -516,5 +516,39 @@
     "comentarios": [],
     "valoraciones": [],
     "usuario": "pedro.varonaparra@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "receta prueba nueva 9",
+    "descripcion": "lkjnononoinoij",
+    "ingredientes": "hola",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "sdfasdffsdf",
+    "turnoComida": "aperitivo",
+    "duracion": 34,
+    "dificultad": "",
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "publicada": false,
+    "usuario": "victorvega@gmail.com"
+  },
+  {
+    "nombreReceta": "holaquetal2",
+    "descripcion": "sfsfsfsfsdfasf",
+    "ingredientes": "sfsfsfsfdsfdsf",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "sdfsdfsfsdfds",
+    "turnoComida": "desayuno",
+    "duracion": 345,
+    "dificultad": "",
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "publicada": false,
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   }
 ]

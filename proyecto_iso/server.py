@@ -889,6 +889,8 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
             # Buscar la receta original del usuario
             receta_encontrada = False
             turno_original = None
+            nombre_cambio = (nombre_original != receta.nombreReceta)
+            
             for i, receta_existente in enumerate(todas_recetas):
                 if (receta_existente.get("nombreReceta") == nombre_original and 
                     receta_existente.get("usuario", "").lower() == email_usuario.lower()):
@@ -896,8 +898,24 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
                     # Guardar el turno original para comparar
                     turno_original = receta_existente.get("turnoComida")
                     
-                    # Mantener los usuarios que guardaron la receta
-                    receta_data["usuariosGuardado"] = receta_existente.get("usuariosGuardado", [])
+                    # Si se cambió el nombre de la receta
+                    if nombre_cambio:
+                        print(f"⚠️ [CAMBIO DE NOMBRE] '{nombre_original}' → '{receta.nombreReceta}'")
+                        
+                        # 1. Despublicar la receta automáticamente
+                        receta_data["publicada"] = False
+                        print(f"📋 Receta despublicada automáticamente por cambio de nombre")
+                        
+                        # 2. Eliminar de las listas de guardados
+                        usuarios_afectados = receta_existente.get("usuariosGuardado", [])
+                        if usuarios_afectados:
+                            print(f"🗑️ Receta eliminada de {len(usuarios_afectados)} usuarios que la tenían guardada")
+                        
+                        # 3. Vaciar la lista de usuariosGuardado (se eliminará de todos los guardados)
+                        receta_data["usuariosGuardado"] = []
+                    else:
+                        # Si no cambió el nombre, mantener los usuarios que guardaron la receta
+                        receta_data["usuariosGuardado"] = receta_existente.get("usuariosGuardado", [])
                     
                     # Actualizar la receta manteniendo el usuario
                     receta_data["usuario"] = email_usuario

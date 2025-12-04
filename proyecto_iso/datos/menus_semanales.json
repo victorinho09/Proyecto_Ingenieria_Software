@@ -49,5 +49,56 @@
       "merienda": null,
       "cena": "jkgfvi"
     }
+  },
+  "victorvega@gmail.com": {
+    "lunes": {
+      "desayuno": "holaquetal",
+      "aperitivo": null,
+      "comida": "Ensalada",
+      "merienda": null,
+      "cena": null
+    },
+    "martes": {
+      "desayuno": "holaquetal",
+      "aperitivo": null,
+      "comida": "Paella de pollo",
+      "merienda": null,
+      "cena": null
+    },
+    "miercoles": {
+      "desayuno": "ensalada cesar",
+      "aperitivo": null,
+      "comida": "Paella de pollo",
+      "merienda": null,
+      "cena": null
+    },
+    "jueves": {
+      "desayuno": "ensalada cesar",
+      "aperitivo": null,
+      "comida": "Garbanzos ",
+      "merienda": null,
+      "cena": null
+    },
+    "viernes": {
+      "desayuno": "ensalada cesar",
+      "aperitivo": null,
+      "comida": "Ensalada",
+      "merienda": null,
+      "cena": null
+    },
+    "sabado": {
+      "desayuno": "ensalada cesar",
+      "aperitivo": null,
+      "comida": "Garbanzos ",
+      "merienda": null,
+      "cena": null
+    },
+    "domingo": {
+      "desayuno": "ensalada cesar",
+      "aperitivo": null,
+      "comida": "Ensalada",
+      "merienda": null,
+      "cena": null
+    }
   }
 }
