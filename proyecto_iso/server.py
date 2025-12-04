@@ -1900,10 +1900,51 @@ async def obtener_valoracion_receta(receta_id: str, request: Request) -> JSONRes
 
 # ==================== ENDPOINTS DE MENÚ SEMANAL ====================
 
+def enriquecer_menu_con_recetas(menu_semanal):
+    """
+    Enriquece el menú semanal convirtiendo los nombres de recetas en objetos con información completa.
+    
+    Args:
+        menu_semanal: Diccionario con el menú semanal (nombres de recetas)
+        
+    Returns:
+        Diccionario con el menú enriquecido (objetos con nombre y foto de recetas)
+    """
+    try:
+        # Cargar todas las recetas
+        todas_recetas = cargar_recetas()
+        
+        # Crear un diccionario de búsqueda rápida por nombre de receta
+        recetas_dict = {}
+        for receta in todas_recetas:
+            nombre = receta.get('nombreReceta', '')
+            recetas_dict[nombre] = {
+                'nombreReceta': nombre,
+                'fotoReceta': receta.get('fotoReceta', '')
+            }
+        
+        # Enriquecer el menú
+        menu_enriquecido = {}
+        for dia, comidas in menu_semanal.items():
+            menu_enriquecido[dia] = {}
+            for turno, nombre_receta in comidas.items():
+                if nombre_receta and nombre_receta in recetas_dict:
+                    # Asignar objeto con información de la receta
+                    menu_enriquecido[dia][turno] = recetas_dict[nombre_receta]
+                else:
+                    # Mantener None si no hay receta
+                    menu_enriquecido[dia][turno] = None
+        
+        return menu_enriquecido
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al enriquecer menú con recetas: {e}")
+        return menu_semanal  # Devolver menú original si hay error
+
 @app.get("/api/menu-semanal")
 async def obtener_menu_semanal_endpoint(request: Request) -> JSONResponse:
     """
-    Obtiene el menú semanal del usuario autenticado.
+    Obtiene el menú semanal del usuario autenticado con información completa de las recetas.
     
     Returns:
         JSONResponse: Menú semanal del usuario o None si no existe
@@ -1923,9 +1964,15 @@ async def obtener_menu_semanal_endpoint(request: Request) -> JSONResponse:
         # Obtener menú semanal del archivo JSON separado
         menu_semanal = obtener_menu_semanal(email_usuario)
         
+        # Si hay menú, enriquecerlo con datos completos de las recetas
+        if menu_semanal:
+            menu_enriquecido = enriquecer_menu_con_recetas(menu_semanal)
+        else:
+            menu_enriquecido = None
+        
         return crear_respuesta_exito(
             "Menú semanal obtenido correctamente",
-            {"menuSemanal": menu_semanal}
+            {"menuSemanal": menu_enriquecido}
         )
         
     except Exception as e:

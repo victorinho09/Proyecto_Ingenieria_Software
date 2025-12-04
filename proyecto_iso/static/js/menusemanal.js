@@ -27,8 +27,8 @@ const DIAS_SEMANA = [
 
 const COMIDAS = [
   { id: 'desayuno', nombre: 'Desayuno', icon: 'bi-cup-hot' },
-  { id: 'aperitivo', nombre: 'Aperitivo', icon: 'bi-egg' },
-  { id: 'comida', nombre: 'Comida', icon: 'bi-bowl-hot' },
+  { id: 'aperitivo', nombre: 'Aperitivo', icon: 'bi-egg-fried' },
+  { id: 'comida', nombre: 'Comida', icon: 'bi-box2-heart' },
   { id: 'merienda', nombre: 'Merienda', icon: 'bi-cookie' },
   { id: 'cena', nombre: 'Cena', icon: 'bi-moon-stars' }
 ];
@@ -274,28 +274,43 @@ function crearTarjetaComida(comida, receta) {
   card.className = 'card h-100 border-secondary';
   
   const cardBody = document.createElement('div');
-  cardBody.className = 'card-body text-center';
-  
-  const icon = document.createElement('i');
-  icon.className = `bi ${comida.icon} text-primary fs-4`;
+  cardBody.className = 'card-body text-center d-flex flex-column';
   
   const titulo = document.createElement('h6');
-  titulo.className = 'card-title mt-2 mb-3';
+  titulo.className = 'card-title mb-3';
   titulo.textContent = comida.nombre;
   
   const contenido = document.createElement('div');
+  contenido.className = 'flex-grow-1 d-flex flex-column align-items-center justify-content-center';
   
   if (receta && receta !== null) {
     // Hay una receta asignada
-    contenido.className = 'text-muted small';
-    contenido.textContent = receta;
+    const nombreReceta = typeof receta === 'object' ? receta.nombreReceta : receta;
+    const fotoReceta = typeof receta === 'object' ? receta.fotoReceta : '';
+    
+    if (fotoReceta) {
+      // Mostrar foto de la receta
+      contenido.innerHTML = `
+        <img src="${fotoReceta}" alt="${nombreReceta}" 
+             class="rounded mb-2" style="width: 100%; max-width: 150px; height: 100px; object-fit: cover;">
+        <small class="text-muted">${nombreReceta}</small>
+      `;
+    } else {
+      // Mostrar icono por defecto según el turno (mantener color naranja)
+      contenido.innerHTML = `
+        <i class="bi ${comida.icon} text-primary mb-2" style="font-size: 4rem;"></i>
+        <small class="text-muted">${nombreReceta}</small>
+      `;
+    }
   } else {
-    // No hay receta asignada - indicar que no hay recetas para este turno
-    contenido.className = 'text-warning small fst-italic';
-    contenido.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>No hay recetas para este turno';
+    // No hay receta asignada
+    contenido.className += ' text-warning';
+    contenido.innerHTML = `
+      <i class="bi ${comida.icon} text-warning mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <small class="fst-italic">No hay recetas para este turno</small>
+    `;
   }
   
-  cardBody.appendChild(icon);
   cardBody.appendChild(titulo);
   cardBody.appendChild(contenido);
   card.appendChild(cardBody);
@@ -499,40 +514,60 @@ function crearTarjetaComidaEditable(comida, receta, diaId, menuSemanal) {
   card.className = 'card h-100 border-secondary';
   
   const cardBody = document.createElement('div');
-  cardBody.className = 'card-body text-center';
-  
-  const icon = document.createElement('i');
-  icon.className = `bi ${comida.icon} text-primary fs-4`;
+  cardBody.className = 'card-body text-center d-flex flex-column';
   
   const titulo = document.createElement('h6');
-  titulo.className = 'card-title mt-2 mb-3';
+  titulo.className = 'card-title mb-3';
   titulo.textContent = comida.nombre;
   
   const contenido = document.createElement('div');
   contenido.id = `receta-${diaId}-${comida.id}`;
-  contenido.className = 'mb-2';
+  contenido.className = 'flex-grow-1 d-flex flex-column align-items-center justify-content-center mb-2';
   
   if (receta && receta !== null) {
-    contenido.innerHTML = `
-      <div class="d-flex align-items-center justify-content-between">
-        <small class="text-muted">${receta}</small>
-        <button class="btn btn-sm btn-outline-danger" onclick="eliminarRecetaDelMenu('${diaId}', '${comida.id}')">
-          <i class="bi bi-x"></i>
-        </button>
-      </div>
-    `;
+    const nombreReceta = typeof receta === 'object' ? receta.nombreReceta : receta;
+    const fotoReceta = typeof receta === 'object' ? receta.fotoReceta : '';
+    
+    if (fotoReceta) {
+      contenido.innerHTML = `
+        <div class="position-relative mb-2">
+          <img src="${fotoReceta}" alt="${nombreReceta}" 
+               class="rounded" style="width: 100%; max-width: 150px; height: 100px; object-fit: cover;">
+          <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                  onclick="eliminarRecetaDelMenu('${diaId}', '${comida.id}')" 
+                  style="padding: 0.25rem 0.5rem;">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <small class="text-muted">${nombreReceta}</small>
+      `;
+    } else {
+      contenido.innerHTML = `
+        <div class="position-relative mb-2">
+          <i class="bi ${comida.icon} text-primary" style="font-size: 4rem;"></i>
+          <button class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                  onclick="eliminarRecetaDelMenu('${diaId}', '${comida.id}')" 
+                  style="padding: 0.25rem 0.5rem;">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <small class="text-muted">${nombreReceta}</small>
+      `;
+    }
   } else {
-    contenido.innerHTML = '<small class="text-muted fst-italic">Vacío</small>';
+    contenido.innerHTML = `
+      <i class="bi ${comida.icon} text-secondary mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <small class="text-muted fst-italic">Vacío</small>
+    `;
   }
   
   const btnAnadir = document.createElement('button');
-  btnAnadir.className = 'btn btn-sm btn-outline-primary w-100';
+  btnAnadir.className = 'btn btn-sm btn-outline-primary w-100 mt-auto';
   btnAnadir.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Añadir receta';
   btnAnadir.addEventListener('click', () => {
     mostrarModalSeleccionReceta(comida.id, diaId, menuSemanal);
   });
   
-  cardBody.appendChild(icon);
   cardBody.appendChild(titulo);
   cardBody.appendChild(contenido);
   cardBody.appendChild(btnAnadir);
@@ -582,7 +617,7 @@ async function mostrarModalSeleccionReceta(turnoComida, diaId, menuSemanal) {
       <div class="list-group">
         ${recetasFiltradas.map(receta => `
           <button type="button" class="list-group-item list-group-item-action" 
-                  onclick="seleccionarReceta('${diaId}', '${turnoComida}', '${receta.nombreReceta.replace(/'/g, "\\'")}')">
+                  onclick="seleccionarReceta('${diaId}', '${turnoComida}', '${receta.nombreReceta.replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(receta.fotoReceta || '').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">
             <div class="d-flex align-items-center">
               ${receta.fotoReceta ? 
                 `<img src="${receta.fotoReceta}" alt="${receta.nombreReceta}" 
@@ -641,25 +676,50 @@ function crearModalSeleccionReceta() {
 /**
  * Selecciona una receta para un turno específico
  */
-window.seleccionarReceta = function(diaId, turnoComida, nombreReceta) {
+window.seleccionarReceta = function(diaId, turnoComida, nombreReceta, fotoReceta) {
   const menuSemanal = window.menuSemanalTemporal;
   
-  // Actualizar el menú
+  // Actualizar el menú con el objeto de receta
   if (menuSemanal[diaId]) {
-    menuSemanal[diaId][turnoComida] = nombreReceta;
+    menuSemanal[diaId][turnoComida] = {
+      nombreReceta: nombreReceta,
+      fotoReceta: fotoReceta || ''
+    };
   }
+  
+  // Obtener el icono del turno
+  const comida = COMIDAS.find(c => c.id === turnoComida);
+  const iconoTurno = comida ? comida.icon : 'bi-circle';
   
   // Actualizar la UI
   const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
   if (contenedor) {
-    contenedor.innerHTML = `
-      <div class="d-flex align-items-center justify-content-between">
+    if (fotoReceta) {
+      contenedor.innerHTML = `
+        <div class="position-relative mb-2">
+          <img src="${fotoReceta}" alt="${nombreReceta}" 
+               class="rounded" style="width: 100%; max-width: 150px; height: 100px; object-fit: cover;">
+          <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                  onclick="eliminarRecetaDelMenu('${diaId}', '${turnoComida}')" 
+                  style="padding: 0.25rem 0.5rem;">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
         <small class="text-muted">${nombreReceta}</small>
-        <button class="btn btn-sm btn-outline-danger" onclick="eliminarRecetaDelMenu('${diaId}', '${turnoComida}')">
-          <i class="bi bi-x"></i>
-        </button>
-      </div>
-    `;
+      `;
+    } else {
+      contenido.innerHTML = `
+        <div class="position-relative mb-2">
+          <i class="bi ${iconoTurno} text-primary" style="font-size: 4rem;"></i>
+          <button class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                  onclick="eliminarRecetaDelMenu('${diaId}', '${turnoComida}')" 
+                  style="padding: 0.25rem 0.5rem;">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <small class="text-muted">${nombreReceta}</small>
+      `;
+    }
   }
   
   // Cerrar el modal
@@ -680,10 +740,17 @@ window.eliminarRecetaDelMenu = function(diaId, turnoComida) {
     menuSemanal[diaId][turnoComida] = null;
   }
   
+  // Obtener el icono del turno
+  const comida = COMIDAS.find(c => c.id === turnoComida);
+  const iconoTurno = comida ? comida.icon : 'bi-circle';
+  
   // Actualizar la UI
   const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
   if (contenedor) {
-    contenedor.innerHTML = '<small class="text-muted fst-italic">Vacío</small>';
+    contenedor.innerHTML = `
+      <i class="bi ${iconoTurno} text-secondary mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <small class="text-muted fst-italic">Vacío</small>
+    `;
   }
 };
 
@@ -696,13 +763,29 @@ async function guardarMenuManual(menuSemanal) {
     btnGuardar.disabled = true;
     btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
     
+    // Convertir objetos de receta a solo nombres para el servidor
+    const menuParaGuardar = {};
+    for (const dia in menuSemanal) {
+      menuParaGuardar[dia] = {};
+      for (const turno in menuSemanal[dia]) {
+        const receta = menuSemanal[dia][turno];
+        if (receta && typeof receta === 'object') {
+          // Si es un objeto, extraer solo el nombre
+          menuParaGuardar[dia][turno] = receta.nombreReceta;
+        } else {
+          // Si es null o ya es un string, mantenerlo
+          menuParaGuardar[dia][turno] = receta;
+        }
+      }
+    }
+    
     const response = await fetch('/api/menu-semanal/guardar-manual', {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ menuSemanal })
+      body: JSON.stringify({ menuSemanal: menuParaGuardar })
     });
     
     if (!response.ok) {

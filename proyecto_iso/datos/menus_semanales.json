@@ -54,7 +54,7 @@
     "lunes": {
       "desayuno": null,
       "aperitivo": null,
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": null,
       "cena": null
     },
@@ -68,7 +68,7 @@
     "miercoles": {
       "desayuno": "jdsjfjd",
       "aperitivo": null,
-      "comida": "Ensalada",
+      "comida": null,
       "merienda": null,
       "cena": null
     },
