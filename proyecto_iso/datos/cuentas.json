@@ -26,9 +26,9 @@
     "nombreUsuario": "Alfredo",
     "email": "alfredo.martinezescoval@usp.ceu.es",
     "password": "Alfredo1234",
-    "fotoPerfil": null,
-    "valoracion": 4.5,
-    "valoracion_count": 2
+    "fotoPerfil": "/static/uploads/perfiles/20251204_214803_alfredo_martinezescoval_faa8cc58.jpg",
+    "valoracion": 0.0,
+    "valoracion_count": 0
   },
   {
     "nombreUsuario": "prueba",

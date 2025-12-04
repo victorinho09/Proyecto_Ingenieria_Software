@@ -2370,7 +2370,16 @@
       // Manejar la confirmación de eliminación
       document.addEventListener('DOMContentLoaded', function() {
         const confirmarBtn = document.getElementById('confirmarEliminarBtn');
+        const modalElement = document.getElementById('confirmarEliminarModal');
+        
         if (!confirmarBtn) return;
+
+        // Habilitar el botón cada vez que se abre el modal
+        if (modalElement) {
+          modalElement.addEventListener('show.bs.modal', function() {
+            confirmarBtn.disabled = false;
+          });
+        }
 
         confirmarBtn.addEventListener('click', async function() {
           const nombreReceta = this.getAttribute('data-nombre-receta');
