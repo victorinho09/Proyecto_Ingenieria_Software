@@ -123,25 +123,20 @@
   {
     "nombreReceta": "Paella de pollo",
     "descripcion": "Paella de pollo de corral",
-    "ingredientes": "Arroz, cebolla, pollo, ajo, pimenton, azafrán",
-    "pasosAseguir": "Cocinar",
-    "duracion": 60,
-    "fotoReceta": "/static/uploads/recetas/20251013_210937_alfredo_martinezescoval_1fa1b13f.jpg",
+    "ingredientes": "Arroz, cebolla, pollo, ajo, pimenton, azafrán, comino",
     "alergenos": "",
     "paisOrigen": "España",
+    "pasosAseguir": "Cocinar",
     "turnoComida": "comida",
+    "duracion": 60,
     "dificultad": "Dificil",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "fotoReceta": "/static/uploads/recetas/20251013_210937_alfredo_martinezescoval_1fa1b13f.jpg",
     "usuariosGuardado": [
       "victorvega@gmail.com"
     ],
-    "publicada": true,
-    "valoraciones": [
-      {
-        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
-        "puntuacion": 3
-      }
-    ]
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "ensalada cesar",
@@ -345,5 +340,91 @@
     "comentarios": [],
     "valoraciones": [],
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "Paella valenciana",
+    "descripcion": "sdofin",
+    "ingredientes": "sdfvjoº",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "osnjo",
+    "turnoComida": "aperitivo",
+    "duracion": 342,
+    "dificultad": "",
+    "fotoReceta": "C:\\fakepath\\portal del ceu.PNG",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+  },
+  {
+    "nombreReceta": "prueba",
+    "descripcion": "opsenif",
+    "ingredientes": "sepekfgnk",
+    "pasosAseguir": "spjg",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "desayuno",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "onse",
+    "descripcion": "spoddfp",
+    "ingredientes": "pos,fp",
+    "pasosAseguir": "`sofdk,",
+    "duracion": 12,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "aperitivo",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "hgfd",
+    "descripcion": "osdj",
+    "ingredientes": "qodf",
+    "pasosAseguir": "sdodf",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "desayuno",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "dfgh",
+    "descripcion": "IUNHUO",
+    "ingredientes": "OUNHUMO",
+    "pasosAseguir": "NUOUH",
+    "duracion": 124,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "aperitivo",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "prueba",
+    "descripcion": "sdf",
+    "ingredientes": "psdfj",
+    "pasosAseguir": "psjkgf",
+    "duracion": 23,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "comida",
+    "dificultad": "",
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
   }
 ]

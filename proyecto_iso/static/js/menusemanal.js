@@ -11,6 +11,7 @@ const emptyState = document.getElementById('emptyState');
 const menuSemanalContainer = document.getElementById('menuSemanal');
 const btnCrearAutomatico = document.getElementById('btnCrearAutomatico');
 const btnCrearManual = document.getElementById('btnCrearManual');
+const btnEliminarMenu = document.getElementById('btnEliminarMenu');
 
 // Configuración de días y comidas
 const DIAS_SEMANA = [
@@ -54,6 +55,10 @@ function configurarEventos() {
   
   if (btnCrearManual) {
     btnCrearManual.addEventListener('click', crearMenuManual);
+  }
+  
+  if (btnEliminarMenu) {
+    btnEliminarMenu.addEventListener('click', eliminarMenuSemanal);
   }
 }
 
@@ -271,6 +276,7 @@ function mostrarEstado(estado) {
   loadingState.style.display = 'none';
   emptyState.style.display = 'none';
   menuSemanalContainer.style.display = 'none';
+  btnEliminarMenu.style.display = 'none';
   
   switch (estado) {
     case 'loading':
@@ -281,6 +287,7 @@ function mostrarEstado(estado) {
       break;
     case 'menu':
       menuSemanalContainer.style.display = 'block';
+      btnEliminarMenu.style.display = 'inline-block';
       break;
   }
 }
@@ -301,6 +308,61 @@ function mostrarError() {
       <i class="bi bi-arrow-clockwise"></i> Recargar página
     </button>
   `;
+}
+
+/**
+ * Elimina el menú semanal actual
+ */
+async function eliminarMenuSemanal() {
+  // Mostrar modal de confirmación
+  const modal = new bootstrap.Modal(document.getElementById('eliminarMenuModal'));
+  modal.show();
+  
+  // Configurar el botón de confirmar
+  const btnConfirmar = document.getElementById('btnConfirmarEliminar');
+  
+  // Remover listeners previos para evitar duplicados
+  const nuevoBtn = btnConfirmar.cloneNode(true);
+  btnConfirmar.parentNode.replaceChild(nuevoBtn, btnConfirmar);
+  
+  // Añadir nuevo listener
+  nuevoBtn.addEventListener('click', async () => {
+    try {
+      nuevoBtn.disabled = true;
+      nuevoBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Eliminando...';
+      
+      const response = await fetch('/api/menu-semanal', {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ mensaje: 'Error desconocido' }));
+        throw new Error(errorData.mensaje || 'Error al eliminar menú');
+      }
+      
+      const data = await response.json();
+      
+      if (data.exito) {
+        // Cerrar modal
+        modal.hide();
+        
+        // Actualizar vista
+        mostrarEstado('empty');
+        mostrarMensaje('Menú semanal eliminado correctamente', 'success');
+      } else {
+        throw new Error(data.mensaje || 'Error al eliminar menú');
+      }
+      
+    } catch (error) {
+      console.error('Error al eliminar menú:', error);
+      modal.hide();
+      mostrarMensaje('Error al eliminar el menú: ' + error.message, 'error');
+    } finally {
+      nuevoBtn.disabled = false;
+      nuevoBtn.innerHTML = 'Eliminar Menú';
+    }
+  });
 }
 
 // Inicializar cuando el DOM esté listo

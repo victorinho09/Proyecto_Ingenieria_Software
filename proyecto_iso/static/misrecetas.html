@@ -332,6 +332,7 @@
               <!-- Campos ocultos para modo edición -->
               <input type="hidden" id="modoEdicion" name="modoEdicion" value="false">
               <input type="hidden" id="nombreRecetaOriginal" name="nombreRecetaOriginal" value="">
+              <input type="hidden" id="fotoRecetaOriginal" name="fotoRecetaOriginal" value="">
               
               <div class="row">
                 <div class="col-md-6">
@@ -412,12 +413,13 @@
                 <div class="col-md-6">
                   <div class="mb-3">
                     <label for="turnoComida" class="form-label"
-                      >Turno de comida</label
+                      >Turno de comida *</label
                     >
                     <select
                       class="form-select"
                       name="turnoComida"
                       id="turnoComida"
+                      required
                     >
                       <option value="" selected>Selecciona una opción</option>
                       <option value="desayuno">Desayuno</option>
@@ -1606,6 +1608,7 @@
         // Configurar campos ocultos para modo edición
         document.getElementById('modoEdicion').value = 'true';
         document.getElementById('nombreRecetaOriginal').value = receta.nombreReceta || '';
+        document.getElementById('fotoRecetaOriginal').value = receta.fotoReceta || '';
         
         // Cambiar los botones del modal footer
         const modalFooter = modalElement.querySelector('.modal-footer');
@@ -1625,7 +1628,8 @@
             { id: 'duracion', nombre: 'Duración' },
             { id: 'descripcion', nombre: 'Descripción' },
             { id: 'ingredientes', nombre: 'Ingredientes' },
-            { id: 'pasosAseguir', nombre: 'Pasos a seguir' }
+            { id: 'pasosAseguir', nombre: 'Pasos a seguir' },
+            { id: 'turnoComida', nombre: 'Turno de comida' }
           ];
           
           const camposVacios = [];
@@ -1681,6 +1685,10 @@
             const advertenciaPrevia = document.getElementById('advertenciaValidacion');
             if (advertenciaPrevia) advertenciaPrevia.remove();
             
+            // Obtener la foto: nueva si se subió, o la original si no
+            const inputFoto = document.getElementById('fotoReceta');
+            const fotoReceta = inputFoto.value || document.getElementById('fotoRecetaOriginal').value || '';
+            
             // Crear objeto con los datos del formulario
             const recetaData = {
               nombreReceta: document.getElementById('nombreReceta').value,
@@ -1692,7 +1700,7 @@
               dificultad: document.getElementById('dificultad').value,
               paisOrigen: document.getElementById('paisOrigen').value,
               alergenos: document.getElementById('alergenos').value,
-              fotoReceta: document.getElementById('fotoReceta').value || '',
+              fotoReceta: fotoReceta,
               modoEdicion: document.getElementById('modoEdicion').value,
               nombreRecetaOriginal: document.getElementById('nombreRecetaOriginal').value
             };
@@ -1764,10 +1772,12 @@
         });
         
         // Limpiar validación cuando el usuario escribe
-        const camposObligatorios = ['nombreReceta', 'duracion', 'descripcion', 'ingredientes', 'pasosAseguir'];
+        const camposObligatorios = ['nombreReceta', 'duracion', 'descripcion', 'ingredientes', 'pasosAseguir', 'turnoComida'];
         camposObligatorios.forEach(campoId => {
           const campo = document.getElementById(campoId);
-          campo.addEventListener('input', function() {
+          
+          // Función común para validar
+          const validar = function() {
             if (this.value && this.value.trim() !== '') {
               this.classList.remove('is-invalid');
               
@@ -1783,7 +1793,11 @@
                 if (advertencia) advertencia.remove();
               }
             }
-          });
+          };
+          
+          // Añadir eventos input y change (para que funcione con inputs y selects)
+          campo.addEventListener('input', validar);
+          campo.addEventListener('change', validar);
         });
         
         // Mostrar el modal

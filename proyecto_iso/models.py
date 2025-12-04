@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 from typing import List, Optional
 from datetime import datetime
 
@@ -30,13 +30,13 @@ class ValoracionRequest(BaseModel):
     puntuacion: int  # Puntuación de 1 a 5 estrellas
 
 class Receta(BaseModel):
-    nombreReceta: str
+    nombreReceta: constr(min_length=1)
     descripcion: str
     ingredientes: str
     alergenos: str
     paisOrigen: str
     pasosAseguir: str
-    turnoComida: str
+    turnoComida: constr(min_length=1)
     duracion: int
     dificultad: str
     fotoReceta: str  # Campo para imagen en Base64 o URL

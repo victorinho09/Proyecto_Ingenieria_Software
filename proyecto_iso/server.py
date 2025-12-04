@@ -2047,3 +2047,54 @@ async def crear_menu_semanal_manual(request: Request) -> JSONResponse:
             "INTERNAL_ERROR",
             HTTP_INTERNAL_SERVER_ERROR
         )
+
+@app.delete("/api/menu-semanal")
+async def eliminar_menu_semanal_endpoint(request: Request) -> JSONResponse:
+    """
+    Elimina el menú semanal del usuario autenticado.
+    
+    Returns:
+        JSONResponse: Resultado de la operación
+    """
+    try:
+        print(f"{LOG_INFO} Iniciando eliminación de menú semanal")
+        
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            print(f"{LOG_ERROR} Usuario no autenticado")
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        print(f"{LOG_INFO} Eliminando menú para usuario: {email_usuario}")
+        
+        # Eliminar menú semanal del archivo JSON
+        exito = eliminar_menu_semanal(email_usuario)
+        
+        if exito:
+            print(f"{LOG_SUCCESS} Menú semanal eliminado correctamente")
+            return crear_respuesta_exito(
+                "Menú semanal eliminado correctamente",
+                {}
+            )
+        else:
+            print(f"{LOG_ERROR} Error al eliminar menú semanal")
+            return crear_respuesta_error(
+                "Error al eliminar el menú semanal",
+                "ERROR_ELIMINAR_MENU",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al eliminar menú semanal: {e}")
+        import traceback
+        traceback.print_exc()
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )

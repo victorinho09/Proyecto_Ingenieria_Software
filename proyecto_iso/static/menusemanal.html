@@ -120,7 +120,17 @@
 
     <!-- Contenedor principal -->
     <main class="container my-5 flex-grow-1">
-      <h2 class="text-center mb-4">Menú Semanal</h2>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Menú Semanal</h2>
+        <button 
+          id="btnEliminarMenu" 
+          class="btn btn-outline-danger"
+          type="button"
+          style="display: none;"
+        >
+          <i class="bi bi-trash"></i> Eliminar Menú
+        </button>
+      </div>
       
       <!-- Estado de carga -->
       <div id="loadingState" class="text-center py-5">
@@ -225,6 +235,51 @@
               class="btn btn-primary"
             >
               Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Eliminar Menú Semanal -->
+    <div
+      class="modal fade"
+      id="eliminarMenuModal"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="eliminarMenuModalLabel">
+              Eliminar Menú Semanal
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-warning">
+              ¿Estás seguro de que quieres eliminar tu menú semanal? Esta acción no se puede deshacer.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="btnConfirmarEliminar"
+            >
+              Eliminar Menú
             </button>
           </div>
         </div>
