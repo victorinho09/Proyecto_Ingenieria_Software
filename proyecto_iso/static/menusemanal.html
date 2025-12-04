@@ -118,9 +118,52 @@
       </div>
     </nav>
 
-    <div>
-      <h2>Menu Semanal</h2>
-    </div>
+    <!-- Contenedor principal -->
+    <main class="container my-5 flex-grow-1">
+      <h2 class="text-center mb-4">Menú Semanal</h2>
+      
+      <!-- Estado de carga -->
+      <div id="loadingState" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-muted">Cargando menú semanal...</p>
+      </div>
+
+      <!-- Estado sin menú -->
+      <div id="emptyState" class="text-center py-5" style="display: none;">
+        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+          <div class="card-body p-5">
+            <i class="bi bi-calendar-week text-primary" style="font-size: 4rem;"></i>
+            <h3 class="mt-4 mb-3">No tienes un menú semanal creado</h3>
+            <p class="text-muted mb-4">
+              Crea tu menú semanal para planificar tus comidas de toda la semana de forma organizada.
+            </p>
+            <div class="d-grid gap-3">
+              <button 
+                id="btnCrearAutomatico" 
+                class="btn btn-primary btn-lg"
+                type="button"
+              >
+                <i class="bi bi-magic"></i> Crear Menú Automático
+              </button>
+              <button 
+                id="btnCrearManual" 
+                class="btn btn-outline-primary btn-lg"
+                type="button"
+              >
+                <i class="bi bi-pencil-square"></i> Crear Menú Manual
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menú semanal -->
+      <div id="menuSemanal" class="row g-3" style="display: none;">
+        <!-- Los días se generarán dinámicamente con JavaScript -->
+      </div>
+    </main>
 
     <!-- Footer -->
     <footer class="bg-light border-top mt-auto">
@@ -208,5 +251,6 @@
 
     <!-- JavaScript de la aplicación -->
     <script type="module" src="/static/js/main.js"></script>
+    <script type="module" src="/static/js/menusemanal.js"></script>
   </body>
 </html>

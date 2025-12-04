@@ -859,3 +859,194 @@ def publicar_receta_usuario(receta_id: str, email_usuario: str) -> bool:
     except Exception as e:
         print(f"{LOG_ERROR} Error al publicar receta: {e}")
         return False
+
+
+def generar_menu_semanal_automatico(email_usuario: str) -> Dict[str, Dict[str, Optional[str]]]:
+    """
+    Genera un menú semanal automático para un usuario.
+    Selecciona recetas aleatorias de las recetas creadas por el usuario y sus recetas guardadas,
+    filtrando por turno de comida apropiado.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        Dict[str, Dict[str, Optional[str]]]: Menú semanal con 7 días y 5 comidas por día
+    """
+    import random
+    
+    try:
+        print(f"{LOG_INFO} Generando menú semanal automático para {email_usuario}")
+        
+        # Obtener todas las recetas del usuario (creadas + guardadas)
+        recetas_propias = obtener_recetas_usuario(email_usuario)
+        recetas_guardadas = obtener_recetas_guardadas_usuario(email_usuario)
+        
+        # Combinar todas las recetas disponibles
+        todas_recetas = recetas_propias + recetas_guardadas
+        
+        print(f"{LOG_INFO} Recetas disponibles: {len(recetas_propias)} propias + {len(recetas_guardadas)} guardadas = {len(todas_recetas)} total")
+        
+        # Clasificar recetas por turno de comida (normalizado a minúsculas)
+        recetas_por_turno = {
+            'desayuno': [],
+            'aperitivo': [],
+            'comida': [],
+            'merienda': [],
+            'cena': []
+        }
+        
+        for receta in todas_recetas:
+            turno = receta.get('turnoComida', '').strip().lower()
+            if turno in recetas_por_turno:
+                recetas_por_turno[turno].append(receta.get('nombreReceta', ''))
+        
+        # Log de recetas por turno
+        for turno, recetas in recetas_por_turno.items():
+            print(f"{LOG_INFO} {turno}: {len(recetas)} recetas disponibles")
+        
+        # Estructura del menú semanal
+        dias_semana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
+        turnos_comida = ['desayuno', 'aperitivo', 'comida', 'merienda', 'cena']
+        
+        # Generar menú semanal
+        menu_semanal = {}
+        
+        for dia in dias_semana:
+            menu_semanal[dia] = {}
+            
+            for turno in turnos_comida:
+                recetas_disponibles = recetas_por_turno[turno]
+                
+                if recetas_disponibles:
+                    # Seleccionar una receta aleatoria de las disponibles para este turno
+                    menu_semanal[dia][turno] = random.choice(recetas_disponibles)
+                else:
+                    # No hay recetas disponibles para este turno
+                    menu_semanal[dia][turno] = None
+        
+        print(f"{LOG_SUCCESS} Menú semanal generado automáticamente para {email_usuario}")
+        return menu_semanal
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al generar menú semanal automático: {e}")
+        # Retornar menú vacío en caso de error
+        return {
+            "lunes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "martes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "miercoles": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "jueves": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "viernes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "sabado": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "domingo": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None}
+        }
+
+
+# ==================== FUNCIONES DE GESTIÓN DE MENÚS SEMANALES ====================
+
+def cargar_menus_semanales() -> Dict[str, Dict[str, Any]]:
+    """
+    Carga los menús semanales desde el archivo JSON.
+    
+    Returns:
+        Dict[str, Dict[str, Any]]: Diccionario con email como clave y menú semanal como valor
+    """
+    try:
+        crear_directorio_si_no_existe(DIRECTORIO_DATOS)
+        
+        if verificar_archivo_existe(RUTA_MENUS_SEMANALES_JSON):
+            with open(RUTA_MENUS_SEMANALES_JSON, 'r', encoding='utf-8') as archivo:
+                return json.load(archivo)
+        else:
+            return {}
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"{LOG_ERROR} Error al cargar menús semanales: {e}")
+        return {}
+
+
+def guardar_menus_semanales(menus: Dict[str, Dict[str, Any]]) -> bool:
+    """
+    Guarda los menús semanales en el archivo JSON.
+    
+    Args:
+        menus (Dict[str, Dict[str, Any]]): Diccionario con email como clave y menú semanal como valor
+        
+    Returns:
+        bool: True si se guardó correctamente, False en caso contrario
+    """
+    try:
+        crear_directorio_si_no_existe(DIRECTORIO_DATOS)
+        
+        with open(RUTA_MENUS_SEMANALES_JSON, 'w', encoding='utf-8') as archivo:
+            json.dump(menus, archivo, ensure_ascii=False, indent=2)
+        return True
+    except IOError as e:
+        print(f"{LOG_ERROR} Error al guardar menús semanales: {e}")
+        return False
+
+
+def obtener_menu_semanal(email_usuario: str) -> Optional[Dict[str, Dict[str, Optional[str]]]]:
+    """
+    Obtiene el menú semanal de un usuario específico.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        Optional[Dict]: Menú semanal del usuario o None si no existe
+    """
+    try:
+        menus = cargar_menus_semanales()
+        return menus.get(email_usuario.lower(), None)
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener menú semanal: {e}")
+        return None
+
+
+def guardar_menu_semanal(email_usuario: str, menu_semanal: Dict[str, Dict[str, Optional[str]]]) -> bool:
+    """
+    Guarda o actualiza el menú semanal de un usuario.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        menu_semanal (Dict): Menú semanal a guardar
+        
+    Returns:
+        bool: True si se guardó correctamente, False en caso contrario
+    """
+    try:
+        menus = cargar_menus_semanales()
+        menus[email_usuario.lower()] = menu_semanal
+        exito = guardar_menus_semanales(menus)
+        
+        if exito:
+            print(f"{LOG_SUCCESS} Menú semanal guardado para {email_usuario}")
+        
+        return exito
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al guardar menú semanal: {e}")
+        return False
+
+
+def eliminar_menu_semanal(email_usuario: str) -> bool:
+    """
+    Elimina el menú semanal de un usuario.
+    
+    Args:
+        email_usuario (str): Email del usuario
+        
+    Returns:
+        bool: True si se eliminó correctamente, False en caso contrario
+    """
+    try:
+        menus = cargar_menus_semanales()
+        email_lower = email_usuario.lower()
+        
+        if email_lower in menus:
+            del menus[email_lower]
+            return guardar_menus_semanales(menus)
+        
+        return True  # No existía, así que técnicamente está "eliminado"
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al eliminar menú semanal: {e}")
+        return False

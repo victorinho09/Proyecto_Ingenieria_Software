@@ -26,7 +26,8 @@ from utils import (
     procesar_imagen_receta, guardar_receta_usuario, desguardar_receta_usuario,
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
-    cargar_cuentas, hash_password
+    cargar_cuentas, hash_password, generar_menu_semanal_automatico,
+    obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -1891,6 +1892,156 @@ async def obtener_valoracion_receta(receta_id: str, request: Request) -> JSONRes
         
     except Exception as e:
         print(f"{LOG_ERROR} Error inesperado en obtener_valoracion_receta: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+# ==================== ENDPOINTS DE MENÚ SEMANAL ====================
+
+@app.get("/api/menu-semanal")
+async def obtener_menu_semanal_endpoint(request: Request) -> JSONResponse:
+    """
+    Obtiene el menú semanal del usuario autenticado.
+    
+    Returns:
+        JSONResponse: Menú semanal del usuario o None si no existe
+    """
+    try:
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        
+        # Obtener menú semanal del archivo JSON separado
+        menu_semanal = obtener_menu_semanal(email_usuario)
+        
+        return crear_respuesta_exito(
+            "Menú semanal obtenido correctamente",
+            {"menuSemanal": menu_semanal}
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener menú semanal: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.post("/api/menu-semanal/crear-automatico")
+async def crear_menu_semanal_automatico(request: Request) -> JSONResponse:
+    """
+    Crea un menú semanal automático para el usuario.
+    Genera el menú seleccionando aleatoriamente recetas del usuario y guardadas,
+    filtrando por turno de comida apropiado.
+    
+    Returns:
+        JSONResponse: Resultado de la operación
+    """
+    try:
+        print(f"{LOG_INFO} Iniciando creación de menú semanal automático")
+        
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            print(f"{LOG_ERROR} Usuario no autenticado")
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        print(f"{LOG_INFO} Generando menú para usuario: {email_usuario}")
+        
+        # Generar menú semanal automático usando la función de utils
+        menu_semanal = generar_menu_semanal_automatico(email_usuario)
+        print(f"{LOG_INFO} Menú generado, guardando en archivo JSON...")
+        
+        # Guardar menú semanal en el archivo JSON separado
+        exito = guardar_menu_semanal(email_usuario, menu_semanal)
+        
+        if exito:
+            print(f"{LOG_SUCCESS} Menú semanal creado y guardado correctamente")
+            return crear_respuesta_exito(
+                "Menú semanal creado automáticamente",
+                {"menuSemanal": menu_semanal}
+            )
+        else:
+            print(f"{LOG_ERROR} Error al actualizar cuenta con el menú")
+            return crear_respuesta_error(
+                "Error al crear el menú semanal",
+                "ERROR_CREAR_MENU",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al crear menú semanal automático: {e}")
+        import traceback
+        traceback.print_exc()
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.post("/api/menu-semanal/crear-manual")
+async def crear_menu_semanal_manual(request: Request) -> JSONResponse:
+    """
+    Crea un menú semanal manual vacío para que el usuario lo complete.
+    (La lógica de edición se implementará después)
+    
+    Returns:
+        JSONResponse: Resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        
+        # Estructura de menú semanal vacío
+        menu_semanal = {
+            "lunes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "martes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "miercoles": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "jueves": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "viernes": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "sabado": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None},
+            "domingo": {"desayuno": None, "aperitivo": None, "comida": None, "merienda": None, "cena": None}
+        }
+        
+        # Guardar menú semanal en el archivo JSON separado
+        exito = guardar_menu_semanal(email_usuario, menu_semanal)
+        
+        if exito:
+            return crear_respuesta_exito(
+                "Menú semanal creado para edición manual",
+                {"menuSemanal": menu_semanal}
+            )
+        else:
+            return crear_respuesta_error(
+                "Error al crear el menú semanal",
+                "ERROR_CREAR_MENU",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al crear menú semanal manual: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

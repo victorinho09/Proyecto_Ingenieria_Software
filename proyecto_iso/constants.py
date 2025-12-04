@@ -25,6 +25,7 @@ DIRECTORIO_STATIC = "static"
 DIRECTORIO_DATOS = os.path.join(BASE_DIR, "datos")
 RUTA_CUENTAS_JSON = os.path.join(DIRECTORIO_DATOS, "cuentas.json")
 RUTA_RECETAS_JSON = os.path.join(DIRECTORIO_DATOS, "recetas.json")
+RUTA_MENUS_SEMANALES_JSON = os.path.join(DIRECTORIO_DATOS, "menus_semanales.json")
 
 # Configuración de imágenes
 DIRECTORIO_UPLOADS = os.path.join(BASE_DIR, "static", "uploads")

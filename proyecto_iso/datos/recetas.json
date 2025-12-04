@@ -24,7 +24,9 @@
     "duracion": 15,
     "dificultad": "Facil",
     "fotoReceta": "",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
     "valoraciones": [
@@ -88,7 +90,9 @@
     "turnoComida": "comida",
     "dificultad": "Facil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ],
     "publicada": true,
     "comentarios": [
       {
@@ -128,7 +132,9 @@
     "turnoComida": "comida",
     "dificultad": "Dificil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "victorvega@gmail.com"
+    ],
     "publicada": true,
     "valoraciones": [
       {
@@ -141,80 +147,84 @@
     "nombreReceta": "ensalada cesar",
     "descripcion": "ensalada",
     "ingredientes": "lechuga",
-    "pasosAseguir": "hacer ensalada",
-    "duracion": 12,
-    "fotoReceta": "/static/uploads/recetas/20251014_104002_alfredo_martinezescoval_968e4ef0.jpg",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "hacer ensalada",
+    "turnoComida": "desayuno",
+    "duracion": 12,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "fotoReceta": "",
     "usuariosGuardado": [
-      "pedro.varonaparra@usp.ceu.es"
+      "pedro.varonaparra@usp.ceu.es",
+      "victorvega@gmail.com"
     ],
-    "publicada": true,
-    "valoraciones": [
-      {
-        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
-        "puntuacion": 2
-      }
-    ]
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "prueba2",
     "descripcion": "prueba2 de ver si con mas de una cuantas palabras me muestra toda la descripcion o realmente solo me muestra una cantidad x de palabras y se ponen despues puntos suspensivos.\nsofuhgddddddddddddddddddddddso jgsaorg ijoafijg dogjf dopigj dpsjgp gfjspdfg jdp gjsdp gjdpsg jdpifg jdpg jdspg jdp jgpidf jgpdif gjpd jgpd fgjspf gjsfog jdpg jsdpgjsd pgjd pgj dspfjg spjgñsf jgsdp gjspjghdfpgj spgdjfopg.",
     "ingredientes": "prueba2",
-    "pasosAseguir": "prueba2",
-    "duracion": 120,
-    "fotoReceta": "",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "prueba2",
+    "turnoComida": "aperitivo",
+    "duracion": 120,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "iosfjp",
     "descripcion": "132sgspgj",
     "ingredientes": "srpigj",
-    "pasosAseguir": "pjgdf",
-    "duracion": 23,
-    "fotoReceta": "",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "pjgdf",
+    "turnoComida": "merienda",
+    "duracion": 23,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "psifjidp",
     "descripcion": "msfdpfdoim",
     "ingredientes": "spdok",
-    "pasosAseguir": "spdgok",
-    "duracion": 134,
-    "fotoReceta": "/static/uploads/recetas/20251015_121708_alfredo_martinezescoval_b276628f.jpg",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "spdgok",
+    "turnoComida": "desayuno",
+    "duracion": 134,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "jkgfvi",
     "descripcion": "hdfybberyu",
     "ingredientes": "tyveytre",
-    "pasosAseguir": "uytrguyb",
-    "duracion": 120,
-    "fotoReceta": "/static/uploads/recetas/20251017_203026_alfredo_martinezescoval_556f8a2e.png",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "uytrguyb",
+    "turnoComida": "cena",
+    "duracion": 120,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
     "nombreReceta": "sdfsd",
@@ -324,14 +334,16 @@
     "nombreReceta": "ejemplo",
     "descripcion": "sdfadsf",
     "ingredientes": "sfasdf",
-    "pasosAseguir": "dsfasf",
-    "duracion": 4,
-    "fotoReceta": "",
     "alergenos": "",
     "paisOrigen": "",
-    "turnoComida": "",
+    "pasosAseguir": "dsfasf",
+    "turnoComida": "desayuno",
+    "duracion": 4,
     "dificultad": "",
-    "usuario": "alfredo.martinezescoval@usp.ceu.es",
-    "usuariosGuardado": []
+    "fotoReceta": "",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es"
   }
 ]
