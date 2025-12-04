@@ -26,7 +26,7 @@
     "nombreUsuario": "Alfredo",
     "email": "alfredo.martinezescoval@usp.ceu.es",
     "password": "Alfredo1234",
-    "fotoPerfil": "/static/uploads/perfiles/20251104_104336_alfredo_martinezescoval_89ff1828.jpg",
+    "fotoPerfil": null,
     "valoracion": 4.5,
     "valoracion_count": 2
   },
@@ -71,7 +71,7 @@
     "nombreUsuario": "Javier",
     "email": "franciscojavier.martinezfernan@usp.ceu.es",
     "password": "Javier1234",
-    "fotoPerfil": "/static/uploads/perfiles/20251128_181753_franciscojavier_martinezfernan_98997754.jpg",
+    "fotoPerfil": "/static/uploads/perfiles/20251204_144743_franciscojavier_martinezfernan_c60d9c79.jpg",
     "valoracion": 0.0,
     "valoracion_count": 0
   },
