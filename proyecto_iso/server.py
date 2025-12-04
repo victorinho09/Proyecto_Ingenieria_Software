@@ -2098,3 +2098,100 @@ async def eliminar_menu_semanal_endpoint(request: Request) -> JSONResponse:
             "INTERNAL_ERROR",
             HTTP_INTERNAL_SERVER_ERROR
         )
+
+@app.get("/api/recetas/usuario")
+async def obtener_recetas_usuario_endpoint(request: Request) -> JSONResponse:
+    """
+    Obtiene todas las recetas del usuario (propias y guardadas).
+    
+    Returns:
+        JSONResponse: Recetas propias y guardadas del usuario
+    """
+    try:
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        
+        # Obtener recetas propias
+        recetas_propias = obtener_recetas_usuario(email_usuario)
+        
+        # Obtener recetas guardadas
+        recetas_guardadas = obtener_recetas_guardadas_usuario(email_usuario)
+        
+        return crear_respuesta_exito(
+            "Recetas obtenidas correctamente",
+            {
+                "recetasPropias": recetas_propias,
+                "recetasGuardadas": recetas_guardadas
+            }
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener recetas del usuario: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.post("/api/menu-semanal/guardar-manual")
+async def guardar_menu_semanal_manual(request: Request) -> JSONResponse:
+    """
+    Guarda un menú semanal creado manualmente.
+    
+    Returns:
+        JSONResponse: Resultado de la operación
+    """
+    try:
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        
+        # Obtener datos del body
+        body = await request.json()
+        menu_semanal = body.get("menuSemanal")
+        
+        if not menu_semanal:
+            return crear_respuesta_error(
+                "Datos de menú semanal no proporcionados",
+                "DATOS_FALTANTES",
+                HTTP_BAD_REQUEST
+            )
+        
+        # Guardar menú semanal en el archivo JSON separado
+        exito = guardar_menu_semanal(email_usuario, menu_semanal)
+        
+        if exito:
+            return crear_respuesta_exito(
+                "Menú semanal guardado correctamente",
+                {"menuSemanal": menu_semanal}
+            )
+        else:
+            return crear_respuesta_error(
+                "Error al guardar el menú semanal",
+                "ERROR_GUARDAR_MENU",
+                HTTP_INTERNAL_SERVER_ERROR
+            )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al guardar menú semanal manual: {e}")
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+

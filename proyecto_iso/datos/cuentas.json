@@ -38,7 +38,9 @@
   {
     "nombreUsuario": "pedro",
     "email": "pedro.varonaparra@usp.ceu.es",
-    "password": "Pedro12345"
+    "password": "Pedro12345",
+    "valoracion": 0.0,
+    "valoracion_count": 0
   },
   {
     "nombreUsuario": "prueba",

@@ -25,7 +25,8 @@
     "dificultad": "Facil",
     "fotoReceta": "",
     "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es"
+      "alfredo.martinezescoval@usp.ceu.es",
+      "pedro.varonaparra@usp.ceu.es"
     ],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
@@ -91,7 +92,8 @@
     "dificultad": "Facil",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
     "usuariosGuardado": [
-      "victorvega@gmail.com"
+      "victorvega@gmail.com",
+      "pedro.varonaparra@usp.ceu.es"
     ],
     "publicada": true,
     "comentarios": [
@@ -234,7 +236,8 @@
     "dificultad": "",
     "usuario": "juanixer@gmail.com",
     "usuariosGuardado": [
-      "victorvega@gmail.com"
+      "victorvega@gmail.com",
+      "pedro.varonaparra@usp.ceu.es"
     ],
     "publicada": true,
     "comentarios": [
@@ -310,7 +313,8 @@
     "dificultad": "",
     "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
     "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es"
+      "alfredo.martinezescoval@usp.ceu.es",
+      "pedro.varonaparra@usp.ceu.es"
     ],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
@@ -425,6 +429,20 @@
     "turnoComida": "comida",
     "dificultad": "",
     "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "usuariosGuardado": []
+  },
+  {
+    "nombreReceta": "jdsjfjd",
+    "descripcion": "12121",
+    "ingredientes": "2121",
+    "pasosAseguir": "12121",
+    "duracion": 1212,
+    "fotoReceta": "",
+    "alergenos": "",
+    "paisOrigen": "",
+    "turnoComida": "desayuno",
+    "dificultad": "",
+    "usuario": "pedro.varonaparra@usp.ceu.es",
     "usuariosGuardado": []
   }
 ]

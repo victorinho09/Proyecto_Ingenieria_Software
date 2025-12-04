@@ -150,28 +150,20 @@ async function crearMenuManual() {
     btnCrearManual.disabled = true;
     btnCrearManual.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando...';
     
-    const response = await fetch('/api/menu-semanal/crear-manual', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    // Crear menú vacío directamente en el cliente
+    const menuVacio = {
+      lunes: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      martes: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      miercoles: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      jueves: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      viernes: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      sabado: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null },
+      domingo: { desayuno: null, aperitivo: null, comida: null, merienda: null, cena: null }
+    };
     
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ mensaje: 'Error desconocido' }));
-      throw new Error(errorData.mensaje || 'Error al crear menú manual');
-    }
-    
-    const data = await response.json();
-    
-    if (data.exito && data.menuSemanal) {
-      renderizarMenuSemanal(data.menuSemanal);
-      mostrarEstado('menu');
-      mostrarMensaje('Menú semanal creado para edición manual', 'success');
-    } else {
-      throw new Error(data.mensaje || 'Error al crear menú manual');
-    }
+    // Renderizar menú en modo edición
+    renderizarMenuManualEditable(menuVacio);
+    mostrarEstado('menu');
     
   } catch (error) {
     console.error('Error al crear menú manual:', error);
@@ -363,6 +355,323 @@ async function eliminarMenuSemanal() {
       nuevoBtn.innerHTML = 'Eliminar Menú';
     }
   });
+}
+
+/**
+ * Renderiza el menú semanal en modo edición manual
+ */
+function renderizarMenuManualEditable(menuSemanal) {
+  menuSemanalContainer.innerHTML = '';
+  
+  // Crear botones de acción del menú
+  const botonesAccion = document.createElement('div');
+  botonesAccion.className = 'row mb-3';
+  botonesAccion.innerHTML = `
+    <div class="col-12 d-flex justify-content-end gap-2">
+      <button id="btnCancelarMenuManual" class="btn btn-secondary">
+        <i class="bi bi-x-circle"></i> Cancelar
+      </button>
+      <button id="btnGuardarMenuManual" class="btn btn-success">
+        <i class="bi bi-check-circle"></i> Guardar Menú
+      </button>
+    </div>
+  `;
+  menuSemanalContainer.appendChild(botonesAccion);
+  
+  // Renderizar los días
+  DIAS_SEMANA.forEach(dia => {
+    const diaData = menuSemanal[dia.id];
+    const diaCard = crearTarjetaDiaEditable(dia, diaData, menuSemanal);
+    menuSemanalContainer.appendChild(diaCard);
+  });
+  
+  // Configurar eventos de los botones de acción
+  document.getElementById('btnCancelarMenuManual').addEventListener('click', () => {
+    if (confirm('¿Estás seguro de que quieres cancelar? Se perderán los cambios.')) {
+      cargarMenuSemanal();
+    }
+  });
+  
+  document.getElementById('btnGuardarMenuManual').addEventListener('click', () => {
+    guardarMenuManual(menuSemanal);
+  });
+}
+
+/**
+ * Crea la tarjeta HTML para un día en modo edición
+ */
+function crearTarjetaDiaEditable(dia, diaData, menuSemanal) {
+  const col = document.createElement('div');
+  col.className = 'col-12';
+  
+  const card = document.createElement('div');
+  card.className = 'card shadow-sm';
+  
+  const cardHeader = document.createElement('div');
+  cardHeader.className = 'card-header bg-primary text-white';
+  cardHeader.innerHTML = `<h5 class="mb-0"><i class="bi bi-calendar-day me-2"></i>${dia.nombre}</h5>`;
+  
+  const cardBody = document.createElement('div');
+  cardBody.className = 'card-body';
+  
+  const row = document.createElement('div');
+  row.className = 'row g-3';
+  
+  COMIDAS.forEach(comida => {
+    const comidaCol = document.createElement('div');
+    comidaCol.className = 'col-12 col-md-6 col-lg';
+    
+    const comidaCard = crearTarjetaComidaEditable(comida, diaData ? diaData[comida.id] : null, dia.id, menuSemanal);
+    comidaCol.appendChild(comidaCard);
+    row.appendChild(comidaCol);
+  });
+  
+  cardBody.appendChild(row);
+  card.appendChild(cardHeader);
+  card.appendChild(cardBody);
+  col.appendChild(card);
+  
+  return col;
+}
+
+/**
+ * Crea la tarjeta HTML para una comida en modo edición
+ */
+function crearTarjetaComidaEditable(comida, receta, diaId, menuSemanal) {
+  const card = document.createElement('div');
+  card.className = 'card h-100 border-secondary';
+  
+  const cardBody = document.createElement('div');
+  cardBody.className = 'card-body text-center';
+  
+  const icon = document.createElement('i');
+  icon.className = `bi ${comida.icon} text-primary fs-4`;
+  
+  const titulo = document.createElement('h6');
+  titulo.className = 'card-title mt-2 mb-3';
+  titulo.textContent = comida.nombre;
+  
+  const contenido = document.createElement('div');
+  contenido.id = `receta-${diaId}-${comida.id}`;
+  contenido.className = 'mb-2';
+  
+  if (receta && receta !== null) {
+    contenido.innerHTML = `
+      <div class="d-flex align-items-center justify-content-between">
+        <small class="text-muted">${receta}</small>
+        <button class="btn btn-sm btn-outline-danger" onclick="eliminarRecetaDelMenu('${diaId}', '${comida.id}')">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    `;
+  } else {
+    contenido.innerHTML = '<small class="text-muted fst-italic">Vacío</small>';
+  }
+  
+  const btnAnadir = document.createElement('button');
+  btnAnadir.className = 'btn btn-sm btn-outline-primary w-100';
+  btnAnadir.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Añadir receta';
+  btnAnadir.addEventListener('click', () => {
+    mostrarModalSeleccionReceta(comida.id, diaId, menuSemanal);
+  });
+  
+  cardBody.appendChild(icon);
+  cardBody.appendChild(titulo);
+  cardBody.appendChild(contenido);
+  cardBody.appendChild(btnAnadir);
+  card.appendChild(cardBody);
+  
+  return card;
+}
+
+/**
+ * Muestra el modal para seleccionar una receta
+ */
+async function mostrarModalSeleccionReceta(turnoComida, diaId, menuSemanal) {
+  try {
+    // Obtener las recetas del usuario (propias y guardadas)
+    const response = await fetch('/api/recetas/usuario', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al cargar las recetas');
+    }
+    
+    const data = await response.json();
+    const todasRecetas = [...(data.recetasPropias || []), ...(data.recetasGuardadas || [])];
+    
+    // Filtrar recetas por turno de comida
+    const recetasFiltradas = todasRecetas.filter(receta => 
+      receta.turnoComida && receta.turnoComida.toLowerCase() === turnoComida.toLowerCase()
+    );
+    
+    if (recetasFiltradas.length === 0) {
+      mostrarMensaje(`No tienes recetas para el turno de ${turnoComida}`, 'warning');
+      return;
+    }
+    
+    // Crear o actualizar el modal
+    let modal = document.getElementById('modalSeleccionReceta');
+    if (!modal) {
+      modal = crearModalSeleccionReceta();
+      document.body.appendChild(modal);
+    }
+    
+    // Actualizar contenido del modal
+    const modalBody = modal.querySelector('.modal-body');
+    modalBody.innerHTML = `
+      <div class="list-group">
+        ${recetasFiltradas.map(receta => `
+          <button type="button" class="list-group-item list-group-item-action" 
+                  onclick="seleccionarReceta('${diaId}', '${turnoComida}', '${receta.nombreReceta.replace(/'/g, "\\'")}')">
+            <div class="d-flex align-items-center">
+              ${receta.fotoReceta ? 
+                `<img src="${receta.fotoReceta}" alt="${receta.nombreReceta}" 
+                     class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">` : 
+                `<div class="bg-secondary rounded me-3 d-flex align-items-center justify-content-center" 
+                     style="width: 60px; height: 60px;">
+                   <i class="bi bi-image text-white"></i>
+                 </div>`
+              }
+              <div>
+                <h6 class="mb-0">${receta.nombreReceta}</h6>
+                <small class="text-muted">${receta.dificultad || 'Sin especificar'} - ${receta.duracion || '?'} min</small>
+              </div>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    `;
+    
+    // Mostrar el modal
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    
+    // Guardar referencia al menú para usar en seleccionarReceta
+    window.menuSemanalTemporal = menuSemanal;
+    
+  } catch (error) {
+    console.error('Error al cargar recetas:', error);
+    mostrarMensaje('Error al cargar las recetas', 'error');
+  }
+}
+
+/**
+ * Crea el modal de selección de recetas
+ */
+function crearModalSeleccionReceta() {
+  const modal = document.createElement('div');
+  modal.className = 'modal fade';
+  modal.id = 'modalSeleccionReceta';
+  modal.innerHTML = `
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Seleccionar Receta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </div>
+    </div>
+  `;
+  return modal;
+}
+
+/**
+ * Selecciona una receta para un turno específico
+ */
+window.seleccionarReceta = function(diaId, turnoComida, nombreReceta) {
+  const menuSemanal = window.menuSemanalTemporal;
+  
+  // Actualizar el menú
+  if (menuSemanal[diaId]) {
+    menuSemanal[diaId][turnoComida] = nombreReceta;
+  }
+  
+  // Actualizar la UI
+  const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
+  if (contenedor) {
+    contenedor.innerHTML = `
+      <div class="d-flex align-items-center justify-content-between">
+        <small class="text-muted">${nombreReceta}</small>
+        <button class="btn btn-sm btn-outline-danger" onclick="eliminarRecetaDelMenu('${diaId}', '${turnoComida}')">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    `;
+  }
+  
+  // Cerrar el modal
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionReceta'));
+  if (modal) {
+    modal.hide();
+  }
+};
+
+/**
+ * Elimina una receta del menú
+ */
+window.eliminarRecetaDelMenu = function(diaId, turnoComida) {
+  const menuSemanal = window.menuSemanalTemporal;
+  
+  // Actualizar el menú
+  if (menuSemanal[diaId]) {
+    menuSemanal[diaId][turnoComida] = null;
+  }
+  
+  // Actualizar la UI
+  const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
+  if (contenedor) {
+    contenedor.innerHTML = '<small class="text-muted fst-italic">Vacío</small>';
+  }
+};
+
+/**
+ * Guarda el menú manual en el servidor
+ */
+async function guardarMenuManual(menuSemanal) {
+  try {
+    const btnGuardar = document.getElementById('btnGuardarMenuManual');
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+    
+    const response = await fetch('/api/menu-semanal/guardar-manual', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ menuSemanal })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ mensaje: 'Error desconocido' }));
+      throw new Error(errorData.mensaje || 'Error al guardar menú');
+    }
+    
+    const data = await response.json();
+    
+    if (data.exito) {
+      mostrarMensaje('Menú semanal guardado correctamente', 'success');
+      await cargarMenuSemanal();
+    } else {
+      throw new Error(data.mensaje || 'Error al guardar menú');
+    }
+    
+  } catch (error) {
+    console.error('Error al guardar menú manual:', error);
+    mostrarMensaje('Error al guardar el menú: ' + error.message, 'error');
+    
+    const btnGuardar = document.getElementById('btnGuardarMenuManual');
+    if (btnGuardar) {
+      btnGuardar.disabled = false;
+      btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar Menú';
+    }
+  }
 }
 
 // Inicializar cuando el DOM esté listo
