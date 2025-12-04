@@ -468,7 +468,7 @@
     "usuariosGuardado": []
   },
   {
-    "nombreReceta": "121212",
+    "nombreReceta": "akkak",
     "descripcion": "212",
     "ingredientes": "121",
     "alergenos": "",
@@ -477,7 +477,7 @@
     "turnoComida": "cena",
     "duracion": 12121,
     "dificultad": "",
-    "fotoReceta": "C:\\fakepath\\ventaja.png",
+    "fotoReceta": "/static/uploads/recetas/20251204_152016_pedro_varonaparra_5d78e341.png",
     "usuariosGuardado": [],
     "comentarios": [],
     "valoraciones": [],
@@ -493,7 +493,7 @@
     "turnoComida": "aperitivo",
     "duracion": 121212,
     "dificultad": "Dificil",
-    "fotoReceta": "C:\\fakepath\\673c8758-b196-4304-8c3b-76ae4db07d28.png",
+    "fotoReceta": "/static/uploads/recetas/20251204_151933_pedro_varonaparra_09642f7a.png",
     "usuariosGuardado": [],
     "comentarios": [],
     "valoraciones": [],
