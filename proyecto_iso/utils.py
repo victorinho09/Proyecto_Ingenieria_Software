@@ -1050,3 +1050,66 @@ def eliminar_menu_semanal(email_usuario: str) -> bool:
     except Exception as e:
         print(f"{LOG_ERROR} Error al eliminar menú semanal: {e}")
         return False
+
+
+def actualizar_menu_tras_edicion_receta(
+    email_usuario: str, 
+    nombre_original: str, 
+    nombre_nuevo: str,
+    turno_original: Optional[str],
+    turno_nuevo: Optional[str]
+) -> bool:
+    """
+    Actualiza el menú semanal del usuario después de editar una receta.
+    - Si el nombre cambió, actualiza el nombre en el menú
+    - Si el turno de comida cambió, elimina la receta del menú (ya no es compatible)
+    
+    Args:
+        email_usuario: Email del usuario
+        nombre_original: Nombre original de la receta
+        nombre_nuevo: Nuevo nombre de la receta
+        turno_original: Turno de comida original
+        turno_nuevo: Nuevo turno de comida
+        
+    Returns:
+        bool: True si se actualizó correctamente
+    """
+    try:
+        menus = cargar_menus_semanales()
+        email_lower = email_usuario.lower()
+        
+        # Si el usuario no tiene menú, no hay nada que actualizar
+        if email_lower not in menus:
+            return True
+        
+        menu = menus[email_lower]
+        menu_modificado = False
+        
+        # Recorrer todos los días y comidas del menú
+        for dia in menu:
+            for turno_comida in menu[dia]:
+                receta_actual = menu[dia][turno_comida]
+                
+                # Si hay una receta en este slot
+                if receta_actual and receta_actual == nombre_original:
+                    # Si el turno de comida cambió y ya no coincide, eliminar la receta
+                    if turno_original != turno_nuevo and turno_comida.lower() != turno_nuevo.lower():
+                        print(f"{LOG_INFO} Eliminando '{nombre_original}' de {dia}-{turno_comida} (turno cambió de {turno_original} a {turno_nuevo})")
+                        menu[dia][turno_comida] = None
+                        menu_modificado = True
+                    # Si el nombre cambió pero el turno sigue siendo compatible, actualizar el nombre
+                    elif nombre_original != nombre_nuevo:
+                        print(f"{LOG_INFO} Actualizando nombre en menú: '{nombre_original}' → '{nombre_nuevo}' en {dia}-{turno_comida}")
+                        menu[dia][turno_comida] = nombre_nuevo
+                        menu_modificado = True
+        
+        # Guardar el menú si hubo cambios
+        if menu_modificado:
+            menus[email_lower] = menu
+            return guardar_menus_semanales(menus)
+        
+        return True
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al actualizar menú tras edición de receta: {e}")
+        return False

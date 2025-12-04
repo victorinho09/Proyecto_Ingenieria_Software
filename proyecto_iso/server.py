@@ -27,7 +27,8 @@ from utils import (
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
     cargar_cuentas, hash_password, generar_menu_semanal_automatico,
-    obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal, generar_id_receta
+    obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal, generar_id_receta,
+    actualizar_menu_tras_edicion_receta
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -887,9 +888,13 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
             
             # Buscar la receta original del usuario
             receta_encontrada = False
+            turno_original = None
             for i, receta_existente in enumerate(todas_recetas):
                 if (receta_existente.get("nombreReceta") == nombre_original and 
                     receta_existente.get("usuario", "").lower() == email_usuario.lower()):
+                    
+                    # Guardar el turno original para comparar
+                    turno_original = receta_existente.get("turnoComida")
                     
                     # Mantener los usuarios que guardaron la receta
                     receta_data["usuariosGuardado"] = receta_existente.get("usuariosGuardado", [])
@@ -909,6 +914,15 @@ async def crear_receta(receta: Receta, request: Request) -> JSONResponse:
             
             # Guardar todas las recetas con la modificación
             if guardar_recetas(todas_recetas):
+                # Actualizar el menú semanal del usuario si es necesario
+                actualizar_menu_tras_edicion_receta(
+                    email_usuario, 
+                    nombre_original, 
+                    receta.nombreReceta,
+                    turno_original,
+                    receta_data.get("turnoComida")
+                )
+                
                 return crear_respuesta_exito(
                     "Receta actualizada correctamente",
                     {
