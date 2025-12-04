@@ -660,12 +660,22 @@ footer.bg-light{ padding:2rem 0; }
   font-weight: 600;
 }
 
-/* Degradado de naranja vivo a marrón para cada día de la semana */
-.dia-lunes { background: linear-gradient(135deg, #FF9E2C 0%, #FFAD4D 100%) !important; }
-.dia-martes { background: linear-gradient(135deg, #F89B3E 0%, #FF9E2C 100%) !important; }
-.dia-miercoles { background: linear-gradient(135deg, #E19057 0%, #EC985D 100%) !important; }
-.dia-jueves { background: linear-gradient(135deg, #C47F4F 0%, #CF8755 100%) !important; }
-.dia-viernes { background: linear-gradient(135deg, #A76E47 0%, #B2764D 100%) !important; }
-.dia-sabado { background: linear-gradient(135deg, #8A5D3F 0%, #956545 100%) !important; }
-.dia-domingo { background: linear-gradient(135deg, #6D4C37 0%, #774F39 100%) !important; }
+/* Degradado de azul oscuro para cada día de la semana */
+.dia-lunes { background: linear-gradient(135deg, #1e3a5f 0%, #2a4d7a 100%) !important; }
+.dia-martes { background: linear-gradient(135deg, #23486f 0%, #305a8a 100%) !important; }
+.dia-miercoles { background: linear-gradient(135deg, #28567f 0%, #36679a 100%) !important; }
+.dia-jueves { background: linear-gradient(135deg, #2d648f 0%, #3c74aa 100%) !important; }
+.dia-viernes { background: linear-gradient(135deg, #32729f 0%, #4281ba 100%) !important; }
+.dia-sabado { background: linear-gradient(135deg, #3780af 0%, #488eca 100%) !important; }
+.dia-domingo { background: linear-gradient(135deg, #3c8ebf 0%, #4e9bda 100%) !important; }
+
+/* Navbar con degradado azul oscuro para menú semanal */
+body.menu-semanal-activo .navbar.bg-primary {
+  background: linear-gradient(90deg, #1e3a5f 0%, #2a4d7a 100%) !important;
+}
+
+/* Navbar con degradado morado para página de recetas */
+body.recetas-page .navbar.bg-primary {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+}
 

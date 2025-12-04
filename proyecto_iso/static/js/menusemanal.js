@@ -306,15 +306,14 @@ function crearTarjetaComida(comida, receta) {
     } else {
       // Mostrar icono por defecto según el turno (mantener color naranja)
       contenido.innerHTML = `
-        <i class="bi ${comida.icon} text-primary mb-2" style="font-size: 4rem;"></i>
+        <i class="bi ${comida.icon}" style="font-size: 4rem; color: #2a4d7a;"></i>
         <small class="text-muted">${nombreReceta}</small>
       `;
     }
   } else {
     // No hay receta asignada
-    contenido.className += ' text-warning';
     contenido.innerHTML = `
-      <i class="bi ${comida.icon} text-warning mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <i class="bi ${comida.icon} mb-2" style="font-size: 4rem; opacity: 0.3; color: #4e9bda;"></i>
       <small class="fst-italic">No hay recetas para este turno</small>
     `;
   }
@@ -339,12 +338,15 @@ function mostrarEstado(estado, mostrarBotonesAccion = true) {
   switch (estado) {
     case 'loading':
       loadingState.style.display = 'block';
+      document.body.classList.remove('menu-semanal-activo');
       break;
     case 'empty':
       emptyState.style.display = 'block';
+      document.body.classList.remove('menu-semanal-activo');
       break;
     case 'menu':
       menuSemanalContainer.style.display = 'block';
+      document.body.classList.add('menu-semanal-activo');
       if (mostrarBotonesAccion) {
         btnEditarMenu.style.display = 'inline-block';
         btnEliminarMenu.style.display = 'inline-block';
@@ -555,7 +557,7 @@ function crearTarjetaComidaEditable(comida, receta, diaId, menuSemanal) {
     } else {
       contenido.innerHTML = `
         <div class="position-relative mb-2">
-          <i class="bi ${comida.icon} text-primary" style="font-size: 4rem;"></i>
+          <i class="bi ${comida.icon}" style="font-size: 4rem; color: #2a4d7a;"></i>
           <button class="btn btn-sm btn-danger position-absolute top-0 end-0" 
                   onclick="eliminarRecetaDelMenu('${diaId}', '${comida.id}')" 
                   style="padding: 0.25rem 0.5rem;">
@@ -567,7 +569,7 @@ function crearTarjetaComidaEditable(comida, receta, diaId, menuSemanal) {
     }
   } else {
     contenido.innerHTML = `
-      <i class="bi ${comida.icon} text-secondary mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <i class="bi ${comida.icon} mb-2" style="font-size: 4rem; opacity: 0.3; color: #4e9bda;"></i>
       <small class="text-muted fst-italic">Vacío</small>
     `;
   }
@@ -726,7 +728,7 @@ window.seleccionarReceta = function(diaId, turnoComida, nombreReceta, fotoReceta
     } else {
       contenedor.innerHTML = `
         <div class="position-relative mb-2">
-          <i class="bi ${iconoTurno} text-primary" style="font-size: 4rem;"></i>
+          <i class="bi ${iconoTurno}" style="font-size: 4rem; color: #2a4d7a;"></i>
           <button class="btn btn-sm btn-danger position-absolute top-0 end-0" 
                   onclick="eliminarRecetaDelMenu('${diaId}', '${turnoComida}')" 
                   style="padding: 0.25rem 0.5rem;">
@@ -764,7 +766,7 @@ window.eliminarRecetaDelMenu = function(diaId, turnoComida) {
   const contenedor = document.getElementById(`receta-${diaId}-${turnoComida}`);
   if (contenedor) {
     contenedor.innerHTML = `
-      <i class="bi ${iconoTurno} text-secondary mb-2" style="font-size: 4rem; opacity: 0.3;"></i>
+      <i class="bi ${iconoTurno} mb-2" style="font-size: 4rem; opacity: 0.3; color: #4e9bda;"></i>
       <small class="text-muted fst-italic">Vacío</small>
     `;
   }

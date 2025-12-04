@@ -58,10 +58,10 @@ async function actualizarNavbarUsuario() {
       anchor.classList.remove('bi', 'bi-person-circle');
       if (foto) {
         // mostrar imagen pequeña seguida del nombre
-        anchor.innerHTML = `<img src="${foto}" alt="${nombre}" class="rounded-circle me-1" style="width:22px;height:22px;object-fit:cover;vertical-align:middle;"> <span class=\"navbar-username\">${nombre}</span>`;
+        anchor.innerHTML = `<img src="${foto}" alt="${nombre}" class="rounded-circle me-1" style="width:22px;height:22px;object-fit:cover;vertical-align:middle;"> <span class="navbar-username">${nombre}</span>`;
       } else {
         // mostrar icono de persona seguido del nombre, para mantener consistencia visual
-        anchor.innerHTML = `<i class="bi bi-person-circle me-1"></i><span class=\"navbar-username\">${nombre}</span>`;
+        anchor.innerHTML = `<i class="bi bi-person-circle me-1"></i><span class="navbar-username">${nombre}</span>`;
       }
       anchor.setAttribute('title', nombre);
     }

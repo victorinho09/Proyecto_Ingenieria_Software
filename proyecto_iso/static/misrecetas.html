@@ -138,6 +138,11 @@
         background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%) !important;
         border-bottom: 2px solid rgba(240, 147, 251, 0.3) !important;
       }
+      
+      /* Dropdown del navbar con gradiente rosa */
+      .dropdown-menu.bg-primary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+      }
     </style>
     
     <!-- Navegación principal -->
@@ -173,8 +178,7 @@
               >
               </a>
               <ul
-                class="dropdown-menu dropdown-menu-end border-0 rounded-3 shadow py-2"
-                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"
+                class="dropdown-menu dropdown-menu-end bg-primary bg-opacity-75 border-0 rounded-3 shadow py-2"
                 aria-labelledby="navbarRecetas"
               >
                 <li><a class="nav-link active" href="/mis-recetas">Mis Recetas</a></li>
