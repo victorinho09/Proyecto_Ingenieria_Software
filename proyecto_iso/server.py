@@ -27,7 +27,7 @@ from utils import (
     obtener_recetas_guardadas_usuario, es_receta_guardada_por_usuario, obtener_receta_por_id,
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
     cargar_cuentas, hash_password, generar_menu_semanal_automatico,
-    obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal
+    obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal, generar_id_receta
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -2140,6 +2140,60 @@ async def eliminar_menu_semanal_endpoint(request: Request) -> JSONResponse:
         print(f"{LOG_ERROR} Error al eliminar menú semanal: {e}")
         import traceback
         traceback.print_exc()
+        return crear_respuesta_error(
+            MENSAJE_ERROR_INTERNO,
+            "INTERNAL_ERROR",
+            HTTP_INTERNAL_SERVER_ERROR
+        )
+
+@app.get("/api/receta-id/{nombre_receta}")
+async def obtener_id_receta_por_nombre(nombre_receta: str, request: Request) -> JSONResponse:
+    """
+    Obtiene el ID de una receta dado su nombre.
+    
+    Args:
+        nombre_receta: Nombre de la receta
+        
+    Returns:
+        JSONResponse: ID de la receta
+    """
+    try:
+        # Verificar autenticación
+        auth_check = requiere_autenticacion(request)
+        if auth_check:
+            return crear_respuesta_error(
+                "Usuario no autenticado",
+                "NO_AUTENTICADO",
+                HTTP_UNAUTHORIZED
+            )
+        
+        email_usuario = obtener_email_usuario(request)
+        
+        # Decodificar el nombre de la receta
+        import urllib.parse
+        nombre_decodificado = urllib.parse.unquote(nombre_receta)
+        
+        # Cargar todas las recetas
+        todas_recetas = cargar_recetas()
+        
+        # Buscar la receta por nombre
+        for receta in todas_recetas:
+            if receta.get('nombreReceta', '').lower() == nombre_decodificado.lower():
+                # Generar ID de la receta
+                receta_id = generar_id_receta(receta['nombreReceta'])
+                return crear_respuesta_exito(
+                    "ID de receta obtenido correctamente",
+                    {"receta_id": receta_id}
+                )
+        
+        return crear_respuesta_error(
+            "Receta no encontrada",
+            "RECETA_NO_ENCONTRADA",
+            HTTP_NOT_FOUND
+        )
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al obtener ID de receta: {e}")
         return crear_respuesta_error(
             MENSAJE_ERROR_INTERNO,
             "INTERNAL_ERROR",

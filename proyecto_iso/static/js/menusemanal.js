@@ -288,6 +288,13 @@ function crearTarjetaComida(comida, receta) {
     const nombreReceta = typeof receta === 'object' ? receta.nombreReceta : receta;
     const fotoReceta = typeof receta === 'object' ? receta.fotoReceta : '';
     
+    // Hacer el contenido clickeable
+    contenido.style.cursor = 'pointer';
+    contenido.title = 'Click para ver detalles de la receta';
+    contenido.addEventListener('click', () => {
+      abrirModalInfoReceta(nombreReceta);
+    });
+    
     if (fotoReceta) {
       // Mostrar foto de la receta
       contenido.innerHTML = `
@@ -821,6 +828,154 @@ async function guardarMenuManual(menuSemanal) {
       btnGuardar.disabled = false;
       btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar Menú';
     }
+  }
+}
+
+/**
+ * Abre un modal informativo con los detalles de una receta
+ * @param {string} nombreReceta - Nombre de la receta a mostrar
+ */
+async function abrirModalInfoReceta(nombreReceta) {
+  try {
+    // Obtener el ID de la receta
+    const responseId = await fetch(`/api/receta-id/${encodeURIComponent(nombreReceta)}`);
+    if (!responseId.ok) {
+      const errorData = await responseId.json();
+      console.error('Error al obtener ID:', errorData);
+      mostrarMensaje('No se pudo cargar la receta', 'error');
+      return;
+    }
+    const dataId = await responseId.json();
+    if (!dataId.exito || !dataId.receta_id) {
+      console.error('Respuesta ID incorrecta:', dataId);
+      mostrarMensaje('No se pudo obtener el ID de la receta', 'error');
+      return;
+    }
+    const recetaId = dataId.receta_id;
+    console.log('ID de receta obtenido:', recetaId);
+    
+    // Obtener los detalles completos de la receta
+    const responseDetalle = await fetch(`/api/receta/${recetaId}`);
+    if (!responseDetalle.ok) {
+      const errorData = await responseDetalle.json();
+      console.error('Error al obtener detalles:', errorData);
+      mostrarMensaje('No se pudo cargar los detalles de la receta', 'error');
+      return;
+    }
+    const resultado = await responseDetalle.json();
+    
+    if (!resultado.exito || !resultado.receta) {
+      console.error('Respuesta detalle incorrecta:', resultado);
+      mostrarMensaje('No se encontraron detalles de la receta', 'error');
+      return;
+    }
+    
+    const receta = resultado.receta;
+    console.log('Receta obtenida:', receta);
+    
+    // Llenar el modal con los datos
+    document.getElementById('tituloRecetaInfo').textContent = receta.nombreReceta || 'Sin nombre';
+    document.getElementById('descripcionRecetaInfo').textContent = receta.descripcion || 'Sin descripción';
+    
+    // Formatear duración
+    const duracion = receta.duracion || 0;
+    let duracionTexto = '-';
+    if (duracion > 0) {
+      const horas = Math.floor(duracion / 60);
+      const minutos = duracion % 60;
+      if (horas > 0 && minutos > 0) {
+        duracionTexto = `${horas}h ${minutos}min`;
+      } else if (horas > 0) {
+        duracionTexto = `${horas}h`;
+      } else {
+        duracionTexto = `${minutos}min`;
+      }
+    }
+    document.getElementById('duracionRecetaInfo').textContent = duracionTexto;
+    document.getElementById('dificultadRecetaInfo').textContent = receta.dificultad || 'No especificada';
+    document.getElementById('paisRecetaInfo').textContent = receta.paisOrigen || 'No especificado';
+    
+    const turnoComida = receta.turnoComida || 'No especificado';
+    document.getElementById('turnoRecetaInfo').textContent = 
+      turnoComida.charAt(0).toUpperCase() + turnoComida.slice(1).toLowerCase();
+    
+    // Mostrar imagen si existe
+    const imagenContainer = document.getElementById('imagenRecetaInfo');
+    if (receta.fotoReceta) {
+      imagenContainer.style.display = 'block';
+      imagenContainer.querySelector('img').src = receta.fotoReceta;
+      imagenContainer.querySelector('img').alt = `Foto de ${receta.nombreReceta}`;
+    } else {
+      imagenContainer.style.display = 'none';
+    }
+    
+    // Mostrar ingredientes
+    const ingredientesContainer = document.getElementById('ingredientesRecetaInfo');
+    if (receta.ingredientes) {
+      // Convertir a array si es string
+      const ingredientesArray = Array.isArray(receta.ingredientes) 
+        ? receta.ingredientes 
+        : receta.ingredientes.split(',').map(ing => ing.trim());
+      
+      if (ingredientesArray.length > 0) {
+        ingredientesContainer.innerHTML = '<ul class="list-unstyled mb-0">' +
+          ingredientesArray.map(ing => `<li><i class="bi bi-check2 text-success me-2"></i>${ing}</li>`).join('') +
+          '</ul>';
+      } else {
+        ingredientesContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado ingredientes.</p>';
+      }
+    } else {
+      ingredientesContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado ingredientes.</p>';
+    }
+    
+    // Mostrar pasos
+    const pasosContainer = document.getElementById('pasosRecetaInfo');
+    if (receta.pasosAseguir) {
+      // Convertir a array si es string
+      const pasosArray = Array.isArray(receta.pasosAseguir) 
+        ? receta.pasosAseguir 
+        : receta.pasosAseguir.split(',').map(paso => paso.trim());
+      
+      if (pasosArray.length > 0) {
+        pasosContainer.innerHTML = '<ol class="mb-0">' +
+          pasosArray.map(paso => `<li class="mb-2">${paso}</li>`).join('') +
+          '</ol>';
+      } else {
+        pasosContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado pasos.</p>';
+      }
+    } else {
+      pasosContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado pasos.</p>';
+    }
+    
+    // Mostrar alérgenos
+    const alergenosContainer = document.getElementById('alergenosRecetaInfo');
+    if (receta.alergenos) {
+      // Convertir a array si es string
+      const alergenosArray = Array.isArray(receta.alergenos) 
+        ? receta.alergenos 
+        : receta.alergenos.split(',').map(alergeno => alergeno.trim());
+      
+      if (alergenosArray.length > 0) {
+        alergenosContainer.innerHTML = '<div class="d-flex flex-wrap gap-2">' +
+          alergenosArray.map(alergeno => 
+            `<span class="badge bg-danger">${alergeno}</span>`
+          ).join('') +
+          '</div>';
+      } else {
+        alergenosContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado alérgenos.</p>';
+      }
+    } else {
+      alergenosContainer.innerHTML = '<p class="text-muted mb-0">No se han especificado alérgenos.</p>';
+    }
+    
+    // Abrir el modal
+    const modalElement = document.getElementById('modalInfoReceta');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+  } catch (error) {
+    console.error('Error al abrir modal de receta:', error);
+    mostrarMensaje('Error al cargar los detalles de la receta', 'error');
   }
 }
 

@@ -34,6 +34,22 @@
       {
         "usuario": "alfredo.martinezescoval@usp.ceu.es",
         "puntuacion": 4
+      },
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 1
+      }
+    ],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "Holaaa",
+        "fecha": "2025-12-04T14:32:09.607117"
+      },
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "lolo",
+        "fecha": "2025-12-04T14:38:35.183519"
       }
     ]
   },
@@ -113,12 +129,26 @@
         "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
         "texto": "muy buena la pizza",
         "fecha": "2025-11-26T19:49:09.232483"
+      },
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "RICOOO",
+        "fecha": "2025-12-04T14:32:17.240576"
+      },
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "los",
+        "fecha": "2025-12-04T14:38:24.300508"
       }
     ],
     "valoraciones": [
       {
         "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
         "puntuacion": 5
+      },
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 4
       }
     ]
   },
@@ -155,8 +185,19 @@
       "pedro.varonaparra@usp.ceu.es",
       "victorvega@gmail.com"
     ],
-    "comentarios": [],
-    "valoraciones": [],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "sese",
+        "fecha": "2025-12-04T14:38:50.160481"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 5
+      }
+    ],
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
@@ -443,6 +484,24 @@
     "turnoComida": "desayuno",
     "dificultad": "",
     "usuario": "pedro.varonaparra@usp.ceu.es",
-    "usuariosGuardado": []
+    "usuariosGuardado": [
+      "pedro.varonaparra@usp.ceu.es"
+    ]
+  },
+  {
+    "nombreReceta": "121212",
+    "descripcion": "212",
+    "ingredientes": "121",
+    "alergenos": "",
+    "paisOrigen": "",
+    "pasosAseguir": "121",
+    "turnoComida": "aperitivo",
+    "duracion": 12121,
+    "dificultad": "",
+    "fotoReceta": "C:\\fakepath\\ChatGPT Image 28 nov 2025, 13_23_22.png",
+    "usuariosGuardado": [],
+    "comentarios": [],
+    "valoraciones": [],
+    "usuario": "pedro.varonaparra@usp.ceu.es"
   }
 ]
