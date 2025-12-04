@@ -10,7 +10,7 @@
     "martes": {
       "desayuno": "ejemplo",
       "aperitivo": "prueba2",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "iosfjp",
       "cena": "jkgfvi"
     },
@@ -24,7 +24,7 @@
     "jueves": {
       "desayuno": "psifjidp",
       "aperitivo": "prueba2",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "iosfjp",
       "cena": "jkgfvi"
     },
@@ -38,7 +38,7 @@
     "sabado": {
       "desayuno": "ejemplo",
       "aperitivo": "Paella valenciana",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "iosfjp",
       "cena": "jkgfvi"
     },

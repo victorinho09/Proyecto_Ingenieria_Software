@@ -24,9 +24,7 @@
     "duracion": 15,
     "dificultad": "Facil",
     "fotoReceta": "",
-    "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es"
-    ],
+    "usuariosGuardado": [],
     "usuario": "victorvega@gmail.com",
     "publicada": true,
     "valoraciones": [
@@ -393,7 +391,7 @@
     "turnoComida": "aperitivo",
     "duracion": 342,
     "dificultad": "",
-    "fotoReceta": "C:\\fakepath\\portal del ceu.PNG",
+    "fotoReceta": "/static/uploads/recetas/20251204_151628_alfredo_martinezescoval_4889eaac.jpg",
     "usuariosGuardado": [],
     "comentarios": [],
     "valoraciones": [],

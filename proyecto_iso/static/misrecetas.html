@@ -676,6 +676,21 @@
                 <label for="fotoReceta" class="form-label"
                   >Imagen de la receta</label
                 >
+                
+                <!-- Preview de la foto actual o nueva -->
+                <div id="previewFotoContainer" class="mb-3" style="display: none;">
+                  <div class="position-relative d-inline-block">
+                    <img id="previewFotoReceta" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px; max-width: 100%;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" id="btnEliminarFoto" title="Eliminar foto">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                  <div class="form-text text-muted mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    <span id="fotoStatus">Foto actual</span>
+                  </div>
+                </div>
+                
                 <input
                   type="file"
                   class="form-control"
@@ -683,6 +698,7 @@
                   name="fotoReceta"
                   accept="image/*"
                 />
+                <input type="hidden" id="eliminarFoto" value="false">
               </div>
             </form>
           </div>
@@ -1609,6 +1625,44 @@
         document.getElementById('modoEdicion').value = 'true';
         document.getElementById('nombreRecetaOriginal').value = receta.nombreReceta || '';
         document.getElementById('fotoRecetaOriginal').value = receta.fotoReceta || '';
+        document.getElementById('eliminarFoto').value = 'false';
+        
+        // Configurar preview de foto
+        const previewContainer = document.getElementById('previewFotoContainer');
+        const previewImg = document.getElementById('previewFotoReceta');
+        const fotoStatus = document.getElementById('fotoStatus');
+        const inputFoto = document.getElementById('fotoReceta');
+        
+        // Mostrar foto actual si existe
+        if (receta.fotoReceta && receta.fotoReceta.trim() !== '') {
+          previewImg.src = receta.fotoReceta;
+          fotoStatus.textContent = 'Foto actual';
+          previewContainer.style.display = 'block';
+        } else {
+          previewContainer.style.display = 'none';
+        }
+        
+        // Event listener para el botón de eliminar foto
+        document.getElementById('btnEliminarFoto').onclick = function() {
+          document.getElementById('eliminarFoto').value = 'true';
+          previewContainer.style.display = 'none';
+          inputFoto.value = ''; // Limpiar el input file
+        };
+        
+        // Event listener para cuando se selecciona una nueva foto
+        inputFoto.onchange = function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              previewImg.src = event.target.result;
+              fotoStatus.textContent = 'Nueva foto seleccionada';
+              previewContainer.style.display = 'block';
+              document.getElementById('eliminarFoto').value = 'false';
+            };
+            reader.readAsDataURL(file);
+          }
+        };
         
         // Cambiar los botones del modal footer
         const modalFooter = modalElement.querySelector('.modal-footer');
@@ -1649,7 +1703,7 @@
         
         // Añadir evento al botón de guardar cambios
         const btnGuardar = document.getElementById('btnGuardarCambios');
-        btnGuardar.addEventListener('click', function() {
+        btnGuardar.addEventListener('click', async function() {
           const camposVacios = validarCamposObligatorios();
           
           if (camposVacios.length > 0) {
@@ -1685,56 +1739,97 @@
             const advertenciaPrevia = document.getElementById('advertenciaValidacion');
             if (advertenciaPrevia) advertenciaPrevia.remove();
             
-            // Obtener la foto: nueva si se subió, o la original si no
+            // Determinar qué hacer con la foto
+            let fotoReceta = '';
+            const eliminarFoto = document.getElementById('eliminarFoto').value === 'true';
             const inputFoto = document.getElementById('fotoReceta');
-            const fotoReceta = inputFoto.value || document.getElementById('fotoRecetaOriginal').value || '';
-            
-            // Crear objeto con los datos del formulario
-            const recetaData = {
-              nombreReceta: document.getElementById('nombreReceta').value,
-              duracion: parseInt(document.getElementById('duracion').value),
-              descripcion: document.getElementById('descripcion').value,
-              ingredientes: document.getElementById('ingredientes').value,
-              pasosAseguir: document.getElementById('pasosAseguir').value,
-              turnoComida: document.getElementById('turnoComida').value,
-              dificultad: document.getElementById('dificultad').value,
-              paisOrigen: document.getElementById('paisOrigen').value,
-              alergenos: document.getElementById('alergenos').value,
-              fotoReceta: fotoReceta,
-              modoEdicion: document.getElementById('modoEdicion').value,
-              nombreRecetaOriginal: document.getElementById('nombreRecetaOriginal').value
-            };
             
             // Deshabilitar botón mientras se procesa
             btnGuardar.disabled = true;
             btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
             
-            fetch('/crear-receta', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(recetaData)
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.exito) {
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(modalElement);
-                if (modal) modal.hide();
-                
-                // Recargar las recetas para mostrar los cambios
-                setTimeout(() => {
-                  cargarMisRecetas();
-                }, 300);
+            try {
+              if (eliminarFoto) {
+                // Usuario quiere eliminar la foto
+                fotoReceta = '';
+              } else if (inputFoto.files && inputFoto.files[0]) {
+                // Usuario seleccionó una nueva foto - convertir a Base64
+                const file = inputFoto.files[0];
+                fotoReceta = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.onload = (e) => resolve(e.target.result);
+                  reader.onerror = reject;
+                  reader.readAsDataURL(file);
+                });
               } else {
-                // Mostrar error
+                // Mantener la foto original
+                fotoReceta = document.getElementById('fotoRecetaOriginal').value || '';
+              }
+            
+                // Crear objeto con los datos del formulario
+              const recetaData = {
+                nombreReceta: document.getElementById('nombreReceta').value,
+                duracion: parseInt(document.getElementById('duracion').value),
+                descripcion: document.getElementById('descripcion').value,
+                ingredientes: document.getElementById('ingredientes').value,
+                pasosAseguir: document.getElementById('pasosAseguir').value,
+                turnoComida: document.getElementById('turnoComida').value,
+                dificultad: document.getElementById('dificultad').value,
+                paisOrigen: document.getElementById('paisOrigen').value,
+                alergenos: document.getElementById('alergenos').value,
+                fotoReceta: fotoReceta,
+                modoEdicion: document.getElementById('modoEdicion').value,
+                nombreRecetaOriginal: document.getElementById('nombreRecetaOriginal').value
+              };
+              
+              fetch('/crear-receta', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(recetaData)
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.exito) {
+                  // Cerrar modal
+                  const modal = bootstrap.Modal.getInstance(modalElement);
+                  if (modal) modal.hide();
+                  
+                  // Recargar las recetas para mostrar los cambios
+                  setTimeout(() => {
+                    cargarMisRecetas();
+                  }, 300);
+                } else {
+                  // Mostrar error
+                  const advertenciaError = document.createElement('div');
+                  advertenciaError.id = 'advertenciaValidacion';
+                  advertenciaError.className = 'alert alert-danger alert-dismissible fade show mb-3';
+                  advertenciaError.innerHTML = `
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Error al guardar:</strong> ${data.mensaje || 'No se pudo guardar la receta'}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  `;
+                  const banner = document.getElementById('bannerModoEdicion');
+                  if (banner) {
+                    banner.parentNode.insertBefore(advertenciaError, banner.nextSibling);
+                  }
+                  
+                  // Rehabilitar botón
+                  btnGuardar.disabled = false;
+                  btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar cambios';
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                
+                // Mostrar error de conexión
                 const advertenciaError = document.createElement('div');
                 advertenciaError.id = 'advertenciaValidacion';
                 advertenciaError.className = 'alert alert-danger alert-dismissible fade show mb-3';
                 advertenciaError.innerHTML = `
                   <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                  <strong>Error al guardar:</strong> ${data.mensaje || 'No se pudo guardar la receta'}
+                  <strong>Error de conexión:</strong> No se pudo conectar con el servidor
                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 `;
                 const banner = document.getElementById('bannerModoEdicion');
@@ -1745,18 +1840,17 @@
                 // Rehabilitar botón
                 btnGuardar.disabled = false;
                 btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar cambios';
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
+              });
+            } catch (error) {
+              console.error('Error procesando foto:', error);
               
-              // Mostrar error de conexión
+              // Mostrar error
               const advertenciaError = document.createElement('div');
               advertenciaError.id = 'advertenciaValidacion';
               advertenciaError.className = 'alert alert-danger alert-dismissible fade show mb-3';
               advertenciaError.innerHTML = `
                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Error de conexión:</strong> No se pudo conectar con el servidor
+                <strong>Error:</strong> No se pudo procesar la imagen
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
               `;
               const banner = document.getElementById('bannerModoEdicion');
@@ -1767,7 +1861,7 @@
               // Rehabilitar botón
               btnGuardar.disabled = false;
               btnGuardar.innerHTML = '<i class="bi bi-check-circle"></i> Guardar cambios';
-            });
+            }
           }
         });
         
@@ -1825,6 +1919,12 @@
           // Resetear campos ocultos
           document.getElementById('modoEdicion').value = 'false';
           document.getElementById('nombreRecetaOriginal').value = '';
+          document.getElementById('fotoRecetaOriginal').value = '';
+          document.getElementById('eliminarFoto').value = 'false';
+          
+          // Ocultar preview de foto
+          const previewContainer = document.getElementById('previewFotoContainer');
+          if (previewContainer) previewContainer.style.display = 'none';
           
           // Restaurar botones originales
           modalFooter.innerHTML = `
