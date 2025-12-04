@@ -11,6 +11,7 @@ const emptyState = document.getElementById('emptyState');
 const menuSemanalContainer = document.getElementById('menuSemanal');
 const btnCrearAutomatico = document.getElementById('btnCrearAutomatico');
 const btnCrearManual = document.getElementById('btnCrearManual');
+const btnEditarMenu = document.getElementById('btnEditarMenu');
 const btnEliminarMenu = document.getElementById('btnEliminarMenu');
 
 // Configuración de días y comidas
@@ -55,6 +56,10 @@ function configurarEventos() {
   
   if (btnCrearManual) {
     btnCrearManual.addEventListener('click', crearMenuManual);
+  }
+  
+  if (btnEditarMenu) {
+    btnEditarMenu.addEventListener('click', editarMenuSemanal);
   }
   
   if (btnEliminarMenu) {
@@ -163,7 +168,7 @@ async function crearMenuManual() {
     
     // Renderizar menú en modo edición
     renderizarMenuManualEditable(menuVacio);
-    mostrarEstado('menu');
+    mostrarEstado('menu', false); // false = no mostrar botón de eliminar
     
   } catch (error) {
     console.error('Error al crear menú manual:', error);
@@ -171,6 +176,43 @@ async function crearMenuManual() {
   } finally {
     btnCrearManual.disabled = false;
     btnCrearManual.innerHTML = '<i class="bi bi-pencil-square"></i> Crear Menú Manual';
+  }
+}
+
+/**
+ * Edita el menú semanal existente
+ */
+async function editarMenuSemanal() {
+  try {
+    btnEditarMenu.disabled = true;
+    btnEditarMenu.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
+    
+    // Obtener el menú semanal actual
+    const response = await fetch('/api/menu-semanal', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al cargar el menú semanal');
+    }
+    
+    const data = await response.json();
+    
+    if (data.menuSemanal) {
+      // Renderizar menú en modo edición
+      renderizarMenuManualEditable(data.menuSemanal);
+      mostrarEstado('menu', false); // false = no mostrar botones de acción
+    } else {
+      throw new Error('No se encontró el menú semanal');
+    }
+    
+  } catch (error) {
+    console.error('Error al editar menú:', error);
+    mostrarMensaje('Error al cargar el menú para edición: ' + error.message, 'error');
+  } finally {
+    btnEditarMenu.disabled = false;
+    btnEditarMenu.innerHTML = '<i class="bi bi-pencil"></i> Editar Menú';
   }
 }
 
@@ -264,10 +306,11 @@ function crearTarjetaComida(comida, receta) {
 /**
  * Muestra el estado correspondiente (loading, empty, menu)
  */
-function mostrarEstado(estado) {
+function mostrarEstado(estado, mostrarBotonesAccion = true) {
   loadingState.style.display = 'none';
   emptyState.style.display = 'none';
   menuSemanalContainer.style.display = 'none';
+  btnEditarMenu.style.display = 'none';
   btnEliminarMenu.style.display = 'none';
   
   switch (estado) {
@@ -279,7 +322,10 @@ function mostrarEstado(estado) {
       break;
     case 'menu':
       menuSemanalContainer.style.display = 'block';
-      btnEliminarMenu.style.display = 'inline-block';
+      if (mostrarBotonesAccion) {
+        btnEditarMenu.style.display = 'inline-block';
+        btnEliminarMenu.style.display = 'inline-block';
+      }
       break;
   }
 }
@@ -362,6 +408,17 @@ async function eliminarMenuSemanal() {
  */
 function renderizarMenuManualEditable(menuSemanal) {
   menuSemanalContainer.innerHTML = '';
+  
+  // Guardar referencia al menú para usar en las funciones de edición
+  window.menuSemanalTemporal = menuSemanal;
+  
+  // Ocultar los botones de editar y eliminar menú mientras se está editando
+  if (btnEditarMenu) {
+    btnEditarMenu.style.display = 'none';
+  }
+  if (btnEliminarMenu) {
+    btnEliminarMenu.style.display = 'none';
+  }
   
   // Crear botones de acción del menú
   const botonesAccion = document.createElement('div');
@@ -657,6 +714,13 @@ async function guardarMenuManual(menuSemanal) {
     
     if (data.exito) {
       mostrarMensaje('Menú semanal guardado correctamente', 'success');
+      // Mostrar los botones de editar y eliminar después de guardar
+      if (btnEditarMenu) {
+        btnEditarMenu.style.display = 'inline-block';
+      }
+      if (btnEliminarMenu) {
+        btnEliminarMenu.style.display = 'inline-block';
+      }
       await cargarMenuSemanal();
     } else {
       throw new Error(data.mensaje || 'Error al guardar menú');
