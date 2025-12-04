@@ -1113,3 +1113,49 @@ def actualizar_menu_tras_edicion_receta(
     except Exception as e:
         print(f"{LOG_ERROR} Error al actualizar menú tras edición de receta: {e}")
         return False
+
+
+def eliminar_receta_del_menu_semanal(email_usuario: str, nombre_receta: str) -> bool:
+    """
+    Elimina una receta específica del menú semanal del usuario.
+    Se usa cuando el usuario desguarda una receta o cuando se elimina una receta.
+    
+    Args:
+        email_usuario: Email del usuario
+        nombre_receta: Nombre de la receta a eliminar del menú
+        
+    Returns:
+        bool: True si se eliminó correctamente
+    """
+    try:
+        menus = cargar_menus_semanales()
+        email_lower = email_usuario.lower()
+        
+        # Si el usuario no tiene menú, no hay nada que eliminar
+        if email_lower not in menus:
+            return True
+        
+        menu = menus[email_lower]
+        menu_modificado = False
+        
+        # Recorrer todos los días y comidas del menú
+        for dia in menu:
+            for turno_comida in menu[dia]:
+                receta_actual = menu[dia][turno_comida]
+                
+                # Si la receta está en este slot, eliminarla
+                if receta_actual and receta_actual == nombre_receta:
+                    print(f"{LOG_INFO} Eliminando '{nombre_receta}' del menú semanal en {dia}-{turno_comida}")
+                    menu[dia][turno_comida] = None
+                    menu_modificado = True
+        
+        # Guardar el menú si hubo cambios
+        if menu_modificado:
+            menus[email_lower] = menu
+            return guardar_menus_semanales(menus)
+        
+        return True
+        
+    except Exception as e:
+        print(f"{LOG_ERROR} Error al eliminar receta del menú semanal: {e}")
+        return False

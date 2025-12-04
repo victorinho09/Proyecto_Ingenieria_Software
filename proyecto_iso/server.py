@@ -28,7 +28,7 @@ from utils import (
     obtener_recetas_usuario_con_ids, cargar_recetas, guardar_recetas, publicar_receta_usuario,
     cargar_cuentas, hash_password, generar_menu_semanal_automatico,
     obtener_menu_semanal, guardar_menu_semanal, eliminar_menu_semanal, generar_id_receta,
-    actualizar_menu_tras_edicion_receta
+    actualizar_menu_tras_edicion_receta, eliminar_receta_del_menu_semanal
 )
 from utils import obtener_cuenta_por_email, actualizar_cuenta, crear_directorio_si_no_existe, generar_nombre_archivo_unico, obtener_extension_desde_mime
 
@@ -1292,6 +1292,9 @@ async def desguardar_receta(request: Request) -> JSONResponse:
         
         # Desguardar la receta para el usuario
         if desguardar_receta_usuario(nombre_receta, email_usuario):
+            # Eliminar la receta del menú semanal si está presente
+            eliminar_receta_del_menu_semanal(email_usuario, nombre_receta)
+            
             return crear_respuesta_exito(
                 f"Receta '{nombre_receta}' desguardada correctamente",
                 {"nombreReceta": nombre_receta, "guardada": False}
@@ -1356,11 +1359,23 @@ async def eliminar_receta(request: Request) -> JSONResponse:
         for idx, receta in enumerate(recetas):
             if receta.get("nombreReceta") == nombre_receta and receta.get("usuario") == email_usuario:
                 receta_encontrada = True
+                
+                # Obtener todos los usuarios que tenían esta receta guardada
+                usuarios_afectados = receta.get("usuariosGuardado", [])
+                # Añadir al autor también
+                if email_usuario not in usuarios_afectados:
+                    usuarios_afectados.append(email_usuario)
+                
                 # Eliminar la receta
                 recetas.pop(idx)
+                
                 # Guardar cambios
                 if guardar_recetas(recetas):
-                    print(f"✅ Receta '{nombre_receta}' eliminada por {email_usuario}")
+                    # Eliminar la receta de los menús semanales de todos los usuarios afectados
+                    for usuario in usuarios_afectados:
+                        eliminar_receta_del_menu_semanal(usuario, nombre_receta)
+                    
+                    print(f"✅ Receta '{nombre_receta}' eliminada por {email_usuario} y removida de menús")
                     return crear_respuesta_exito(
                         f"Receta '{nombre_receta}' eliminada correctamente",
                         {"nombreReceta": nombre_receta}

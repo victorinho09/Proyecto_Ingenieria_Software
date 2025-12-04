@@ -52,51 +52,51 @@
   },
   "pedro.varonaparra@usp.ceu.es": {
     "lunes": {
-      "desayuno": "con foto",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
+      "desayuno": null,
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "martes": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
+      "desayuno": null,
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "miercoles": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Ensalada",
+      "desayuno": null,
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "jueves": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
+      "desayuno": null,
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "viernes": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
+      "desayuno": null,
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "sabado": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Garbanzos ",
+      "desayuno": "con foto",
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     },
     "domingo": {
-      "desayuno": "ensalada cesar",
-      "aperitivo": null,
-      "comida": "Ensalada",
+      "desayuno": "con foto",
+      "aperitivo": "sin foto",
+      "comida": null,
       "merienda": null,
       "cena": "121212"
     }
