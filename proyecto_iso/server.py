@@ -1986,15 +1986,16 @@ async def obtener_menu_semanal_endpoint(request: Request) -> JSONResponse:
 @app.post("/api/menu-semanal/crear-automatico")
 async def crear_menu_semanal_automatico(request: Request) -> JSONResponse:
     """
-    Crea un menú semanal automático para el usuario.
+    Genera un menú semanal automático para el usuario (sin guardarlo).
+    El usuario podrá revisarlo y confirmarlo desde el frontend.
     Genera el menú seleccionando aleatoriamente recetas del usuario y guardadas,
     filtrando por turno de comida apropiado.
     
     Returns:
-        JSONResponse: Resultado de la operación
+        JSONResponse: Menú generado (sin guardar)
     """
     try:
-        print(f"{LOG_INFO} Iniciando creación de menú semanal automático")
+        print(f"{LOG_INFO} Iniciando generación de menú semanal automático")
         
         # Verificar autenticación
         auth_check = requiere_autenticacion(request)
@@ -2011,27 +2012,18 @@ async def crear_menu_semanal_automatico(request: Request) -> JSONResponse:
         
         # Generar menú semanal automático usando la función de utils
         menu_semanal = generar_menu_semanal_automatico(email_usuario)
-        print(f"{LOG_INFO} Menú generado, guardando en archivo JSON...")
+        print(f"{LOG_SUCCESS} Menú semanal generado (pendiente de confirmación)")
         
-        # Guardar menú semanal en el archivo JSON separado
-        exito = guardar_menu_semanal(email_usuario, menu_semanal)
+        # Enriquecer el menú con las fotos de las recetas
+        menu_enriquecido = enriquecer_menu_con_recetas(menu_semanal)
         
-        if exito:
-            print(f"{LOG_SUCCESS} Menú semanal creado y guardado correctamente")
-            return crear_respuesta_exito(
-                "Menú semanal creado automáticamente",
-                {"menuSemanal": menu_semanal}
-            )
-        else:
-            print(f"{LOG_ERROR} Error al actualizar cuenta con el menú")
-            return crear_respuesta_error(
-                "Error al crear el menú semanal",
-                "ERROR_CREAR_MENU",
-                HTTP_INTERNAL_SERVER_ERROR
-            )
+        return crear_respuesta_exito(
+            "Menú semanal generado automáticamente",
+            {"menuSemanal": menu_enriquecido}
+        )
         
     except Exception as e:
-        print(f"{LOG_ERROR} Error al crear menú semanal automático: {e}")
+        print(f"{LOG_ERROR} Error al generar menú semanal automático: {e}")
         import traceback
         traceback.print_exc()
         return crear_respuesta_error(

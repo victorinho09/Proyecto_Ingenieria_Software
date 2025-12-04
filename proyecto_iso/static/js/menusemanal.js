@@ -130,9 +130,10 @@ async function crearMenuAutomatico() {
     console.log('Datos recibidos:', data);
     
     if (data.exito && data.menuSemanal) {
-      renderizarMenuSemanal(data.menuSemanal);
-      mostrarEstado('menu');
-      mostrarMensaje('Menú semanal creado automáticamente', 'success');
+      // Mostrar menú en modo editable para que el usuario pueda confirmar o cancelar
+      renderizarMenuManualEditable(data.menuSemanal, true); // true = es menú automático generado
+      mostrarEstado('menu', false); // false = no mostrar botón de eliminar durante creación
+      mostrarMensaje('Menú automático generado. Revísalo y confirma para guardarlo', 'info');
     } else {
       console.error('Respuesta inesperada:', data);
       throw new Error(data.mensaje || 'Error al crear menú automático');
