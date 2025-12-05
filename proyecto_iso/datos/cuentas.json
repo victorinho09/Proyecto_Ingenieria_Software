@@ -82,5 +82,10 @@
     "valoracion": 0.0,
     "valoracion_count": 0,
     "fotoPerfil": null
+  },
+  {
+    "nombreUsuario": "pablo",
+    "email": "pargaizramirez@gmail.com",
+    "password": "Pablo#1313"
   }
 ]
