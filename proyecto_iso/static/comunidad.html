@@ -1045,7 +1045,7 @@
 
             <form id="filtrosRecetasForm">
               <div class="row">
-                <!-- Filtro por Ingredientes -->
+                <!-- Filtro por Ingredientes (múltiples) -->
                 <div class="col-md-6 mb-3">
                   <label for="filtroIngredientes" class="form-label">
                     <i class="bi bi-egg text-success me-1"></i>
@@ -1056,9 +1056,27 @@
                     class="form-control"
                     id="filtroIngredientes"
                     name="ingredientes"
-                    placeholder="Ej: pollo, arroz..."
+                    placeholder="Escribe y presiona Enter..."
                   />
-                  <small class="text-muted">Busca recetas que contengan este ingrediente</small>
+                  <small class="text-muted">Presiona Enter para añadir ingrediente</small>
+                  <div id="ingredientesTags" class="filter-tags-container"></div>
+                </div>
+
+                <!-- Filtro por Alérgenos (múltiples) -->
+                <div class="col-md-6 mb-3">
+                  <label for="filtroAlergenos" class="form-label">
+                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>
+                    Alérgenos a Excluir
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="filtroAlergenos"
+                    name="alergenos"
+                    placeholder="Escribe y presiona Enter..."
+                  />
+                  <small class="text-muted">Presiona Enter para añadir alérgeno</small>
+                  <div id="alergenosTags" class="filter-tags-container"></div>
                 </div>
 
                 <!-- Filtro por País -->

@@ -145,7 +145,57 @@ html, body{
   border-color: var(--bs-primary);
 }
 
-/* ===== Badges “food chip” (opcional) ===== */
+/* ===== Tags para filtros múltiples ===== */
+.filter-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: 2rem;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(240, 147, 251, 0.25);
+  transition: all 0.2s ease;
+}
+
+.filter-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.35);
+}
+
+.filter-tag .remove-tag {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.filter-tag .remove-tag:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+/* ===== Badges "food chip" (opcional) ===== */
 .badge-food{
   display:inline-flex; align-items:center; gap:.4rem;
   border-radius:999px; padding:.35rem .7rem; font-weight:600;

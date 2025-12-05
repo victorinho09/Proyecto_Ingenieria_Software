@@ -2033,7 +2033,7 @@
 
             <form id="filtrosRecetasForm">
               <div class="row">
-                <!-- Filtro por Ingredientes -->
+                <!-- Filtro por Ingredientes (múltiples) -->
                 <div class="col-md-6 mb-3">
                   <label for="filtroIngredientes" class="form-label">
                     <i class="bi bi-egg text-success me-1"></i>
@@ -2044,9 +2044,27 @@
                     class="form-control"
                     id="filtroIngredientes"
                     name="ingredientes"
-                    placeholder="Ej: pollo, arroz..."
+                    placeholder="Escribe y presiona Enter..."
                   />
-                  <small class="text-muted">Busca recetas que contengan este ingrediente</small>
+                  <small class="text-muted">Presiona Enter para añadir ingrediente</small>
+                  <div id="ingredientesTags" class="filter-tags-container"></div>
+                </div>
+
+                <!-- Filtro por Alérgenos (múltiples) -->
+                <div class="col-md-6 mb-3">
+                  <label for="filtroAlergenos" class="form-label">
+                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>
+                    Alérgenos a Excluir
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="filtroAlergenos"
+                    name="alergenos"
+                    placeholder="Escribe y presiona Enter..."
+                  />
+                  <small class="text-muted">Presiona Enter para añadir alérgeno</small>
+                  <div id="alergenosTags" class="filter-tags-container"></div>
                 </div>
 
                 <!-- Filtro por País -->
@@ -2443,17 +2461,83 @@
     <script>
       // Variable global para almacenar todas las recetas sin filtrar
       let todasLasRecetas = [];
+      
+      // Arrays para almacenar los tags de ingredientes y alérgenos
+      let ingredientesTags = [];
+      let alergenosTags = [];
+
+      // Función para agregar tag
+      function agregarTag(tipo, valor) {
+        valor = valor.trim();
+        if (!valor) return;
+        
+        if (tipo === 'ingrediente') {
+          if (!ingredientesTags.includes(valor)) {
+            ingredientesTags.push(valor);
+            actualizarTagsUI('ingredientes');
+          }
+        } else if (tipo === 'alergeno') {
+          if (!alergenosTags.includes(valor)) {
+            alergenosTags.push(valor);
+            actualizarTagsUI('alergenos');
+          }
+        }
+      }
+
+      // Función para eliminar tag
+      function eliminarTag(tipo, valor) {
+        if (tipo === 'ingrediente') {
+          ingredientesTags = ingredientesTags.filter(tag => tag !== valor);
+          actualizarTagsUI('ingredientes');
+        } else if (tipo === 'alergeno') {
+          alergenosTags = alergenosTags.filter(tag => tag !== valor);
+          actualizarTagsUI('alergenos');
+        }
+      }
+
+      // Función para actualizar la UI de los tags
+      function actualizarTagsUI(tipo) {
+        const containerId = tipo === 'ingredientes' ? 'ingredientesTags' : 'alergenosTags';
+        const container = document.getElementById(containerId);
+        const tags = tipo === 'ingredientes' ? ingredientesTags : alergenosTags;
+        const tipoSingular = tipo === 'ingredientes' ? 'ingrediente' : 'alergeno';
+        
+        container.innerHTML = tags.map(tag => `
+          <span class="filter-tag">
+            ${tag}
+            <button type="button" class="remove-tag" onclick="eliminarTag('${tipoSingular}', '${tag}')">×</button>
+          </span>
+        `).join('');
+      }
 
       // Función para filtrar recetas según los criterios
       function filtrarRecetas(recetas, filtros) {
         return recetas.filter(receta => {
-          // Filtro por ingredientes (búsqueda parcial, case-insensitive)
-          if (filtros.ingredientes) {
+          // Filtro por ingredientes múltiples (búsqueda parcial, case-insensitive)
+          if (filtros.ingredientes && filtros.ingredientes.length > 0) {
             const ingredientesReceta = (receta.ingredientes || '').toLowerCase();
-            const busqueda = filtros.ingredientes.toLowerCase();
-            if (!ingredientesReceta.includes(busqueda)) {
-              return false;
+            const todosPresentres = filtros.ingredientes.every(ing => 
+              ingredientesReceta.includes(ing.toLowerCase())
+            );
+            if (!todosPresentres) return false;
+          }
+
+          // Filtro por alérgenos (excluir recetas que contengan alguno)
+          if (filtros.alergenos && filtros.alergenos.length > 0) {
+            const alergenosReceta = (receta.alergenos || '').toLowerCase().trim();
+            // Solo verificar si la receta tiene alérgenos especificados
+            if (alergenosReceta !== '') {
+              // Verificar si alguno de los alérgenos del filtro está presente en la receta
+              const contieneAlergeno = filtros.alergenos.some(alergeno => {
+                const alergenoLower = alergeno.toLowerCase().trim();
+                // Buscar el alérgeno como palabra completa o parte de una lista separada por comas
+                return alergenosReceta.split(',').some(alergenoReceta => 
+                  alergenoReceta.trim().includes(alergenoLower)
+                );
+              });
+              if (contieneAlergeno) return false; // Excluir esta receta
             }
+            // Si la receta no tiene alérgenos especificados, no la excluimos (continuar)
           }
 
           // Filtro por país (valor exacto)
@@ -2526,8 +2610,15 @@
       function obtenerFiltrosDelFormulario() {
         const filtros = {};
         
-        const ingredientes = document.getElementById('filtroIngredientes').value.trim();
-        if (ingredientes) filtros.ingredientes = ingredientes;
+        // Ingredientes múltiples desde los tags
+        if (ingredientesTags.length > 0) {
+          filtros.ingredientes = ingredientesTags;
+        }
+        
+        // Alérgenos múltiples desde los tags
+        if (alergenosTags.length > 0) {
+          filtros.alergenos = alergenosTags;
+        }
         
         const paisOrigen = document.getElementById('filtroPais').value;
         if (paisOrigen) filtros.paisOrigen = paisOrigen;
@@ -2562,13 +2653,26 @@
           
           const badges = [];
           
-          if (filtros.ingredientes) {
-            badges.push(`
-              <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
-                Ingredientes: ${filtros.ingredientes}
-                <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingredientes')" title="Eliminar filtro"></i>
-              </span>`);
+          if (filtros.ingredientes && filtros.ingredientes.length > 0) {
+            filtros.ingredientes.forEach(ing => {
+              badges.push(`
+                <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+                  Ingrediente: ${ing}
+                  <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingrediente', '${ing}')" title="Eliminar filtro"></i>
+                </span>`);
+            });
           }
+          
+          if (filtros.alergenos && filtros.alergenos.length > 0) {
+            filtros.alergenos.forEach(alg => {
+              badges.push(`
+                <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+                  Excluir alérgeno: ${alg}
+                  <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('alergeno', '${alg}')" title="Eliminar filtro"></i>
+                </span>`);
+            });
+          }
+          
           if (filtros.paisOrigen) {
             badges.push(`
               <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
@@ -2632,13 +2736,26 @@
         
         const badges = [];
         
-        if (filtros.ingredientes) {
-          badges.push(`
-            <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
-              Ingredientes: ${filtros.ingredientes}
-              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('ingredientes')" title="Eliminar filtro"></i>
-            </span>`);
+        if (filtros.ingredientes && filtros.ingredientes.length > 0) {
+          filtros.ingredientes.forEach(ing => {
+            badges.push(`
+              <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+                Ingrediente: ${ing}
+                <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('ingrediente', '${ing}')" title="Eliminar filtro"></i>
+              </span>`);
+          });
         }
+        
+        if (filtros.alergenos && filtros.alergenos.length > 0) {
+          filtros.alergenos.forEach(alg => {
+            badges.push(`
+              <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+                Excluir alérgeno: ${alg}
+                <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('alergeno', '${alg}')" title="Eliminar filtro"></i>
+              </span>`);
+          });
+        }
+        
         if (filtros.paisOrigen) {
           badges.push(`
             <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
@@ -2696,13 +2813,28 @@
         
         const badges = [];
         
-        if (filtros.ingredientes) {
-          badges.push(`
-            <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
-              Ingredientes: ${filtros.ingredientes}
-              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingredientes')" title="Eliminar filtro"></i>
-            </span>`);
+        // Mostrar ingredientes múltiples
+        if (filtros.ingredientes && filtros.ingredientes.length > 0) {
+          filtros.ingredientes.forEach(ing => {
+            badges.push(`
+              <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+                Ingrediente: ${ing}
+                <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingrediente', '${ing}')" title="Eliminar filtro"></i>
+              </span>`);
+          });
         }
+        
+        // Mostrar alérgenos múltiples
+        if (filtros.alergenos && filtros.alergenos.length > 0) {
+          filtros.alergenos.forEach(alg => {
+            badges.push(`
+              <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+                Excluir alérgeno: ${alg}
+                <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('alergeno', '${alg}')" title="Eliminar filtro"></i>
+              </span>`);
+          });
+        }
+        
         if (filtros.paisOrigen) {
           badges.push(`
             <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
@@ -2715,6 +2847,14 @@
             <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
               Dificultad: ${filtros.dificultad}
               <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('dificultad')" title="Eliminar filtro"></i>
+            </span>`);
+        }
+        if (filtros.publicada) {
+          const labelPub = filtros.publicada === 'si' ? 'Sí' : 'No';
+          badges.push(`
+            <span class="badge bg-info me-2 mb-2 d-inline-flex align-items-center">
+              Publicada: ${labelPub}
+              <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('publicada')" title="Eliminar filtro"></i>
             </span>`);
         }
         if (filtros.turnoComida) {
@@ -2737,10 +2877,24 @@
       }
 
       // Función para eliminar un filtro específico sin aplicar los cambios
-      function eliminarFiltro(nombreFiltro) {
+      function eliminarFiltro(nombreFiltro, valor = null) {
+        // Si es ingrediente o alérgeno, eliminar del array de tags
+        if (nombreFiltro === 'ingrediente') {
+          eliminarTag('ingrediente', valor);
+          const filtros = obtenerFiltrosDelFormulario();
+          mostrarFiltrosActivosEnModal(filtros);
+          return;
+        }
+        
+        if (nombreFiltro === 'alergeno') {
+          eliminarTag('alergeno', valor);
+          const filtros = obtenerFiltrosDelFormulario();
+          mostrarFiltrosActivosEnModal(filtros);
+          return;
+        }
+        
         // Limpiar el campo correspondiente en el formulario
         const mapeoFiltros = {
-          'ingredientes': 'filtroIngredientes',
           'paisOrigen': 'filtroPais',
           'dificultad': 'filtroDificultad',
           'turnoComida': 'filtroTurnoComida',
@@ -2762,21 +2916,27 @@
       }
 
       // Función para eliminar un filtro desde la página principal y aplicar cambios
-      function eliminarFiltroYAplicar(nombreFiltro) {
-        const mapeoFiltros = {
-          'ingredientes': 'filtroIngredientes',
-          'paisOrigen': 'filtroPais',
-          'dificultad': 'filtroDificultad',
-          'turnoComida': 'filtroTurnoComida',
-          'duracion': 'filtroDuracion',
-          'publicada': 'filtroPublicado'
-        };
-        
-        const elementoId = mapeoFiltros[nombreFiltro];
-        if (elementoId) {
-          const elemento = document.getElementById(elementoId);
-          if (elemento) {
-            elemento.value = '';
+      function eliminarFiltroYAplicar(nombreFiltro, valor = null) {
+        // Si es ingrediente o alérgeno, eliminar del array de tags
+        if (nombreFiltro === 'ingrediente') {
+          eliminarTag('ingrediente', valor);
+        } else if (nombreFiltro === 'alergeno') {
+          eliminarTag('alergeno', valor);
+        } else {
+          const mapeoFiltros = {
+            'paisOrigen': 'filtroPais',
+            'dificultad': 'filtroDificultad',
+            'turnoComida': 'filtroTurnoComida',
+            'duracion': 'filtroDuracion',
+            'publicada': 'filtroPublicado'
+          };
+          
+          const elementoId = mapeoFiltros[nombreFiltro];
+          if (elementoId) {
+            const elemento = document.getElementById(elementoId);
+            if (elemento) {
+              elemento.value = '';
+            }
           }
         }
         
@@ -2790,6 +2950,10 @@
       // Función para limpiar todos los filtros desde la página principal
       function limpiarTodosFiltros() {
         document.getElementById('filtrosRecetasForm').reset();
+        ingredientesTags = [];
+        alergenosTags = [];
+        actualizarTagsUI('ingredientes');
+        actualizarTagsUI('alergenos');
         document.getElementById('filtrosActivosContainer').style.display = 'none';
         document.getElementById('filtrosActivosPageContainer').style.display = 'none';
         mostrarRecetasFiltradas(todasLasRecetas);
@@ -2798,6 +2962,10 @@
       // Función para limpiar todos los filtros sin aplicar cambios
       function limpiarFiltros() {
         document.getElementById('filtrosRecetasForm').reset();
+        ingredientesTags = [];
+        alergenosTags = [];
+        actualizarTagsUI('ingredientes');
+        actualizarTagsUI('alergenos');
         document.getElementById('filtrosActivosContainer').style.display = 'none';
       }
 
@@ -2806,6 +2974,36 @@
         const btnAplicar = document.getElementById('aplicarFiltrosBtn');
         const btnLimpiar = document.getElementById('limpiarFiltrosBtn');
         const modalElement = document.getElementById('filtrosRecetasModal');
+        
+        // Event listeners para campos de ingredientes y alérgenos
+        const inputIngredientes = document.getElementById('filtroIngredientes');
+        const inputAlergenos = document.getElementById('filtroAlergenos');
+        
+        if (inputIngredientes) {
+          inputIngredientes.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const valor = this.value.trim();
+              if (valor) {
+                agregarTag('ingrediente', valor);
+                this.value = '';
+              }
+            }
+          });
+        }
+        
+        if (inputAlergenos) {
+          inputAlergenos.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const valor = this.value.trim();
+              if (valor) {
+                agregarTag('alergeno', valor);
+                this.value = '';
+              }
+            }
+          });
+        }
         
         // Event listener para cuando se abre el modal
         if (modalElement) {
