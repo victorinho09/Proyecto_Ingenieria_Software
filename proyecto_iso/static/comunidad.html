@@ -42,111 +42,13 @@
     <link rel="icon" type="image/png" href="/static/cocinero.png">
   </head>
   <body class="bg-light d-flex flex-column min-vh-100">
-    <!-- Estilos personalizados para tema azul cyan -->
+    <!-- Estilos personalizados para tema naranja -->
     <style>
-      .navbar-gradient-cyan {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-      }
-      
-      /* Sobrescribir todos los botones primary con gradiente azul */
-      .btn-primary {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        border: none !important;
-        color: white !important;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
-      }
-      
-      .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4) !important;
-        color: white !important;
-        border: none !important;
-      }
-      
-      .btn-outline-primary {
-        border: 2px solid #4facfe !important;
-        color: #4facfe !important;
-        background: transparent !important;
-        transition: all 0.3s ease;
-      }
-      
-      .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        border-color: transparent !important;
-        color: white !important;
-        transform: translateY(-2px);
-      }
-      
-      /* Header de modales con gradiente */
-      .modal-header {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-      }
-      
-      .modal-header .btn-close {
-        filter: brightness(0) invert(1);
-      }
-      
-      .modal-title {
-        color: white !important;
-      }
-      
-      /* Reemplazar todos los text-primary con color azul */
-      .text-primary {
-        color: #4facfe !important;
-      }
-      
-      /* Spinners y loaders */
-      .spinner-border.text-primary {
-        color: #4facfe !important;
-        border-color: #4facfe !important;
-        border-right-color: transparent !important;
-      }
-      
-      /* Badges y etiquetas */
-      .badge.bg-primary {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-      }
-      
-      /* Links con hover azul */
-      a:not(.btn):not(.nav-link):hover {
-        color: #4facfe !important;
-      }
-      
-      /* Cards de recetas con borde y sombra azul suave */
-      .card {
-        border: 1px solid rgba(79, 172, 254, 0.2) !important;
-        box-shadow: 0 2px 8px rgba(79, 172, 254, 0.1) !important;
-        transition: all 0.3s ease;
-      }
-      
-      .card:hover {
-        border-color: rgba(79, 172, 254, 0.4) !important;
-        box-shadow: 0 8px 20px rgba(79, 172, 254, 0.2) !important;
-        transform: translateY(-3px);
-      }
-      
-      /* Fondo suave azul para las cards */
-      .card-body {
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.03) 0%, rgba(0, 242, 254, 0.03) 100%);
-      }
-      
-      /* Headers de cards con acento azul */
-      .card-header {
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%) !important;
-        border-bottom: 2px solid rgba(79, 172, 254, 0.3) !important;
-      }
-      
-      /* Dropdown del navbar con gradiente cyan */
-      .dropdown-menu.bg-primary {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-      }
+      /* Los estilos se heredan de saborea.css que usa --bs-primary (naranja) */
     </style>
     
     <!-- Navegación principal -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient-cyan shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
       <div class="container">
         <a class="navbar-brand fw-bold" href="/">
           <span class="lh-1" style="font-family:'Allura',cursive; font-size:2.8rem;">Saborea</span>

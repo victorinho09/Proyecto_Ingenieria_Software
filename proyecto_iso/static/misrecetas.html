@@ -42,111 +42,13 @@
     <link rel="icon" type="image/png" href="/static/cocinero.png">
   </head>
   <body class="bg-light d-flex flex-column min-vh-100">
-    <!-- Estilos personalizados para tema rosa -->
+    <!-- Estilos personalizados para tema naranja -->
     <style>
-      .navbar-gradient-pink {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-      }
-      
-      /* Sobrescribir todos los botones primary con gradiente rosa */
-      .btn-primary {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        border: none !important;
-        color: white !important;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
-      }
-      
-      .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4) !important;
-        color: white !important;
-        border: none !important;
-      }
-      
-      .btn-outline-primary {
-        border: 2px solid #f093fb !important;
-        color: #f093fb !important;
-        background: transparent !important;
-        transition: all 0.3s ease;
-      }
-      
-      .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        border-color: transparent !important;
-        color: white !important;
-        transform: translateY(-2px);
-      }
-      
-      /* Header de modales con gradiente */
-      .modal-header {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-      }
-      
-      .modal-header .btn-close {
-        filter: brightness(0) invert(1);
-      }
-      
-      .modal-title {
-        color: white !important;
-      }
-      
-      /* Reemplazar todos los text-primary con color rosa */
-      .text-primary {
-        color: #f093fb !important;
-      }
-      
-      /* Spinners y loaders */
-      .spinner-border.text-primary {
-        color: #f093fb !important;
-        border-color: #f093fb !important;
-        border-right-color: transparent !important;
-      }
-      
-      /* Badges y etiquetas */
-      .badge.bg-primary {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-      }
-      
-      /* Links con hover rosa */
-      a:not(.btn):not(.nav-link):hover {
-        color: #f093fb !important;
-      }
-      
-      /* Cards de recetas con borde y sombra rosa suave */
-      .card {
-        border: 1px solid rgba(240, 147, 251, 0.2) !important;
-        box-shadow: 0 2px 8px rgba(240, 147, 251, 0.1) !important;
-        transition: all 0.3s ease;
-      }
-      
-      .card:hover {
-        border-color: rgba(240, 147, 251, 0.4) !important;
-        box-shadow: 0 8px 20px rgba(240, 147, 251, 0.2) !important;
-        transform: translateY(-3px);
-      }
-      
-      /* Fondo suave rosa para las cards */
-      .card-body {
-        background: linear-gradient(135deg, rgba(240, 147, 251, 0.03) 0%, rgba(245, 87, 108, 0.03) 100%);
-      }
-      
-      /* Headers de cards con acento rosa */
-      .card-header {
-        background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%) !important;
-        border-bottom: 2px solid rgba(240, 147, 251, 0.3) !important;
-      }
-      
-      /* Dropdown del navbar con gradiente rosa */
-      .dropdown-menu.bg-primary {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-      }
+      /* Los estilos se heredan de saborea.css que usa --bs-primary (naranja) */
     </style>
     
     <!-- Navegación principal -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient-pink shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
       <div class="container">
         <a class="navbar-brand fw-bold" href="/">
           <span class="lh-1" style="font-family:'Allura',cursive; font-size:2.8rem;">Saborea</span>
