@@ -207,6 +207,11 @@
             </p>
 
             <form id="crearRecetaForm" action="/crear-receta" method="POST">
+              <!-- Campos ocultos para modo edición -->
+              <input type="hidden" id="modoEdicion" name="modoEdicion" value="false">
+              <input type="hidden" id="nombreRecetaOriginal" name="nombreRecetaOriginal" value="">
+              <input type="hidden" id="fotoRecetaOriginal" name="fotoRecetaOriginal" value="">
+              
               <div class="row">
                 <div class="col-md-6">
                   <div class="mb-3">
