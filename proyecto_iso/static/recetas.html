@@ -122,7 +122,7 @@
       <!-- Estilos personalizados para las cards con gradientes -->
       <style>
         .hero-card {
-          background: linear-gradient(135deg, color-mix(in oklab, var(--bs-primary) 85%, #000) 0%, color-mix(in oklab, var(--bs-primary) 70%, #000) 100%);
+          background: linear-gradient(135deg, #F0A53E 0%, #E89430 100%);
           border: none;
           border-radius: 20px;
           box-shadow: 0 12px 32px rgba(var(--bs-primary-rgb), 0.15);
@@ -139,10 +139,11 @@
           width: 100%;
           height: 100%;
           background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-          opacity: 0;
+          opacity: 0 !important;
           transition: opacity 0.4s ease;
           z-index: 1;
           pointer-events: none;
+          display: none;
         }
         
         .hero-card .card-body {
@@ -156,7 +157,7 @@
         }
         
         .hero-card:hover::before {
-          opacity: 1;
+          opacity: 0 !important;
         }
         
         .hero-icon {
@@ -178,7 +179,7 @@
         }
         
         .gradient-card-1 {
-          background: linear-gradient(135deg, color-mix(in oklab, var(--bs-primary) 85%, #000) 0%, color-mix(in oklab, var(--bs-primary) 70%, #000) 100%);
+          background: linear-gradient(135deg, #F0A53E 0%, #E89430 100%);
           border: none;
           border-radius: 16px;
           box-shadow: 0 12px 32px rgba(var(--bs-primary-rgb), 0.15);
@@ -195,8 +196,9 @@
           width: 100%;
           height: 100%;
           background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-          opacity: 0;
+          opacity: 0 !important;
           transition: opacity 0.4s ease;
+          display: none;
         }
         
         .gradient-card-1:hover {
@@ -205,11 +207,11 @@
         }
         
         .gradient-card-1:hover::before {
-          opacity: 1;
+          opacity: 0 !important;
         }
         
         .gradient-card-2 {
-          background: linear-gradient(135deg, color-mix(in oklab, var(--bs-primary) 85%, #000) 0%, color-mix(in oklab, var(--bs-primary) 70%, #000) 100%);
+          background: linear-gradient(135deg, #F0A53E 0%, #E89430 100%);
           border: none;
           border-radius: 16px;
           box-shadow: 0 12px 32px rgba(var(--bs-primary-rgb), 0.15);
@@ -226,8 +228,9 @@
           width: 100%;
           height: 100%;
           background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-          opacity: 0;
+          opacity: 0 !important;
           transition: opacity 0.4s ease;
+          display: none;
         }
         
         .gradient-card-2:hover {
@@ -236,7 +239,7 @@
         }
         
         .gradient-card-2:hover::before {
-          opacity: 1;
+          opacity: 0 !important;
         }
         
         .card-icon-small {
@@ -262,21 +265,28 @@
         }
         
         .btn-white-gradient {
-          background: rgba(255, 255, 255, 0.95);
-          color: var(--bs-primary);
-          border: none;
-          border-radius: 12px;
-          padding: 12px 30px;
-          font-weight: 600;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          background: linear-gradient(135deg, #FFF5EB 0%, #FFEDE0 100%) !important;
+          color: #B85C1A !important;
+          border: none !important;
+          border-radius: 999px !important;
+          padding: 12px 28px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.3px !important;
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+          box-shadow: 0 10px 26px rgba(255, 158, 44, 0.1) !important;
+          font-size: 0.95rem !important;
         }
         
         .btn-white-gradient:hover {
-          background: rgba(255, 255, 255, 1);
-          color: var(--bs-primary);
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+          background: linear-gradient(135deg, #FFFBF7 0%, #FFF5EB 100%) !important;
+          color: #B85C1A !important;
+          transform: translateY(-4px) !important;
+          box-shadow: 0 16px 32px rgba(255, 158, 44, 0.15) !important;
+        }
+        
+        .btn-white-gradient:active {
+          transform: translateY(-2px) !important;
+          box-shadow: 0 12px 24px rgba(255, 158, 44, 0.1) !important;
         }
         
         /* Sobrescribir botones primary con gradiente principal */
