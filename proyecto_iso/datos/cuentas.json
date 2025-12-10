@@ -2,25 +2,10 @@
   {
     "nombreUsuario": "victor",
     "email": "victorvega@gmail.com",
-    "password": "Victor#1313",
-    "valoracion": 2.8,
-    "valoracion_count": 4,
-    "fotoPerfil": null
-  },
-  {
-    "nombreUsuario": "Javier",
-    "email": "javiervega@gmail.com",
-    "password": "Javier#1313"
-  },
-  {
-    "nombreUsuario": "prueba",
-    "email": "pruebavega@gmail.com",
-    "password": "Prueba#1313"
-  },
-  {
-    "nombreUsuario": "juanixer",
-    "email": "juanixer@gmail.com",
-    "password": "Alfredowapo1"
+    "password": "Victor1234",
+    "valoracion": 0.0,
+    "valoracion_count": 0,
+    "fotoPerfil": "/static/uploads/perfiles/20251210_111103_victorvega_57185301.jpg"
   },
   {
     "nombreUsuario": "Alfredo",
@@ -31,41 +16,12 @@
     "valoracion_count": 0
   },
   {
-    "nombreUsuario": "prueba",
-    "email": "victorpablo@gmail.com",
-    "password": "Pruebaa#1313"
-  },
-  {
-    "nombreUsuario": "pedro",
+    "nombreUsuario": "Pedro",
     "email": "pedro.varonaparra@usp.ceu.es",
-    "password": "Pedro12345",
+    "password": "Pedro1234",
     "valoracion": 0.0,
-    "valoracion_count": 0
-  },
-  {
-    "nombreUsuario": "prueba",
-    "email": "prueba4.0@gmail.com",
-    "password": "Prueba1234"
-  },
-  {
-    "nombreUsuario": "Alex",
-    "email": "alexbarcelo@gmail.com",
-    "password": "Alex1234"
-  },
-  {
-    "nombreUsuario": "campa",
-    "email": "a.campa@movistar.es",
-    "password": "Telefonica#1313"
-  },
-  {
-    "nombreUsuario": "sdfa",
-    "email": "jaimeee@gmail.com",
-    "password": "Jaime#1234"
-  },
-  {
-    "nombreUsuario": "fernando",
-    "email": "rgg.eps@ceu.es",
-    "password": "alfredoA|1234"
+    "valoracion_count": 0,
+    "fotoPerfil": "/static/uploads/perfiles/20251210_114135_pedro_varonaparra_e9f2a27f.jpg"
   },
   {
     "nombreUsuario": "Javier",
@@ -74,18 +30,5 @@
     "fotoPerfil": "/static/uploads/perfiles/20251204_144743_franciscojavier_martinezfernan_c60d9c79.jpg",
     "valoracion": 0.0,
     "valoracion_count": 0
-  },
-  {
-    "nombreUsuario": "Prueba",
-    "email": "fjmaira@gmail.com",
-    "password": "Javier1234",
-    "valoracion": 0.0,
-    "valoracion_count": 0,
-    "fotoPerfil": null
-  },
-  {
-    "nombreUsuario": "pablo",
-    "email": "pargaizramirez@gmail.com",
-    "password": "Pablo#1313"
   }
 ]

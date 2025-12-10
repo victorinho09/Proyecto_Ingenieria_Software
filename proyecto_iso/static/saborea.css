@@ -159,18 +159,18 @@ html, body{
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.8rem;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #FF9E2C 0%, #E89430 100%);
   color: white;
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(240, 147, 251, 0.25);
+  box-shadow: 0 2px 8px rgba(255, 158, 44, 0.25);
   transition: all 0.2s ease;
 }
 
 .filter-tag:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.35);
+  box-shadow: 0 4px 12px rgba(255, 158, 44, 0.35);
 }
 
 .filter-tag .remove-tag {

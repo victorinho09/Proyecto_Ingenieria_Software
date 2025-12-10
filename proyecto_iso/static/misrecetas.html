@@ -42,9 +42,17 @@
     <link rel="icon" type="image/png" href="/static/cocinero.png">
   </head>
   <body class="bg-light d-flex flex-column min-vh-100">
-    <!-- Estilos personalizados para tema naranja -->
+    <!-- Estilos personalizados para el modal de crear receta -->
     <style>
-      /* Los estilos se heredan de saborea.css que usa --bs-primary (naranja) */
+      /* Estilos para el modal de crear receta */
+      #crearRecetaModal .modal-header {
+        background: linear-gradient(135deg, #FF9E2C 0%, #E89430 100%);
+        color: white;
+      }
+      
+      #crearRecetaModal .btn-close {
+        filter: brightness(0) invert(1);
+      }
     </style>
     
     <!-- Navegación principal -->
@@ -2558,7 +2566,7 @@
           if (filtros.ingredientes && filtros.ingredientes.length > 0) {
             filtros.ingredientes.forEach(ing => {
               badges.push(`
-                <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+                <span class="badge bg-primary me-2 mb-2 d-inline-flex align-items-center">
                   Ingrediente: ${ing}
                   <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingrediente', '${ing}')" title="Eliminar filtro"></i>
                 </span>`);
@@ -2568,7 +2576,7 @@
           if (filtros.alergenos && filtros.alergenos.length > 0) {
             filtros.alergenos.forEach(alg => {
               badges.push(`
-                <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+                <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
                   Excluir alérgeno: ${alg}
                   <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('alergeno', '${alg}')" title="Eliminar filtro"></i>
                 </span>`);
@@ -2641,7 +2649,7 @@
         if (filtros.ingredientes && filtros.ingredientes.length > 0) {
           filtros.ingredientes.forEach(ing => {
             badges.push(`
-              <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+              <span class="badge bg-primary me-2 mb-2 d-inline-flex align-items-center">
                 Ingrediente: ${ing}
                 <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('ingrediente', '${ing}')" title="Eliminar filtro"></i>
               </span>`);
@@ -2651,7 +2659,7 @@
         if (filtros.alergenos && filtros.alergenos.length > 0) {
           filtros.alergenos.forEach(alg => {
             badges.push(`
-              <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+              <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
                 Excluir alérgeno: ${alg}
                 <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltroYAplicar('alergeno', '${alg}')" title="Eliminar filtro"></i>
               </span>`);
@@ -2719,7 +2727,7 @@
         if (filtros.ingredientes && filtros.ingredientes.length > 0) {
           filtros.ingredientes.forEach(ing => {
             badges.push(`
-              <span class="badge bg-success me-2 mb-2 d-inline-flex align-items-center">
+              <span class="badge bg-primary me-2 mb-2 d-inline-flex align-items-center">
                 Ingrediente: ${ing}
                 <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('ingrediente', '${ing}')" title="Eliminar filtro"></i>
               </span>`);
@@ -2730,7 +2738,7 @@
         if (filtros.alergenos && filtros.alergenos.length > 0) {
           filtros.alergenos.forEach(alg => {
             badges.push(`
-              <span class="badge bg-danger me-2 mb-2 d-inline-flex align-items-center">
+              <span class="badge bg-warning me-2 mb-2 d-inline-flex align-items-center">
                 Excluir alérgeno: ${alg}
                 <i class="bi bi-x-circle ms-2" style="cursor: pointer;" onclick="eliminarFiltro('alergeno', '${alg}')" title="Eliminar filtro"></i>
               </span>`);

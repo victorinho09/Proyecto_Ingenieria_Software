@@ -1,100 +1,5 @@
 [
   {
-    "nombreReceta": "fsf",
-    "descripcion": "fdsdf",
-    "ingredientes": "asdfds",
-    "pasosAseguir": "asdf",
-    "duracion": 3,
-    "fotoReceta": "/static/uploads/recetas/20251012_210649_javier_84b4f266.jpg",
-    "alergenos": "asdf",
-    "paisOrigen": "asdf",
-    "turnoComida": "aperitivo",
-    "dificultad": "Media",
-    "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "Garbanzos ",
-    "descripcion": "Garbanzos con tomate de León",
-    "ingredientes": "Garbanzos, tomate, cebolla, ajo",
-    "alergenos": "",
-    "paisOrigen": "España",
-    "pasosAseguir": "Cocinar",
-    "turnoComida": "comida",
-    "duracion": 15,
-    "dificultad": "Facil",
-    "fotoReceta": "",
-    "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es"
-    ],
-    "usuario": "victorvega@gmail.com",
-    "publicada": true,
-    "valoraciones": [
-      {
-        "usuario": "alfredo.martinezescoval@usp.ceu.es",
-        "puntuacion": 5
-      },
-      {
-        "usuario": "pedro.varonaparra@usp.ceu.es",
-        "puntuacion": 1
-      }
-    ],
-    "comentarios": [
-      {
-        "usuario": "pedro.varonaparra@usp.ceu.es",
-        "texto": "Holaaa",
-        "fecha": "2025-12-04T14:32:09.607117"
-      },
-      {
-        "usuario": "pedro.varonaparra@usp.ceu.es",
-        "texto": "lolo",
-        "fecha": "2025-12-04T14:38:35.183519"
-      }
-    ]
-  },
-  {
-    "nombreReceta": "receta2",
-    "descripcion": "Receta numero 2",
-    "ingredientes": "sdf",
-    "pasosAseguir": "sdfds",
-    "duracion": 4,
-    "fotoReceta": "/static/uploads/recetas/20251012_211323_javier_f791b5c1.jpg",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "Receta3",
-    "descripcion": "Receta numero 3",
-    "ingredientes": "mas cosas",
-    "pasosAseguir": "sdfdsf",
-    "duracion": 6,
-    "fotoReceta": "/static/uploads/recetas/20251012_211345_javier_75be6d6a.jpg",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "Receta 4",
-    "descripcion": "asdfs",
-    "ingredientes": "sdf",
-    "pasosAseguir": "adsf",
-    "duracion": 2,
-    "fotoReceta": "/static/uploads/recetas/20251012_211403_javier_12d9159c.jpg",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "javiervega@gmail.com",
-    "usuariosGuardado": []
-  },
-  {
     "nombreReceta": "Arroz con sepia y gambas",
     "descripcion": "Arroz tradicional preparado con un sofrito de cebolla y pimiento rojo, sepia tierna, gambas y caldo de pescado. Un plato sabroso y sencillo donde el azafrán y el sofrito aportan un aroma mediterráneo irresistible.",
     "ingredientes": "360 gramos de arroz redondo,\n2 sepias pequeñas ,\n250 gramos de gambas ,\n1 cebolleta ,\nmedio pimiento rojo,\nHebras de azafrán,\n900 ml de caldo de pescado,\nSal",
@@ -105,10 +10,32 @@
     "duracion": 35,
     "dificultad": "Media",
     "fotoReceta": "/static/uploads/recetas/20251204_212526_alfredo_martinezescoval_24493a04.jpg",
-    "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "publicada": false,
+    "usuariosGuardado": [
+      "franciscojavier.martinezfernan@usp.ceu.es"
+    ],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "Muy rico",
+        "fecha": "2025-12-10T11:40:12.305274"
+      },
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "texto": "Me gustó mucho, la hice ayer para la familia y fue un éxito.",
+        "fecha": "2025-12-10T11:43:00.689085"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 5
+      },
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 5
+      }
+    ],
+    "publicada": true,
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
@@ -122,10 +49,24 @@
     "duracion": 10,
     "dificultad": "Facil",
     "fotoReceta": "/static/uploads/recetas/20251204_210801_alfredo_martinezescoval_1826beea.jpg",
-    "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+    "usuariosGuardado": [
+      "pedro.varonaparra@usp.ceu.es"
+    ],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "Delicioso, gracias por la receta.",
+        "fecha": "2025-12-10T11:40:31.625662"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 5
+      }
+    ],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "publicada": true
   },
   {
     "nombreReceta": "Gachas de avena con fruta fresca",
@@ -157,7 +98,8 @@
     "usuariosGuardado": [],
     "comentarios": [],
     "valoraciones": [],
-    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "publicada": true
   },
   {
     "nombreReceta": "Croquetas de queso azul",
@@ -193,112 +135,6 @@
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
-    "nombreReceta": "sdfsd",
-    "descripcion": "fd",
-    "ingredientes": "df",
-    "pasosAseguir": "ef",
-    "duracion": 23,
-    "fotoReceta": "",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "juanixer@gmail.com",
-    "usuariosGuardado": [
-      "victorvega@gmail.com",
-      "pedro.varonaparra@usp.ceu.es"
-    ],
-    "publicada": true,
-    "comentarios": [
-      {
-        "usuario": "alfredo.martinezescoval@usp.ceu.es",
-        "nombreUsuario": "alfredo",
-        "texto": "fe",
-        "fecha": "2025-11-21T11:04:21.715732"
-      }
-    ],
-    "valoraciones": [
-      {
-        "usuario": "victorvega@gmail.com",
-        "puntuacion": 2
-      },
-      {
-        "usuario": "alfredo.martinezescoval@usp.ceu.es",
-        "puntuacion": 3
-      }
-    ]
-  },
-  {
-    "nombreReceta": "rwe",
-    "descripcion": "wewer",
-    "ingredientes": "wer",
-    "pasosAseguir": "2323",
-    "duracion": 23,
-    "fotoReceta": "",
-    "alergenos": "",
-    "paisOrigen": "",
-    "turnoComida": "",
-    "dificultad": "",
-    "usuario": "juanixer@gmail.com",
-    "usuariosGuardado": []
-  },
-  {
-    "nombreReceta": "1",
-    "descripcion": "ef",
-    "ingredientes": "dff",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "df",
-    "turnoComida": "",
-    "duracion": 23,
-    "dificultad": "",
-    "fotoReceta": "",
-    "usuariosGuardado": [],
-    "usuario": "juanixer@gmail.com"
-  },
-  {
-    "nombreReceta": "Receta de prueba nueva nueva",
-    "descripcion": "asdfg",
-    "ingredientes": "df",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "asdf",
-    "turnoComida": "",
-    "duracion": 4,
-    "dificultad": "",
-    "fotoReceta": "",
-    "usuariosGuardado": [],
-    "usuario": "victorvega@gmail.com"
-  },
-  {
-    "nombreReceta": "nueva receta prueba 2",
-    "descripcion": "sdf",
-    "ingredientes": "dfg",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "sdfg",
-    "turnoComida": "",
-    "duracion": 3,
-    "dificultad": "",
-    "fotoReceta": "/static/uploads/recetas/20251103_134941_victorvega_249c187e.jpg",
-    "usuariosGuardado": [
-      "alfredo.martinezescoval@usp.ceu.es",
-      "pedro.varonaparra@usp.ceu.es"
-    ],
-    "usuario": "victorvega@gmail.com",
-    "publicada": true,
-    "valoraciones": [
-      {
-        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
-        "puntuacion": 3
-      },
-      {
-        "usuario": "alfredo.martinezescoval@usp.ceu.es",
-        "puntuacion": 2
-      }
-    ]
-  },
-  {
     "nombreReceta": "Bizcocho de nata",
     "descripcion": "Bizcocho tradicional elaborado con nata líquida, mantequilla, limón y una mezcla aireada de huevos y azúcar. Su textura esponjosa y su sabor suave lo convierten en un clásico perfecto para desayunos y meriendas.",
     "ingredientes": "3 huevos ,\n100 gramos de mantequilla,\n190 gramos de azúcar ,\n100 ml de nata de montar ,\n1 sobre de levadura,\nLa ralladura de limón,\n200 gramos de harina ,\n1 pizca de sal",
@@ -309,10 +145,24 @@
     "duracion": 50,
     "dificultad": "Facil",
     "fotoReceta": "/static/uploads/recetas/20251204_213016_alfredo_martinezescoval_90971798.jpg",
-    "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "usuario": "alfredo.martinezescoval@usp.ceu.es"
+    "usuariosGuardado": [
+      "franciscojavier.martinezfernan@usp.ceu.es"
+    ],
+    "comentarios": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "texto": "A mis hijos les ha encantado.",
+        "fecha": "2025-12-10T11:44:02.038683"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 5
+      }
+    ],
+    "usuario": "alfredo.martinezescoval@usp.ceu.es",
+    "publicada": true
   },
   {
     "nombreReceta": "Cupcakes",
@@ -342,10 +192,24 @@
     "duracion": 25,
     "dificultad": "Facil",
     "fotoReceta": "/static/uploads/recetas/20251204_214357_alfredo_martinezescoval_4a7ed617.jpg",
-    "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "publicada": false,
+    "usuariosGuardado": [
+      "pedro.varonaparra@usp.ceu.es",
+      "franciscojavier.martinezfernan@usp.ceu.es"
+    ],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "Mi plato favorito, muchísimas gracias, esta noche lo hago.",
+        "fecha": "2025-12-10T11:41:11.695920"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 5
+      }
+    ],
+    "publicada": true,
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
@@ -366,68 +230,160 @@
     "usuario": "alfredo.martinezescoval@usp.ceu.es"
   },
   {
-    "nombreReceta": "akkak",
-    "descripcion": "212",
-    "ingredientes": "121",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "121",
+    "nombreReceta": "Cachopo de ternera",
+    "descripcion": "Una de las recetas más importantes de la gastronomía española y en particular de la Asturiana es el cachopo de ternera, un filete empanado relleno de diferentes ingredientes que hoy vamos a preparar.",
+    "ingredientes": "2 filetes de ternera asturiana,\nJamón ibérico, \njamón serrano o cecina,\nQueso en lonchas asturiano o queso cabrales,\nHuevo,\nPan rallado",
+    "alergenos": "Lácteos, Glúten, Huevo",
+    "paisOrigen": "España",
+    "pasosAseguir": "Comenzamos limpiando la ternera de grasa o de cualquier nervio que pueda tener, de esa manera evitaremos esa parte en el empanado.\nCon un espalmador, daremos golpes a los filetes para romper la fibra.\nSalpimentamos los filetes y los rellenamos de lonchas de jamón ibérico y queso. \nCubrimos con el otro filete por encima y presionamos. \nAhora pasamos por huevo batido y pan rallado. Os recomiendo usar bandejas porque empanarlo si no es un poco engorroso con platos pequeños.\nFreímos en abundante aceite de oliva o girasol por ambos lados unos dos minutos por lado. En este punto un truco es usar una paellera para freír porque no solemos tener freidoras tan grandes en casa. \nPasamos por papel absorbente para quitar los excesos de aceite y servimos cortado con unas pimientos del piquillo por encima y unas patatas fritas. De esa manera el queso fundido se saldrá un poco y quedará espectacular.",
+    "turnoComida": "comida",
+    "duracion": 30,
+    "dificultad": "Media",
+    "fotoReceta": "/static/uploads/recetas/20251210_111447_victorvega_24cd52f8.jpg",
+    "usuariosGuardado": [],
+    "comentarios": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "texto": "Mejorable",
+        "fecha": "2025-12-10T11:40:46.324070"
+      },
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "texto": "No estaba mal pero se puede mejorar.",
+        "fecha": "2025-12-10T11:43:43.326700"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "pedro.varonaparra@usp.ceu.es",
+        "puntuacion": 2
+      },
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 4
+      }
+    ],
+    "usuario": "victorvega@gmail.com",
+    "publicada": true
+  },
+  {
+    "nombreReceta": "Espaguetis a la carbonara",
+    "descripcion": "Los espaguetis a la carbonara son de las recetas más tradicionales que tenemos de gastronomía italiana y hoy vamos a preparar su receta con huevos, es la receta original de verdad porque en España (ahora ya no tanto) siempre se ha hecho con nata.",
+    "ingredientes": "200 gramos de espaguetis,\n100 gramos de guanciale,\n50 gramos de pecorino o parmesano,\n3 yemas de huevo y 1 huevo entero,\nSal,\nPimienta negra recién molida",
+    "pasosAseguir": "Comenzamos en una sartén sin aceite a cocinar el guancile. Lo debemos cocinar a fuego medio hasta que se dore y suelte toda la grasa. No tires la grasa porque parte de ella la vamos a usar.\nUna vez dorados, retiramos y reservamos.\nMIentras tanto vamos cocineod los espaguetis como indique el fabricante en abundante agua con sal.\nEn un bol, ponemos el queso rallado, las 3 yemas y el huevo entero. Batimos muy bien.\nAñadimos una cucharada del agua de cocción, un par de cucharadas de la grasa del guancile y mezclamos hasta que quede una pasta. Esta la reservamos hasta que tengamos los espaguetis cocidos.\nColamos las espaguetis y los añadimos otra vez a la sartén. Dejamos atemperar un minutos y seguidamente le añadimos la crema yy con el propio calor se va a ir haciendo esa crema tan característica. Lo dejamos atemperar porque si tenemos el fuego encendido la crema se va a cuajar y no queremos eso.\nServimos con el guancile por encima y con una buena cantidad de pimienta negra molida.",
+    "duracion": 15,
+    "fotoReceta": "/static/uploads/recetas/20251210_111952_victorvega_93626b08.jpg",
+    "alergenos": "Lácteos, Glúten",
+    "paisOrigen": "Italia",
     "turnoComida": "cena",
-    "duracion": 12121,
-    "dificultad": "",
-    "fotoReceta": "/static/uploads/recetas/20251204_152016_pedro_varonaparra_5d78e341.png",
+    "dificultad": "Facil",
+    "usuario": "victorvega@gmail.com",
     "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "usuario": "pedro.varonaparra@usp.ceu.es"
+    "publicada": true,
+    "comentarios": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "texto": "Muy rico, muchas gracias.",
+        "fecha": "2025-12-10T11:43:24.370260"
+      }
+    ],
+    "valoraciones": [
+      {
+        "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+        "puntuacion": 4
+      }
+    ]
   },
   {
-    "nombreReceta": "sin foto",
-    "descripcion": "1212",
-    "ingredientes": "121",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "121",
-    "turnoComida": "aperitivo",
-    "duracion": 121212,
-    "dificultad": "Dificil",
-    "fotoReceta": "/static/uploads/recetas/20251204_151933_pedro_varonaparra_09642f7a.png",
-    "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "usuario": "pedro.varonaparra@usp.ceu.es"
-  },
-  {
-    "nombreReceta": "con foto",
-    "descripcion": "212",
-    "ingredientes": "121",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "121",
+    "nombreReceta": "Pan con tomate",
+    "descripcion": "Hoy vamos a hacer uno de los desayunos más importantes de la cocina catalana, el pan tumaca, al que llamamos pan con tomate en Madrid y que en catalán se dice es pa amb tomàquet.",
+    "ingredientes": "2 rebanadas de pan de hogaza,\n2 tomates maduros,\n1 diente de ajo,\nSal,\nAceite de oliva Virgen extra",
+    "pasosAseguir": "Comenzamos tostando el pan en una sartén o en un tostador, donde mejor te venga.\nCon el pan tostado, partimos el ajo en dos y lo restregamos por encima del pan.\nAhora partimos el pan por la mitad y restregamos en el pan bien, que se unte bien de tomate. Puedes presionar un poco para que salga más tomate.\nSolo queda un buen aceite de oliva virgen extra, sal por encima y listo, tenemos un sano y delicioso desayuno.",
+    "duracion": 12,
+    "fotoReceta": "/static/uploads/recetas/20251210_112350_victorvega_4e096473.jpg",
+    "alergenos": "Glúten",
+    "paisOrigen": "España",
     "turnoComida": "desayuno",
-    "duracion": 12121,
-    "dificultad": "",
-    "fotoReceta": "/static/uploads/recetas/20251204_145021_pedro_varonaparra_a5692d87.png",
+    "dificultad": "Facil",
+    "usuario": "victorvega@gmail.com",
     "usuariosGuardado": [],
-    "comentarios": [],
-    "valoraciones": [],
-    "usuario": "pedro.varonaparra@usp.ceu.es"
+    "publicada": true
   },
   {
-    "nombreReceta": "receta prueba nueva 9",
-    "descripcion": "lkjnononoinoij",
-    "ingredientes": "hola",
-    "alergenos": "",
-    "paisOrigen": "",
-    "pasosAseguir": "sdfasdffsdf",
+    "nombreReceta": "Humus de garbanzos",
+    "descripcion": "El humus es un puré, crema o paté hecho a base de garbanzos y zumo de limón típica de la cocina árabe. Se puede servir como aperitivo o tapa y puede acompañarse de pan de pita o pan tostado. Es una receta muy sencilla de elaborar y es un entrante perfecto con el que podéis hacer numerosas combinaciones.",
+    "ingredientes": "Garbanzos cocidos,\n1 ajo,\nAceita de oliva,\nZumo de limón,\nComino,\nSal,\nHuevos de codorniz",
+    "pasosAseguir": "Poner los garbanzos a remojo la noche de antes y cocerlos posteriormente en la olla express. También podéis probar a hacerlo con garbanzos en conserva.\nCocer los garbanzo en una cazuela  junto con el ajo, medio litro de agua y un poco de sal durante unos minutos. Cuando pasen esos minutos\nColar los garbanzos junto con los ajos y reservar el líquido de cocción.\nA continuación pasamos los garbanzos y los ajos por la batidora junto con un chorrito de aceite y zumo de limón. El el caso de que quede un poco espeso podemos añadir un poco de agua de cocción.\nLo siguiente que haremos será servir el puré de garbanzos en un recipiente. En este caso yo he usado vasos de Martini, porque quedan muy bien y creo que es la cantidad justa.\nEn un mortero hacemos un majado con medio ajito, comino, sal y pimentón. Este majado lo ponemos por encima del humus.\nPara hacer los huevos escalfados de codorniz tendremos que usar un film transparente. Sobre una tacita pequeña extendemos el film y dentro ponemos el huevo de codorniz con un poquito de sal.\nHacemos una especie de paquetito y cocemos en agua unos 2 minutos.\nFinalmente retiramos el film transparente, lo ponemos encima de nuestro vasito de humus y              espolvoreamos un poco de perejil.",
+    "duracion": 20,
+    "fotoReceta": "/static/uploads/recetas/20251210_113357_pedro_varonaparra_31c27ae1.jpg",
+    "alergenos": "Huevo",
+    "paisOrigen": "España",
     "turnoComida": "aperitivo",
-    "duracion": 34,
-    "dificultad": "",
-    "fotoReceta": "",
+    "dificultad": "Facil",
+    "usuario": "pedro.varonaparra@usp.ceu.es",
+    "usuariosGuardado": [],
+    "publicada": true
+  },
+  {
+    "nombreReceta": "Crema de calabaza",
+    "descripcion": "La crema de calabaza es la mejor crema de verduras sin duda del otoño y de todo el año. Empieza octubre y ya apetecen platos de cremas sanas o guisos y estas receta de crema de calabaza nunca puede faltar en pleno otoño e invierno.",
+    "ingredientes": "1 kilo de calabaza,\n2 puerros,\n1 nuez de mantequilla o aceite de oliva virgen extra,\nSal,\nPimienta,\nCaldo de pollo o caldo de verduras,\nSal,\n2 quesitos,\n100 ml de Leche evaporada o nata",
+    "pasosAseguir": "Comenzamos pelando la calabaza y cortándola en dados. No incorporéis las pepitas de calabaza.\nCortamos además de la calabaza, el puerro y los rehogamos en un cacerola ancha, que se cocine a fuego medio fuerte que va a ayudar a coger aroma y sabor a la crema. Ese punto diferencial de cualquier crema de calabaza.\nCuando haya cogido color, cubrimos de caldo de pollo o de verduras o incluso agua y dejamos cocinar hasta que la calabaza esté blanda. El tiempo dependerá del corte que le demos.\nColamos la calabaza y ahora toca triturar muy bien con un par de quesitos y leche evaporada. La leche o nata se la vamos a ir incorporando poco a poco hasta obtener la textura deseada de la crema.",
+    "duracion": 30,
+    "fotoReceta": "/static/uploads/recetas/20251210_113651_pedro_varonaparra_7e0c4b89.jpg",
+    "alergenos": "Lácteos",
+    "paisOrigen": "España",
+    "turnoComida": "cena",
+    "dificultad": "Facil",
+    "usuario": "pedro.varonaparra@usp.ceu.es",
+    "usuariosGuardado": [],
+    "publicada": true
+  },
+  {
+    "nombreReceta": "Tortitas",
+    "descripcion": "La receta de tortitas es uno de esos desayunos perfectos que nos gusta a todos y que con nata montada y caramelo por encima es una delicia impresionante. Hoy vamos a aprender a hacer su masa, se receta y conocer su toppings perfectos.",
+    "ingredientes": "300 g de harina de trigo de todo uso,\n100 gramos de mantequilla,\n50 gramos de azúcar,\n4 huevos medianos,\n400 ml de leche entera,\nUna cucharada de esencia de vainilla,\n24 gramos de levadura en polvo,\n1 pizca de sal",
+    "pasosAseguir": "Comenzamos en un bol batiendo los ingredientes líquidos. La leche, los huevos y la esencia de vainilla.\nPor otra parte vamos a mezclar los secos. El azúcar, la harina y la levadura. En este punto agregamos una pizca de sal.\nAgregamos los secos a los líquidos tamizados y mezclamos muy bien.\nEl último paso será agregar la mantequilla pomada y mezclar muy bien hasta obtener una masa homogénea de tortitas. Tapamos y dejamos reposar una hora mínimo para que se empiece a fermentar un poco.\nEn una sartén pintamos con un poco de mantequilla.\nAñadimos una poco de masa de tortitas y dejamos cocinar hasta que empiecen a salir una especie de burbujas. En ese punto daremos la vuelta a la tortita\nDoramos la tortita por la otra parte y listo.",
+    "duracion": 80,
+    "fotoReceta": "/static/uploads/recetas/20251210_113929_pedro_varonaparra_38ac0f4c.jpg",
+    "alergenos": "Lácteos, Glúten, Huevo",
+    "paisOrigen": "Estados Unidos",
+    "turnoComida": "merienda",
+    "dificultad": "Facil",
+    "usuario": "pedro.varonaparra@usp.ceu.es",
+    "usuariosGuardado": [],
+    "publicada": true
+  },
+  {
+    "nombreReceta": "Pisto de verduras",
+    "descripcion": "El pisto es una de las recetas más importantes que tenemos en cada familia, la receta de pisto de mi abuela es una maravilla y es la que os voy a dar hoy. Realmente la receta tradicional es un pisto manchego, que es la más famosa de España pero tenemos otros como el andaluz o por el pisto catalán llamado sanfaina, hoy aprenderemos como hacer pisto de verduras.",
+    "ingredientes": "2 cebollas,\n2 pimientos rojos,\n2 pimientos verde,\n2 calabacines,\n6 tomates maduros,\n200 ml de tomate frito,\nSal,\nPimienta,\nAceite de oliva virgen extra",
+    "pasosAseguir": "Es un plato que lleva tiempo por lo que debemos de tener paciencia. Lo primero es picar la cebolla y los pimientos y empezaron a pochados en aceite de oliva durante 1 hora a fuego lento. Esta parte es importante porque queremos un pisto suave y delicioso.\nPor otra parte, vamos a pochar en una sartén el calabacín. Mi abuela lo hacía por otra parte porque luego le gustaba añadir todos los ingredientes para que conocieran el tomate. El calabacín se va a hacer en unos 15 minutos. Una vez hecho reservamos.\nPelamos y picamos el tomate en trozos y lo añadimos a la cazuela junto con el bote de tomate frito. Este truco era de mi abuela que le ponía tomate frito ya de bote, pero puedes evitarlo si no lo consume. Puedes también usar tomate triturado de lata\nCocinamos durante 30 minutos y rectificamos de sal y pimienta al final de la receta. Y ya tenemos lista la receta de pisto de mi abuela.",
+    "duracion": 110,
+    "fotoReceta": "/static/uploads/recetas/20251210_114637_franciscojavier_martinezfernan_801ce6a3.jpg",
+    "alergenos": "",
+    "paisOrigen": "España",
+    "turnoComida": "comida",
+    "dificultad": "Media",
+    "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+    "usuariosGuardado": [],
+    "publicada": true
+  },
+  {
+    "nombreReceta": "Huevos rotos con jamón",
+    "descripcion": "Si hablamos de raciones de bar, los huevos rotos o huevos estrellados son de las que no pueden faltar una vez llegamos a pedir en la barra. Hoy preparamos una receta de huevos rotos con jamón realmente deliciosa.",
+    "ingredientes": "3 patatas nuevas,\nAceite de oliva,\n4 o 5 lonchas de jamón serrano o jamón ibérico,\n3 huevos,\nSal",
+    "alergenos": "Huevo",
+    "paisOrigen": "España",
+    "pasosAseguir": "Es una receta reamente sencilla, por lo que las 3 cosas que lleva las debemos hacer a la perfección. Pelamos las patatas y las cortamos en rodajas o bastones las patatas y lavándolas en agua para retirar todo el resto de almidón.\nUna vez limpias, las secamos y las freímos en abundante aceite de oliva durante unos 15 minutos a fuego lento.\nLos últimos dos minutos subimos el fuego para que se cree una capa crujiente. Las pasamos a papel absorbente para retirar todo exceso de aceite.\nPor otras parte vamos a hacer dos huevos fritos y debemos hacerlos a la española. En una sartén con un dedo de aceite, y freímos los huevos durante un par de minutos que salga algo de puntilla.\nPonemos una cama de patatas fritas, el jamón ibérico o serrano por encima (el que tengamos) y los huevos. Ahora es momento de romper los huevos para que se haga una salsa espectacular con la yema.",
+    "turnoComida": "aperitivo",
+    "duracion": 20,
+    "dificultad": "Facil",
+    "fotoReceta": "/static/uploads/recetas/20251210_115110_franciscojavier_martinezfernan_e406a3f0.jpg",
     "usuariosGuardado": [],
     "comentarios": [],
     "valoraciones": [],
-    "publicada": false,
-    "usuario": "victorvega@gmail.com"
+    "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
+    "publicada": true
   }
 ]

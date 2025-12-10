@@ -24,7 +24,7 @@
     "jueves": {
       "desayuno": "ensalada cesar",
       "aperitivo": null,
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": null,
       "cena": null
     },
@@ -38,7 +38,7 @@
     "sabado": {
       "desayuno": "ensalada cesar",
       "aperitivo": null,
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": null,
       "cena": null
     },
@@ -54,7 +54,7 @@
     "lunes": {
       "desayuno": "Tostada con tomate, perlas de mozzarella y rúcula",
       "aperitivo": "Rollito de berenjena relleno de jamón y queso",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "Cupcakes",
       "cena": "Huevos fritos con chistorra"
     },
@@ -82,7 +82,7 @@
     "viernes": {
       "desayuno": "Gachas de avena con fruta fresca",
       "aperitivo": "Croquetas de queso azul",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "Bizcocho de nata",
       "cena": "Huevos fritos con chistorra"
     },
@@ -96,7 +96,7 @@
     "domingo": {
       "desayuno": "Gachas de avena con fruta fresca",
       "aperitivo": "Croquetas de queso azul",
-      "comida": "Garbanzos ",
+      "comida": null,
       "merienda": "Cupcakes",
       "cena": "Sopa de tomate"
     }
