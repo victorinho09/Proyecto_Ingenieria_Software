@@ -240,7 +240,9 @@
     "duracion": 30,
     "dificultad": "Media",
     "fotoReceta": "/static/uploads/recetas/20251210_111447_victorvega_24cd52f8.jpg",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "comentarios": [
       {
         "usuario": "pedro.varonaparra@usp.ceu.es",
@@ -278,7 +280,9 @@
     "turnoComida": "cena",
     "dificultad": "Facil",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true,
     "comentarios": [
       {
@@ -306,7 +310,9 @@
     "turnoComida": "desayuno",
     "dificultad": "Facil",
     "usuario": "victorvega@gmail.com",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true
   },
   {
@@ -321,7 +327,9 @@
     "turnoComida": "aperitivo",
     "dificultad": "Facil",
     "usuario": "pedro.varonaparra@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true
   },
   {
@@ -336,7 +344,9 @@
     "turnoComida": "cena",
     "dificultad": "Facil",
     "usuario": "pedro.varonaparra@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true
   },
   {
@@ -351,7 +361,9 @@
     "turnoComida": "merienda",
     "dificultad": "Facil",
     "usuario": "pedro.varonaparra@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true
   },
   {
@@ -366,7 +378,9 @@
     "turnoComida": "comida",
     "dificultad": "Media",
     "usuario": "franciscojavier.martinezfernan@usp.ceu.es",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "publicada": true
   },
   {
@@ -380,7 +394,9 @@
     "duracion": 20,
     "dificultad": "Facil",
     "fotoReceta": "/static/uploads/recetas/20251210_115110_franciscojavier_martinezfernan_e406a3f0.jpg",
-    "usuariosGuardado": [],
+    "usuariosGuardado": [
+      "alfredo.martinezescoval@usp.ceu.es"
+    ],
     "comentarios": [],
     "valoraciones": [],
     "usuario": "franciscojavier.martinezfernan@usp.ceu.es",

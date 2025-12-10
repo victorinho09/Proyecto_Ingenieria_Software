@@ -49,56 +49,5 @@
       "merienda": null,
       "cena": null
     }
-  },
-  "alfredo.martinezescoval@usp.ceu.es": {
-    "lunes": {
-      "desayuno": "Tostada con tomate, perlas de mozzarella y rúcula",
-      "aperitivo": "Rollito de berenjena relleno de jamón y queso",
-      "comida": null,
-      "merienda": "Cupcakes",
-      "cena": "Huevos fritos con chistorra"
-    },
-    "martes": {
-      "desayuno": "Gachas de avena con fruta fresca",
-      "aperitivo": "Croquetas de queso azul",
-      "comida": "Arroz con sepia y gambas",
-      "merienda": "Bizcocho de nata",
-      "cena": "Sopa de tomate"
-    },
-    "miercoles": {
-      "desayuno": "Tostada con tomate, perlas de mozzarella y rúcula",
-      "aperitivo": "Rollito de berenjena relleno de jamón y queso",
-      "comida": "Arroz con sepia y gambas",
-      "merienda": "Cupcakes",
-      "cena": "Huevos fritos con chistorra"
-    },
-    "jueves": {
-      "desayuno": "Tostada con tomate, perlas de mozzarella y rúcula",
-      "aperitivo": "Rollito de berenjena relleno de jamón y queso",
-      "comida": "Arroz con sepia y gambas",
-      "merienda": "Bizcocho de nata",
-      "cena": "Sopa de tomate"
-    },
-    "viernes": {
-      "desayuno": "Gachas de avena con fruta fresca",
-      "aperitivo": "Croquetas de queso azul",
-      "comida": null,
-      "merienda": "Bizcocho de nata",
-      "cena": "Huevos fritos con chistorra"
-    },
-    "sabado": {
-      "desayuno": "Tostada con tomate, perlas de mozzarella y rúcula",
-      "aperitivo": "Croquetas de queso azul",
-      "comida": "Pollo a la plancha",
-      "merienda": "Bizcocho de nata",
-      "cena": "Huevos fritos con chistorra"
-    },
-    "domingo": {
-      "desayuno": "Gachas de avena con fruta fresca",
-      "aperitivo": "Croquetas de queso azul",
-      "comida": null,
-      "merienda": "Cupcakes",
-      "cena": "Sopa de tomate"
-    }
   }
 }
